@@ -30,7 +30,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
