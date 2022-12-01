@@ -21,7 +21,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         }
         if(empty($this->ajax_token) || Tools::getValue('ajax_token') !== $this->ajax_token)
         {
-            die('Wrong ajax token ! (INIT)');
+            die('Wrong ajax token !');
         }
       parent::init();
     } 
