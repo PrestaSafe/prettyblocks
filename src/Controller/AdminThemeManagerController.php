@@ -91,11 +91,13 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     {
         // dump(Context::getContext());
 
+        $shop = Context::getContext()->shop;
         $domain = Tools::getShopDomainSsl(true);
         // if not dev mode
         $filesystem = new Filesystem();
-        $build_dir = _PS_ROOT_DIR_ . '/modules/prettyblocks/build/';
-        $build_dir_https = str_replace(_PS_ROOT_DIR_, Tools::getShopDomainSsl(true), $build_dir);
+        $path = '/modules/prettyblocks/build/';
+        $build_dir = _PS_ROOT_DIR_ . $path;
+        $build_dir_https = Tools::getShopDomainSsl(true).$shop->physical_uri . ltrim($path, '/') ;
         $js = [];
         $css = [];
         $js_entry = '';
