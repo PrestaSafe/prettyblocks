@@ -16,23 +16,15 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     public function init()
     {
-        parent::init();
-    }
-
-    public function displayAjax()
-    {
-    }
-
-    public function initContent()
-    {
         if (empty($_POST)) {
-            $_POST = json_decode(file_get_contents('php://input'), true);
+            $_POST = json_decode(file_get_contents("php://input"),true);
         }
-        if ($this->ajax && !empty($this->ajax_token) && (!Tools::getIsset('ajax_token') || Tools::getValue('ajax_token') !== $this->ajax_token)) {
-            throw new Exception('Wrong ajax token !');
+        if(empty($this->ajax_token) || Tools::getValue('ajax_token') !== $this->ajax_token)
+        {
+            die('Wrong ajax token ! (INIT)');
         }
-        parent::initContent();
-    }
+      parent::init();
+    } 
 
     public function displayAjaxgetBlockConfig()
     {
@@ -68,7 +60,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     // remove sub element OK
     public function displayAjaxremoveSubState()
     {
-        $formattedID = (string) Tools::getValue('formattedID');
+        $formattedID =  pSQL(Tools::getValue('formattedID'));
         $ids = explode('-', $formattedID);
         $id_block = $ids[0];
         $substate_key = $ids[1];
@@ -94,7 +86,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     // remove element
     public function displayAjaxremoveState()
     {
-        $id_prettyblocks = (string) Tools::getValue('id_prettyblocks');
+        $id_prettyblocks = (int)Tools::getValue('id_prettyblocks');
         $block = new PrettyBlocksModel($id_prettyblocks);
         if ($block->delete()) {
             die(json_encode([
