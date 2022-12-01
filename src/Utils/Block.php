@@ -1,4 +1,5 @@
 <?php
+
 namespace PrestaSafe\PrettyBlocks\Utils;
 
 class Block
@@ -10,29 +11,25 @@ class Block
 
     public function registerFields($fields)
     {
-        
     }
 
-    public function setInput(Array $array)
+    public function setInput(array $array)
     {
         $this->inputs[] = $array;
     }
 
     public function getField($name)
     {
-
     }
 
     public function getCollection($field_name)
     {
-
     }
 
     public function getState()
     {
         return $this->state;
     }
-
 
     // $blocks[] =  [
     //     'name' => $this->l('CartZilla Slider'),
@@ -60,7 +57,6 @@ class Block
     //             ]
     //         ],
     //     ],
-        
 
     //     'repeater' => [
     //         'name' => 'Element repeated',
@@ -68,7 +64,7 @@ class Block
     //         'groups' => [
     //             'title' => [
     //                 'type' => 'text',
-    //                 'label' => 'Custom title', 
+    //                 'label' => 'Custom title',
     //                 'default' => 'default value',
     //             ],
     //             'category' => [
@@ -97,10 +93,8 @@ class Block
     //                     ]
     //                 ],
     //             ]
-    //         ], 
+    //         ],
     //     ],
 
     // ];
-
-
 }

@@ -4,14 +4,13 @@ class HelperBuilder
 {
     public static function pathFormatterFromString($path)
     {
-        if (substr($path, 0, 1) !== "$") {
+        if (substr($path, 0, 1) !== '$') {
             throw new Exception('Path "' . $path . '" should begin by $ ex: "$/prettyblocks/path/to/images/"');
         }
-        $pathFormatted = str_replace('$', _PS_ROOT_DIR_ , $path);
+        $pathFormatted = str_replace('$', _PS_ROOT_DIR_, $path);
+
         return realpath($pathFormatted) . '/';
     }
-
-    
 
     /**
      * @todo Security Check
@@ -24,18 +23,17 @@ class HelperBuilder
         if ($path_only) {
             return realpath(dirname($pathFormatted));
         }
+
         return realpath(dirname($pathFormatted)) . '/' . $file_name;
     }
 
-
     public static function hookToArray($hookName, $params = [])
     {
-        $extraContent  = Hook::exec($hookName, $params, null, true);
+        $extraContent = Hook::exec($hookName, $params, null, true);
         $res = [];
         if (is_array($extraContent)) {
             foreach ($extraContent as $formField) {
-                if(!is_array($formField))
-                {
+                if (!is_array($formField)) {
                     continue;
                 }
                 foreach ($formField as $array) {
@@ -43,6 +41,7 @@ class HelperBuilder
                 }
             }
         }
+
         return $res;
     }
 }
