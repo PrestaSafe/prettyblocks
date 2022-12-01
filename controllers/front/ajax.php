@@ -262,8 +262,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $block = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
-        $module = Module::getInstanceByName('prettyblocks');
-        $html = $module->renderWidget(null, [
+        $html = $this->module->renderWidget(null, [
             'action' => 'GetBlockRender',
             'data' => $block->mergeStateWithFields(),
         ]);
@@ -280,10 +279,9 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         // for drag n drop
         // not used for now
         $html = '';
-        $module = Module::getInstanceByName('prettyblocks');
         $block_name = Tools::getValue('block');
-        $block = $module->registerBlockToZone('displayHome', $block_name);
-        $html = $module->renderWidget(null, [
+        $block = $this->module->registerBlockToZone('displayHome', $block_name);
+        $html = $this->module->renderWidget(null, [
             'block' => $block_name,
             'instance' => $block,
         ]);
