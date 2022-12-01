@@ -1,0 +1,99 @@
+admin_prettyblocks:
+  path: prettyblocks/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::indexAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController
+
+prettyblocks_block_render:
+  path: prettyblocks/block/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::renderBlockAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController
+
+
+prettyblocks_api:
+  path: prettyblocks/api/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::testAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController
+
+# Get collection
+prettyblocks_collection:
+  path: prettyblocks/collection/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getCollectionAction'
+    _legacy_controller: AdminThemeManagerControllerGetCollectionAction
+    _legacy_link: AdminThemeManagerControllerGetCollectionAction
+
+
+# Upload for DropZone
+prettyblocks_upload:
+  path: prettyblocks/upload/
+  methods: [POST,GET]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::uploadAction'
+    _legacy_controller: AdminThemeManagerControllerUploadAction
+    _legacy_link: AdminThemeManagerControllerUploadAction
+
+
+# get block state
+prettyblocks_api_get_state:
+  path: prettyblocks/get_state/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getState'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController
+
+# get blocks available
+prettyblocks_api_get_blocks_available:
+  path: prettyblocks/get_blocks_available/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getBlocksAvailableAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController
+
+prettyblocks_api_get_block_action_urls:
+  path: prettyblocks/block_action_urls/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::ajaxPrettyBlocksModelAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController
+
+
+
+prettyblocks_homesimulator:
+  path: prettyblocks/homesimulator/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::homeSimulator'
+    _legacy_controller: AdminThemeManagerControllerHomeSimulator
+    _legacy_link: AdminThemeManagerControllerHomeSimulator
+
+
+admin_prettyblocks_test:
+  path: prettyblocks/test/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::testAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController
+
+
+#get gobals settings
+prettyblocks_theme_settings:
+  path: prettyblocks/get_theme_settings/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getSettingsAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController

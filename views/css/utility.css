@@ -1,0 +1,7 @@
+.border-dotted{
+    border-color: rgb(73, 141, 201);
+    border-style: solid !important;
+    border-radius: 8px;
+    border-width: 4px;
+    position: relative;
+}

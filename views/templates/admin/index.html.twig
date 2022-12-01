@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="{{ favicon_url }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prettyblocks</title>
+  </head>
+  <body>
+{% set vitedev = false %}
+  {% if not vitedev %}
+    <script type="module" crossorigin src="{{ js_entry }}"></script>
+    {% for js in js_build %}
+    <link rel="modulepreload" href="{{ js }}">
+    {% endfor %}
+    {% for css in css_build %}
+      <link rel="stylesheet" href="{{ css }}">
+    {% endfor %}
+  {% endif %}
+   {% if vitedev %}
+    <script type="module" src="http://localhost:3002/@vite/client"></script> 
+   {% endif %}
+  <div id="app"></div>
+    {% if vitedev %}
+      <script type="module" src="http://localhost:3002/src/main.js"></script>
+    {% endif %}
+    <script>
+      var ajax_urls = {{ ajax_urls|json_encode|raw }}
+      var trans_app = {{ trans_app|json_encode|raw }}
+      var security_app = {{ security_app|json_encode|raw }}
+      window.ajax_urls = ajax_urls  
+      window.trans_app = trans_app  
+      window.security_app = security_app  
+    </script>
+  </body>
+</html>
