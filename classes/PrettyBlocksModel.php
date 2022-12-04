@@ -80,7 +80,7 @@ class PrettyBlocksModel extends ObjectModel
     {
         $id = $this->id_prettyblocks;
         $key = $id . "\_%_CONFIG";
-        $sql = 'SELECT name FROM ' . _DB_PREFIX_ . "configuration WHERE name LIKE '" . $key . "'";
+        $sql = 'SELECT name FROM ' . _DB_PREFIX_ . "configuration WHERE name LIKE '" . pSQL($key) . "'";
         $keys = Db::getInstance()->executeS($sql);
         if (count($keys) > 0) {
             foreach ($keys as $k) {
