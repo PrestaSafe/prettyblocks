@@ -2,11 +2,11 @@
   <div class="flex items-center justify-center">
 
     <div class="w-full max-w-xs mx-auto">
-
+      <!-- <Button @click="test">TEST {{ props.item }} current choice: {{ currentChoice }}</Button> -->
      <Listbox
         as="div"
         class="space-y-1"
-        v-model="modelValue"
+        v-model="currentChoice"
         v-slot="{ open }"
 
       >
@@ -19,7 +19,7 @@
               class="cursor-default relative w-full rounded-md border border-gray-300 bg-white pl-3 pr-10 py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5"
             >
               <span class="block truncate">
-                {{ currentTpl }}
+                {{ currentChoice }}
               </span>
               <span
                 class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"
@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { defineComponent, defineEmits, watch } from "vue";
+import { defineComponent, defineEmits, watch, ref } from "vue";
 import {
   Listbox,
   ListboxLabel,
@@ -116,16 +116,17 @@ let props = defineProps({
     currentTpl: String,
     availableTpl: Object,
     label: String,
-    modelValue: String | Object
+    modelValue: Array
 })
-
+let currentChoice = ref(props.modelValue)
 const emit = defineEmits(['update:modelValue'])
 
 function onChange(e) {
     emit('update:modelValue', e)
+    emit('update:currentTpl', e)
 }
 
-watch(() => props.modelValue, onChange)
+watch(currentChoice, onChange)
 defineComponent({
     Listbox,
     ListboxLabel,
@@ -133,8 +134,5 @@ defineComponent({
     ListboxOptions,
     ListboxOption,
 })
-
-
-
     
 </script>
