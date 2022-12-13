@@ -12,6 +12,11 @@
         <target>Créez votre boutique à votre goût facilement</target>
         <note>Line: </note>
       </trans-unit>
+      <trans-unit id="eadee7bb6891a2fa80300125f41cb7fb">
+        <source>Updated with success</source>
+        <target>Mise à jour réussi</target>
+        <note>Line: </note>
+      </trans-unit>
       <trans-unit id="960302df11e7521d1913d5085967a263">
         <source>Image removed successfully</source>
         <target>Image supprimée avec succès</target>
@@ -39,7 +44,7 @@
       </trans-unit>
       <trans-unit id="6f64f8f04ecfc5aba34cd2530d0bad8c">
         <source>Availables blocks</source>
-        <target>Blocs disponibles</target>
+        <target>Blocks disponibles</target>
         <note>Line: </note>
       </trans-unit>
       <trans-unit id="d3d2e617335f08df83599665eef8a418">
@@ -64,7 +69,7 @@
       </trans-unit>
       <trans-unit id="8df41ed5ebc778c45f74a201e822613a">
         <source>Choose a template</source>
-        <target>Choose a template</target>
+        <target>Veuillez choisir un template</target>
         <note>Line: </note>
       </trans-unit>
       <trans-unit id="7881d0858df7b6374c4860512ac028b4">

@@ -7,10 +7,12 @@ if (!defined('_PS_VERSION_')) {
 class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 {
     private $ajax_token;
+    protected $translator;
 
     public function __construct()
     {
         $this->ajax_token = Configuration::get('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
+        $this->translator = Context::getContext()->getTranslator();
         parent::__construct();
     }
 
@@ -193,7 +195,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         die(json_encode([
             'success' => true,
             'saved' => true,
-            'message' => 'Settings updated with success !',
+            'message' => $this->translator->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
         ], true));
     }
 
@@ -225,7 +227,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
                 'success' => true,
                 'saved' => true,
                 'state' => $stateRequest,
-                'message' => 'Updated with success',
+                'message' => $this->translator->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
             ]));
         }
     }
@@ -251,7 +253,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
                 'success' => true,
                 'saved' => true,
                 'state' => $stateRequest,
-                'message' => 'Updated with success',
+                'message' => $this->translator->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
             ]));
         }
     }

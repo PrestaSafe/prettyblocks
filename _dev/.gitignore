@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # vite config
-vite.config.js
+# vite.config.js

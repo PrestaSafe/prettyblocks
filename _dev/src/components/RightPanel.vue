@@ -198,19 +198,17 @@ emitter.on('globalSave', () => {
             </div>
     
             {{ trans('default_settings')}}
-    
-    
-            <!-- <Checkbox class="my-4" v-model="config.default.load_ajax" title="Chargement en arrière plan" name="loadAjax" /> -->
             <Checkbox class="my-4" v-model="config.default.container" :title="trans('use_container')" name="container" /> {{ trans('bg_color') }}
             <div class="flex mb-4 pt-4">
                 <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
                 <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
             </div>
-    
-            <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected" :availableTpl="config.templates" :currentTpl="config.templateSelected" :label="trans('choose_template')" />
-            <!-- <div class="flex gap-2 justify-center mt-2" v-if="config">
-                        <Button icon="CloudUploadIcon" type="primary" @click="saveConfig()">Sauvegarder</Button>
-                    </div> -->
+            
+            <SimpleSelect 
+                v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected" :availableTpl="config.templates"
+                :currentTpl="config.templateSelected" 
+                @update="value => console.log('value', value)"
+                :label="trans('choose_template')" />
         </div>
     
         <!-- State panel  -->
@@ -218,11 +216,7 @@ emitter.on('globalSave', () => {
             <div v-for="f in state" :key="f">
                 <FieldRepeater @updateUpload="save()" :field="f" />
             </div>
-            <!-- <div class="flex gap-2 justify-center mt-2" v-if="state">
-                        <Button icon="CloudUploadIcon" type="primary" @click="save()">Sauvegarder</Button>
-                    </div> -->
         </div>
-    
     
         <div v-if="showPanel" class="bottom-0 w-full text border-top-1">
             <div>

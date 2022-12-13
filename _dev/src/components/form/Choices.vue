@@ -2,11 +2,10 @@
   <div class="flex items-center justify-center">
 
     <div class="w-full max-w-xs mx-auto">
-
      <Listbox
         as="div"
         class="space-y-1"
-        v-model="modelValue"
+        v-model="currentChoice"
         v-slot="{ open }"
 
       >
@@ -103,7 +102,7 @@
 </template>
 
 <script setup>
-import { defineComponent, defineEmits, watch, computed } from "vue";
+import { defineComponent, defineEmits, watch, ref } from "vue";
 import {
   Listbox,
   ListboxLabel,
@@ -115,16 +114,19 @@ import {
 let props = defineProps({
     choices: Object,
     label: String,
-    modelValue: String | Object
+    modelValue: String
 })
 
+
+let currentChoice = ref(props.modelValue)
+let selectedChoice = ref(props.choices[props.modelValue])
 const emit = defineEmits(['update:modelValue'])
 
 function onChange(e) {
     emit('update:modelValue', e)
+    selectedChoice.value = props.choices[currentChoice.value]
 }
-
-watch(() => props.modelValue, onChange)
+watch(currentChoice, onChange)
 defineComponent({
     Listbox,
     ListboxLabel,
@@ -132,8 +134,6 @@ defineComponent({
     ListboxOptions,
     ListboxOption,
 })
-const selectedChoice = computed(() =>  props.choices[props.modelValue])
-console.log('model Value', props.modelValue)
 
     
 </script>

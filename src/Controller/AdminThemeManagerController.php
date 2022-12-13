@@ -398,7 +398,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             die(json_encode([
                 'success' => true,
                 'saved' => true,
-                'message' => 'Settings updated with success !',
+                'message' => $this->getTranslator()->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
             ], true));
         }
 
@@ -478,7 +478,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                     'success' => true,
                     'saved' => true,
                     'state' => $stateRequest,
-                    'message' => 'Updated with success',
+                    'message' => $this->getTranslator()->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
                 ]);
             }
         }
@@ -498,6 +498,11 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'message' => 'update successfull',
             'errors' => 'No action found',
         ]);
+    }
+
+    private function getTranslator()
+    {
+        return Context::getContext()->getTranslator();
     }
 
     /**
