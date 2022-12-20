@@ -9,6 +9,7 @@ class PrettyBlocksCompiler
     public $import_path = [];
     private $_sass = '';
     private $_compiled = '';
+    private $outTarget = 'css';
 
     public function __construct($entries = [], $out = '')
     {
@@ -46,6 +47,12 @@ class PrettyBlocksCompiler
         $path = rtrim($path, '/');
         if (is_file($path)) {
             $this->out .= $path;
+            $extension = pathinfo($path, PATHINFO_EXTENSION);
+            if($extension == 'scss')
+            {
+                $this->outTarget = 'scss';
+            }
+            
         }
 
         return $this;
@@ -119,10 +126,11 @@ class PrettyBlocksCompiler
         }
         $this->filterVars();
         $compile = $scss->compileString($this->_sass)->getCss();
-        // really strange issue...
-        if ($compile !== '') {
+        if ($compile !== '' && $this->outTarget == 'css') {
+            // compile sass to css
             $this->_compiled = $compile;
         } else {
+            // compile sass to sass
             $this->_compiled = $this->_sass;
         }
 
