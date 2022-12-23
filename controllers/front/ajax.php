@@ -20,6 +20,9 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     {
         if (empty($_POST)) {
             $_POST = json_decode(file_get_contents("php://input"),true);
+            if (!is_array($_POST)) {
+                $_POST = [];
+            }
         }
         if(empty($this->ajax_token) || Tools::getValue('ajax_token') !== $this->ajax_token)
         {
