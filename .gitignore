@@ -3,3 +3,4 @@ node_modules/
 .vscode/
 views/images/*
 **.DS_Store**
+test.php
