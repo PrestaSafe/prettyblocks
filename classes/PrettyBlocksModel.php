@@ -443,7 +443,7 @@ class PrettyBlocksModel extends ObjectModel
         $key = Tools::strtoupper($id_prettyblocks . '_default_params');
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
         $default_tpl = [
-            'container' => false,
+            'container' => true,
             'load_ajax' => false,
             'bg_color' => '',
         ];
