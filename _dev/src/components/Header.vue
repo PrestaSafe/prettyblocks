@@ -69,13 +69,22 @@ const showSettings = () => {
 emitter.on('hideSettings', () => {
   settingsEnabled.value = false 
 })
+const leaveApp = () => {
+  window.open(domain, '_blank');
+}
+const goBackEnd = () => {
+  window.open(adminURL);
+}
+
+const domain = ajax_urls.current_domain
+const adminURL = ajax_urls.adminURL
 </script>
 
 <template>
   <header class="flex justify-between items-center px-4 py-6 border-b border-gray-200 sticky">
     <div class="flex items-center gap-2">
       <div class="border-r border-gray-200">
-        <!-- <ButtonLight icon="LoginIcon" :size="5" class="p-2" /> -->
+        <ButtonLight @click="goBackEnd" icon="BackspaceIcon" :size="5" class="p-2" />
         <ButtonLight @click="hideLeftPanelAction" :class="hideLeftPanel ? 'bg-black bg-opacity-10 rotate-180' : ''" icon="ArrowLeftOnRectangleIcon" :size="5" class="p-2" />
         <ButtonLight @click="changeLeftPanelSize" :class="extendLeftPanel ? 'bg-black bg-opacity-10' : 'rotate-180'" icon="ArrowLeftOnRectangleIcon" :size="5" class="p-2" />
       </div>
@@ -103,6 +112,7 @@ emitter.on('hideSettings', () => {
         <!-- <Icon class="inline -mt-[4px]" @click="changeRightPanelSize" name="ArrowRightOnRectangleIcon" /> -->
         <ButtonLight @click="showSettings()" :class="settingsEnabled ? 'bg-black bg-opacity-10' : ''" icon="WrenchScrewdriverIcon" :size="5" class="p-2" />
         <ButtonLight @click="hideRightPanelAction" :class="hideRightPanel ? 'bg-black bg-opacity-10 rotate-180' : ''" icon="ArrowRightOnRectangleIcon" :size="5" class="p-2" />
+        <ButtonLight @click="leaveApp" icon="BuildingStorefrontIcon" :size="5" class="p-2" />
       </div>
       <!-- <div class="border-r border-gray-200">
         <ButtonLight icon="ArrowUturnLeftIcon" :size="5" class="p-2" />
