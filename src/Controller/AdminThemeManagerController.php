@@ -55,7 +55,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $uploaded = false;
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $imgs = [];
-        if (in_array($extension, ['png', 'svg', 'jpg', 'jpeg', 'gif'])) {
+        if (in_array($extension, ['png', 'svg', 'jpg', 'jpeg', 'gif', 'webp'])) {
             // can upload
             $new_name = Tools::str2url($file['name']);
             $upload_dir = _PS_ROOT_DIR_ . '/modules/prettyblocks/views/images/';
