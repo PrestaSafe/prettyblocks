@@ -15,7 +15,7 @@
         <Checkbox class="my-4" v-if="f.type == 'checkbox' || f.type == 'radio'" :name="uuidv4()" v-model="f.value" :title="f.label" />
         <div class="clearfix"  v-if="f.type == 'editor'">
             <div class="pb-4"> {{ f.label }} </div> 
-            <Editor @init="removeTinyNotifications()" v-if="f.type == 'editor'" toolbar="bold italic underline code" v-model="f.value"/>
+            <Editor @init="removeTinyNotifications()" :init="{height: 500}" v-if="f.type == 'editor'" plugins="link code" toolbar="code bold italic underline link styleselect" v-model="f.value"/>
         </div>
         <div v-if="f.type == 'select'">
             <Choices v-if="Object.keys(f.choices).length > 1" :choices="f.choices"  v-model="f.value" :label="f.label" />

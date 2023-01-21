@@ -52,7 +52,7 @@ class PrettyBlocksModel extends ObjectModel
             'name' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
             // multishop
             'instance_id' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
-            'state' => ['type' => self::TYPE_STRING,  'lang' => true],
+            'state' => ['type' => self::TYPE_SQL, 'validate' => 'isJson',  'lang' => true],
             'zone_name' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
             'position' => ['type' => self::TYPE_INT,  'validate' => 'isInt'],
             'date_add' => ['type' => self::TYPE_DATE,   'validate' => 'isDate'],
