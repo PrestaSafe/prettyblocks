@@ -12,7 +12,9 @@ Pour l'installer, téléchargez la dernière release puis installez le module di
 
 Vous pouvez également utiliser notre module ClassicBlocks, afin d'avoir 4 blocks à utiliser. Disponible ici: [Télécharger ClassicBlocks](https://github.com/PrestaSafe/classicblocks)
 
+## Themes compatible
 
+Découvrez notre [Theme Optimisé SEO / Performance et mobile PrestaShop: CartZilla](https://www.prestasafe.com/product/theme-prestashop-cartzilla) compatible PrettyBlocks !
 
 ## English version
 
@@ -24,5 +26,9 @@ You will find the technial documentation here (only in French, soon in english t
 For installing PrettyBlocks, you can download our release and install the module directly in your PrestaShop.
 
 You can also add our module ClassicBlocks for having 4 blocks to use [Download ClassicBlocks](https://github.com/PrestaSafe/classicblocks)
+
+## Compatible Themes
+
+Discover our [PrestaShop SEO / Performance and Mobile Optimized Theme: CartZilla](https://www.prestasafe.com/product/theme-prestashop-cartzilla) compatible PrettyBlocks !
 
 Enjoy 😉
