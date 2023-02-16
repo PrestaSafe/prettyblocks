@@ -31,4 +31,9 @@ You can also add our module ClassicBlocks for having 4 blocks to use [Download C
 
 Discover our [PrestaShop SEO / Performance and Mobile Optimized Theme: CartZilla](https://www.prestasafe.com/product/theme-prestashop-cartzilla) compatible PrettyBlocks !
 
+## License
+
+This module is released under AFL license.
+See [License](/LICENSE.md) for details.
+
 Enjoy 😉
