@@ -1,7 +1,6 @@
 <?php
 /**
- * Since 2020 PrestaSafe
- *
+ * Copyright (c) Since 2020 PrestaSafe and contributors
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
@@ -13,7 +12,7 @@
  * to contact@prestasafe.com so we can send you a copy immediately.
  *
  * @author    PrestaSafe <contact@prestasafe.com>
- * @copyright Since 2020 PrestaSafe
+ * @copyright Since 2020 PrestaSafe and contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
