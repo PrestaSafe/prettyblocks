@@ -26,12 +26,11 @@ class HelperBuilder
         }
         $pathFormatted = str_replace('$', _PS_ROOT_DIR_, $path);
         $path = realpath($pathFormatted) . '/';
-        if($rtrim)
-        {
-            $path = rtrim($path,'/');
+        if ($rtrim) {
+            $path = rtrim($path, '/');
         }
-        return $path;
 
+        return $path;
     }
 
     /**
@@ -67,11 +66,11 @@ class HelperBuilder
         return $res;
     }
 
-
     public static function pathFormattedToUrl($path)
-    {   
+    {
         $path = self::pathFormatterFromString($path, true);
         $domain = Tools::getShopDomainSsl(true);
-        return rtrim(str_replace(_PS_ROOT_DIR_, $domain , $path),'/');
-    } 
+
+        return rtrim(str_replace(_PS_ROOT_DIR_, $domain, $path), '/');
+    }
 }

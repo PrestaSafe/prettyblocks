@@ -410,8 +410,12 @@ class PrettyBlocksModel extends ObjectModel
     private function _getBlockTemplate(&$block)
     {
         $hookName = 'actionExtendBlockTemplate' . Tools::toCamelCase($this->code);
-        $extraContent = Hook::exec($hookName,
-        [], null, true);
+        $extraContent = Hook::exec(
+            $hookName,
+            [],
+            null,
+            true
+        );
         // dump($hookName);
 
         $res = [];
@@ -478,10 +482,10 @@ class PrettyBlocksModel extends ObjectModel
     {
         FieldFormatter::setSuffix('_config');
         switch ($value['type']) {
-            case 'editor' :
+            case 'editor':
                 return FieldFormatter::formatFieldText($field, $value, $block, $context);
                 break;
-            case 'text' :
+            case 'text':
                 return FieldFormatter::formatFieldText($field, $value, $block, $context);
                 break;
             case 'textarea':
@@ -490,25 +494,25 @@ class PrettyBlocksModel extends ObjectModel
             case 'color':
                 return FieldFormatter::formatFieldText($field, $value, $block, $context);
                 break;
-            case 'radio' :
+            case 'radio':
                 return FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
                 break;
-            case 'checkbox' :
+            case 'checkbox':
                 return FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
                 break;
-            case 'fileupload' :
+            case 'fileupload':
                 return FieldFormatter::formatFieldUpload($field, $value, $block, $context);
                 break;
-            case 'upload' :
+            case 'upload':
                 return FieldFormatter::formatFieldUpload($field, $value, $block, $context);
                 break;
-            case 'selector' :
+            case 'selector':
                 return FieldFormatter::formatFieldSelector($field, $value, $block, $context);
                 break;
-            case 'select' :
+            case 'select':
                 return FieldFormatter::formatFieldSelect($field, $value, $block, $context);
                 break;
-            case 'radio_group' :
+            case 'radio_group':
                 return FieldFormatter::formatFieldRadioGroup($field, $value, $block, $context);
                 break;
             default:
@@ -725,10 +729,10 @@ class PrettyBlocksModel extends ObjectModel
         $class::setSuffix('_settings');
 
         switch ($type) {
-            case 'editor' :
+            case 'editor':
                 return $class::formatFieldText($name, $params, $block, $context);
                 break;
-            case 'text' :
+            case 'text':
                 return $class::formatFieldText($name, $params, $block, $context);
                 break;
             case 'textarea':
@@ -737,25 +741,25 @@ class PrettyBlocksModel extends ObjectModel
             case 'color':
                 return $class::formatFieldText($name, $params, $block, $context);
                 break;
-            case 'radio' :
+            case 'radio':
                 return $class::formatFieldBoxes($name, $params, $block, $context);
                 break;
-            case 'checkbox' :
+            case 'checkbox':
                 return $class::formatFieldBoxes($name, $params, $block, $context);
                 break;
-            case 'fileupload' :
+            case 'fileupload':
                 return $class::formatFieldUpload($name, $params, $block, $context);
                 break;
-            case 'upload' :
+            case 'upload':
                 return $class::formatFieldUpload($name, $params, $block, $context);
                 break;
-            case 'selector' :
+            case 'selector':
                 return $class::formatFieldSelector($name, $params, $block, $context);
                 break;
-            case 'select' :
+            case 'select':
                 return $class::formatFieldSelect($name, $params, $block, $context);
                 break;
-            case 'radio_group' :
+            case 'radio_group':
                 return $class::formatFieldRadioGroup($name, $params, $block, $context);
                 break;
             default:
