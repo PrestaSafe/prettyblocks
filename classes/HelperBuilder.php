@@ -16,12 +16,11 @@ class HelperBuilder
         }
         $pathFormatted = str_replace('$', _PS_ROOT_DIR_, $path);
         $path = realpath($pathFormatted) . '/';
-        if($rtrim)
-        {
-            $path = rtrim($path,'/');
+        if ($rtrim) {
+            $path = rtrim($path, '/');
         }
-        return $path;
 
+        return $path;
     }
 
     /**
@@ -57,6 +56,7 @@ class HelperBuilder
         return $res;
     }
 
+
     /**
      * * ex: $path = '$/modules/prettyblocks/views/images/'
      * return https://{prestashop_url}/modules/prettyblocks/views/images/
@@ -64,7 +64,7 @@ class HelperBuilder
      * @return String
      */
     public static function pathFormattedToUrl($path)
-    {   
+    {
         $path = self::pathFormatterFromString($path, true);
         $domain = Tools::getShopDomainSsl(true);
 
@@ -72,4 +72,5 @@ class HelperBuilder
         $domain .= rtrim($context->shop->physical_uri,'/');
         return rtrim(str_replace(_PS_ROOT_DIR_, $domain , $path),'/');
     } 
+
 }

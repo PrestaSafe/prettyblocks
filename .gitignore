@@ -5,3 +5,4 @@ views/images/*
 !views/images/favicon.ico
 **.DS_Store**
 test.php
+.php-cs-fixer.cache

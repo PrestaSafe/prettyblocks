@@ -65,11 +65,9 @@ class PrettyBlocksCompiler
         if (is_file($path)) {
             $this->out .= $path;
             $extension = pathinfo($path, PATHINFO_EXTENSION);
-            if($extension == 'scss')
-            {
+            if ($extension == 'scss') {
                 $this->outTarget = 'scss';
             }
-            
         }
 
         return $this;

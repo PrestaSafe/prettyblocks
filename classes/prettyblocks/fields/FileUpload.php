@@ -17,10 +17,11 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
+
 namespace PrestaSafe\PrettyBlocks\Fields;
 
 use Configuration;
-use PrettyBlock\Core\FieldCore;
+use PrestaSafe\PrettyBlocks\Core\FieldCore;
 use Tools;
 
 // $field = (new FieldUpload)
