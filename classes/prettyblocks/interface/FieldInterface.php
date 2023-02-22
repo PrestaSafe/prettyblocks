@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -17,15 +18,11 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
-namespace PrestaSafe\PrettyBlock\Interface;
+
+namespace PrestaSafe\PrettyBlocks\CoreInterface;
+
 interface FieldInterface
 {
-    public $key;
-    public $type; 
-    public $block = false;
-    public $context = '_settings';
-
-
     public function format();
 
     public function setConfig();
@@ -36,5 +33,4 @@ interface FieldInterface
     public function value();
 
     public function getContext();
-    
 }
