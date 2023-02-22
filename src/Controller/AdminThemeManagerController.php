@@ -75,16 +75,15 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         if (in_array($extension, ['png', 'svg', 'jpg', 'jpeg', 'gif', 'webp'])) {
             // can upload
             $new_name = Tools::str2url($file['name']);
-            $upload_dir = _PS_ROOT_DIR_ . '/modules/prettyblocks/views/images/';
-            if ($path = HelperBuilder::pathFormatterFromString(Tools::getValue('path'))) {
-                $upload_dir = $path;
+            $path = '$/modules/prettyblocks/views/images/';
+            if(Tools::getIsset(Tools::getValue('path')))
+            {
+                $path = pSQL(Tools::getValue('path'));
             }
-            // dump($path);
-            // die();
+            $upload_dir = HelperBuilder::pathFormatterFromString($path);
             if (move_uploaded_file($file['tmp_name'], $upload_dir . $new_name . '.' . $extension)) {
                 $uploaded = true;
-                $domain = Tools::getShopDomainSsl(true);
-                $imgs = ['url' => str_replace(_PS_ROOT_DIR_, $domain, $upload_dir . $new_name . '.' . $extension)];
+                $imgs = ['url' =>  HelperBuilder::pathFormattedToUrl($path). '/' . $new_name . '.' . $extension];
             }
         }
 
