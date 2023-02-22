@@ -77,8 +77,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             // can upload
             $new_name = Tools::str2url($file['name']);
             $path = '$/modules/prettyblocks/views/images/';
-            if(Tools::getIsset(Tools::getValue('path')))
-            {
+            if (Tools::getIsset(Tools::getValue('path'))) {
                 $path = pSQL(Tools::getValue('path'));
             }
             $upload_dir = HelperBuilder::pathFormatterFromString($path);

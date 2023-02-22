@@ -272,37 +272,37 @@ class PrettyBlocksModel extends ObjectModel
                 switch ($field['type']) {
                     case 'text':
                         FieldUpdator::updateFieldText($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'textarea':
                         FieldUpdator::updateFieldText($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'color':
                         FieldUpdator::updateFieldText($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'checkbox':
                         FieldUpdator::updateFieldBoxes($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'radio':
                         FieldUpdator::updateFieldBoxes($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'fileupload':
                         FieldUpdator::updateFieldUpload($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'upload':
                         FieldUpdator::updateFieldUpload($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'selector':
                         FieldUpdator::updateFieldSelector($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'editor':
                         FieldUpdator::updateFieldEditor($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'select':
                         FieldUpdator::updateFieldSelect($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                     case 'radio_group':
                         FieldUpdator::updateFieldRadioGroup($name, $field['value'], $block = false, '_settings');
-                    break;
+                        break;
                 }
             }
         }
@@ -346,34 +346,34 @@ class PrettyBlocksModel extends ObjectModel
         switch ($field['type']) {
             case 'text':
                 FieldUpdator::updateFieldText($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'textarea':
                 FieldUpdator::updateFieldText($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'color':
                 FieldUpdator::updateFieldText($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'checkbox':
                 FieldUpdator::updateFieldBoxes($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'radio':
                 FieldUpdator::updateFieldBoxes($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'fileupload':
                 FieldUpdator::updateFieldUpload($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'upload':
                 FieldUpdator::updateFieldUpload($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'selector':
                 FieldUpdator::updateFieldSelector($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'select':
                 FieldUpdator::updateFieldSelect($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
             case 'editor':
                 FieldUpdator::updateFieldEditor($name, ($stateRequest[$name]['value']) ?? false, $block);
-            break;
+                break;
         }
 
         return true;

@@ -86,8 +86,7 @@ class HelperBuilder
         $domain = Tools::getShopDomainSsl(true);
 
         $context = Context::getContext();
-        $domain .= rtrim($context->shop->physical_uri,'/');
-        return rtrim(str_replace(_PS_ROOT_DIR_, $domain , $path),'/');
-    } 
-
+        $domain .= rtrim($context->shop->physical_uri, '/');
+        return rtrim(str_replace(_PS_ROOT_DIR_, $domain, $path), '/');
+    }
 }
