@@ -204,8 +204,8 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $vars = $this->getWidgetVariables($hookName, $configuration);
         $this->smarty->assign($vars);
-        if (isset($configuration['action']) && $configuration['action'] == 'magic_zone') {
-            return $this->magicZone($configuration);
+        if (isset($configuration['zone_name'])) {
+            return $this->magicZone(['zone_name' => pSQL($configuration['zone_name'])]);
         }
         if (isset($configuration['action']) && $configuration['action'] == 'GetBlockRender') {
             $block = $configuration['data'];
