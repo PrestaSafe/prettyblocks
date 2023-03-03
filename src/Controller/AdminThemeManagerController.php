@@ -77,7 +77,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             // can upload
             $new_name = Tools::str2url($file['name']);
             $path = '$/modules/prettyblocks/views/images/';
-            if (Tools::getIsset(Tools::getValue('path'))) {
+            if (Tools::getIsset('path')) {
                 $path = pSQL(Tools::getValue('path'));
             }
             $upload_dir = HelperBuilder::pathFormatterFromString($path);
@@ -124,7 +124,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             if (!$filesystem->exists($manifest)) {
                 throw new Exception('manifest.json not exist');
             }
-            $json = file_get_contents($manifest);
+            $json = Tools::file_get_contents($manifest);
             $json = json_decode($json, true);
 
             foreach ($json as $file) {
