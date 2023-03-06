@@ -205,6 +205,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
             'favicon_url' => Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
+            'module_name' => $module->displayName,
+            'shop_name' => $context->shop->name,
             'ajax_urls' => [
                 'simulate_home' => $symfonyUrl,
                 'search_by_ref' => $symfonyUrl,
