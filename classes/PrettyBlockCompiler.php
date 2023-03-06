@@ -136,7 +136,7 @@ class PrettyBlocksCompiler
             $path = HelperBuilder::pathFormatterFromString($entry);
             $path = rtrim($path, '/');
             if (is_file($path)) {
-                $this->_sass .= file_get_contents($path);
+                $this->_sass .= Tools::file_get_contents($path);
             }
         }
         $this->filterVars();
