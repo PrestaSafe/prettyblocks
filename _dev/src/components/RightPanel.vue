@@ -25,230 +25,218 @@ import Block from '../scripts/block'
 import ColorInput from 'vue-color-input'
 import FieldRepeater from './FieldRepeater.vue'
 import { trans } from '../scripts/trans'
-const toaster = createToaster({
-    position: 'top',
 
+const toaster = createToaster({
+  position: 'top',
 });
 
-
-
 defineComponent({
-    Select,
-    Input,
-    Textarea,
-    Checkbox,
-    Radio,
-    FormControl,
-    Button,
-    HeaderDropdown,
-    PanelThemeSettings,
-    Icon,
-    FileUpload,
-    Loader,
-    Modal,
-    Accordion,
-    uuidv4,
-    SimpleSelect,
-    Editor,
-    ColorInput,
-    FieldRepeater
+  Select,
+  Input,
+  Textarea,
+  Checkbox,
+  Radio,
+  FormControl,
+  Button,
+  HeaderDropdown,
+  PanelThemeSettings,
+  Icon,
+  FileUpload,
+  Loader,
+  Modal,
+  Accordion,
+  uuidv4,
+  SimpleSelect,
+  Editor,
+  ColorInput,
+  FieldRepeater
 })
 let showPanel = ref(true)
 
 const displayThemePanel = (e) => {
-    showPanel.value = !showPanel.value
+  showPanel.value = !showPanel.value
 }
-
-
 
 const state = ref(false)
 const config = ref(false)
 const showLoader = ref(false)
 const blockLoaded = ref(false)
-emitter.on('displayBlockConfig', (element) => {
-    loadBlockConfig(element)
 
+emitter.on('displayBlockConfig', (element) => {
+  loadBlockConfig(element)
 })
 
 emitter.on('displaySubState', async (element) => {
-    // if (blockLoaded.value.id_prettyblocks !== element.id_prettyblocks){
-    blockLoaded.value = await Block.loadById(element.id_prettyblocks)
-    // }
-    getSubState(element)
+  // if (blockLoaded.value.id_prettyblocks !== element.id_prettyblocks){
+  blockLoaded.value = await Block.loadById(element.id_prettyblocks)
+  // }
+  getSubState(element)
 })
 
 const loadBlock = async (element) => {
-    let block = new Block(element)
-    blockLoaded.value = block
+  let block = new Block(element)
+  blockLoaded.value = block
 }
 const loadBlockConfig = async (element) => {
-    emitter.emit('hideSettings')
-    let block = new Block(element)
-    blockLoaded.value = block
-    let res = await block.loadBlockConfig()
-    state.value = false
-    hidePanelSettings()
-    config.value = res.config
-    emitter.emit('scrollInIframe', block.id)
+  emitter.emit('hideSettings')
+  let block = new Block(element)
+  blockLoaded.value = block
+  let res = await block.loadBlockConfig()
+  state.value = false
+  hidePanelSettings()
+  config.value = res.config
+  emitter.emit('scrollInIframe', block.id)
 }
 
 const saveConfig = async (success = true) => {
-    let block = blockLoaded.value
-    if (!block) {
-        return alert('No block loaded')
-    }
+  let block = blockLoaded.value
+  if (!block) {
+    return alert('No block loaded')
+  }
 
-    let res = await block.saveConfig(config.value)
-    if (res.message) {
-        if (success) {
-            toaster.show(res.message)
-        }
+  let res = await block.saveConfig(config.value)
+  if (res.message) {
+    if (success) {
+      toaster.show(res.message)
     }
-    emitter.emit('stateUpdated', block.id_prettyblocks)
+  }
+  emitter.emit('stateUpdated', block.id_prettyblocks)
 
-    if (block.need_reload) {
-        emitter.emit('reloadIframe', block.id_prettyblocks)
-    }
+  if (block.need_reload) {
+    emitter.emit('reloadIframe', block.id_prettyblocks)
+  }
 }
 
-
-
 const getSubState = async (element) => {
-    emitter.emit('hideSettings')
-    // state.value = []
-    config.value = false
+  emitter.emit('hideSettings')
+  // state.value = []
+  config.value = false
 
-    let currentBlock = await useStore()
-    let currentID = (element != 0) ? element.id_prettyblocks : currentBlock.id_prettyblocks
+  let currentBlock = await useStore()
+  let currentID = (element != 0) ? element.id_prettyblocks : currentBlock.id_prettyblocks
 
-    let block = blockLoaded.value
-    if (!block) {
-        alert('no block found when gettings substates')
-        return false;
-    }
-    let key = block.getSubSelectedKey()
-    state.value = { ...block.states[key] }
-    hidePanelSettings()
-    showLoader.value = false
-    block.focusOnIframe()
-
+  let block = blockLoaded.value
+  if (!block) {
+    alert('no block found when gettings substates')
+    return false;
+  }
+  let key = block.getSubSelectedKey()
+  state.value = { ...block.states[key] }
+  hidePanelSettings()
+  showLoader.value = false
+  block.focusOnIframe()
 }
 
 const hidePanelSettings = () => {
-    showPanel.value = false
-    emitter.emit('hideSettings')
+  showPanel.value = false
+  emitter.emit('hideSettings')
 }
 
 const showPanelSettings = () => {
-    state.value = false
-    config.value = false
-    showPanel.value = true
+  state.value = false
+  config.value = false
+  showPanel.value = true
 }
 emitter.off('showSettings')
 emitter.on('showSettings', (value) => {
-    if (value) {
-        showPanelSettings()
-    } else {
-        hidePanelSettings()
-    }
+  if (value) {
+    showPanelSettings()
+  } else {
+    hidePanelSettings()
+  }
 })
 
 /**
  * Save the SubState in BD
- * 
+ *
  */
 const save = async (success = true) => {
-    let block = blockLoaded.value
-    let data = await block.updateSubSelectItem(state)
-    if (data.success) {
-        // update done and OK
-        if (data.message && success) {
-            toaster.show(data.message)
-        }
-        emitter.emit('initStates')
-        if (block.need_reload) {
-            emitter.emit('reloadIframe', block.id_prettyblocks)
-        } else {
-            emitter.emit('stateUpdated', block.id_prettyblocks)
-        }
+  let block = blockLoaded.value
+  let data = await block.updateSubSelectItem(state)
+  if (data.success) {
+    // update done and OK
+    if (data.message && success) {
+      toaster.show(data.message)
     }
+    emitter.emit('initStates')
+    if (block.need_reload) {
+      emitter.emit('reloadIframe', block.id_prettyblocks)
+    } else {
+      emitter.emit('stateUpdated', block.id_prettyblocks)
+    }
+  }
 }
 emitter.on('globalSave', () => {
-    if (config.value) {
-        saveConfig()
-    }
-    if (state.value) {
-        save()
-    }
+  if (config.value) {
+    saveConfig()
+  }
+  if (state.value) {
+    save()
+  }
 })
 </script>
 
 <template>
-    <div id="rightPanel" class="border-l border-gray-200 relative overflow-scroll h-screen">
-        <!-- {{ state }}  -->
-        <!--  {{ config }} -->
-    
-        <Loader :visible="showLoader">{{ trans('loading') }}...</Loader>
-        <Modal/>
-    
-        <!-- Config panel -->
-        <div v-if="config" class="state flex flex-col p-2 bg-slate-100 h-full" @keyup.enter="saveConfig()">
-            <div v-for="f in config" :key="f">
-                <FieldRepeater @updateUpload="saveConfig()" :field="f" />
-            </div>
-    
-            {{ trans('default_settings')}}
-            <Checkbox class="my-4" v-model="config.default.container" :title="trans('use_container')" name="container" /> {{ trans('bg_color') }}
-            <div class="flex mb-4 pt-4">
-                <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
-                <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
-            </div>
-            
-            <SimpleSelect 
-                v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected" :availableTpl="config.templates"
-                :currentTpl="config.templateSelected" 
-                @update="value => console.log('value', value)"
-                :label="trans('choose_template')" />
-        </div>
-    
-        <!-- State panel  -->
-        <div v-if="!showPanel" class="state flex flex-col p-2 bg-slate-100 h-full" @keyup.enter="save()">
-            <div v-for="f in state" :key="f">
-                <FieldRepeater @updateUpload="save()" :field="f" />
-            </div>
-        </div>
-    
-        <div v-if="showPanel" class="bottom-0 w-full text border-top-1">
-            <div>
-                <section @click="displayThemePanel()" class="border hover:bg-indigo hover:text-white bg-indigo text-white">
-                    <h2 class="ml-4 p-3 text-center ">
-                        <Icon name="CogIcon" class="inline" /> {{ trans('theme_settings') }}
-                    </h2>
-                </section>
-                <PanelThemeSettings v-if="showPanel" />
-            </div>
-        </div>
-    
-    
+  <div id="rightPanel" class="border-l border-gray-200 relative overflow-scroll h-screen">
+    <!-- {{ state }}  -->
+    <!--  {{ config }} -->
+
+    <Loader :visible="showLoader">{{ trans('loading') }}...</Loader>
+    <Modal />
+
+    <!-- Config panel -->
+    <div v-if="config" class="state flex flex-col p-2 bg-slate-100 h-full" @keyup.enter="saveConfig()">
+      <div v-for="f in config" :key="f">
+        <FieldRepeater @updateUpload="saveConfig()" :field="f" />
+      </div>
+      {{ trans('default_settings') }}
+      <Checkbox class="my-4" v-model="config.default.container" :title="trans('use_container')" name="container" />
+      {{ trans('bg_color') }}
+      <div class="flex mb-4 pt-4">
+        <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
+        <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
+      </div>
+      <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected"
+        :availableTpl="config.templates" :currentTpl="config.templateSelected"
+        @update="value => console.log('value', value)" :label="trans('choose_template')" />
     </div>
+
+    <!-- State panel  -->
+    <div v-if="!showPanel" class="state flex flex-col p-2 bg-slate-100 h-full" @keyup.enter="save()">
+      <div v-for="f in state" :key="f">
+        <FieldRepeater @updateUpload="save()" :field="f" />
+      </div>
+    </div>
+
+    <div v-if="showPanel" class="bottom-0 w-full text border-top-1">
+      <div>
+        <section @click="displayThemePanel()" class="border hover:bg-indigo hover:text-white bg-indigo text-white">
+          <h2 class="ml-4 p-3 text-center ">
+            <Icon name="CogIcon" class="inline" /> {{ trans('theme_settings') }}
+          </h2>
+        </section>
+        <PanelThemeSettings v-if="showPanel" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .v-enter-active,
 .v-leave-active {
-    transition: opacity 2s ease;
+  transition: opacity 2s ease;
 }
 
 .v-enter-from,
 .v-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 
 .tox-notifications-container {
-    display: none !important;
+  display: none !important;
 }
 
 #rightPanel {
-    transition: all 0.5s ease;
+  transition: all 0.5s ease;
 }
 </style>

@@ -4,10 +4,6 @@ import Iframe from './Iframe.vue'
 
 <template>
   <div class="bg-gray-100 p-2">
-     <Iframe/>
+    <Iframe />
   </div>
 </template>
-
-<style scoped>
-
-</style>

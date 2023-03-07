@@ -6,7 +6,7 @@
 
 // could not get dynamic import working with defineAsyncComponent
 // so need to import all the icon for now :(
-import * as solid from "@heroicons/vue/24/solid" 
+import * as solid from "@heroicons/vue/24/solid"
 
 defineProps({
   name: String,

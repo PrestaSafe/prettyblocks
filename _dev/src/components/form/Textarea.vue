@@ -22,20 +22,11 @@ function onInput(event) {
 
 <template>
   <div>
-    <label for="price" class="block text-sm font-medium text-gray-700"
-      >{{ title }}</label
-    >
+    <label for="price" class="block text-sm font-medium text-gray-700">{{ title }}</label>
     <div class="mt-1 relative rounded-md shadow-sm">
-      <textarea
-        @input="onInput"
-        :value="props.modelValue"
-        :name="name"
-        :id="name"
-        rows="5"
+      <textarea @input="onInput" :value="props.modelValue" :name="name" :id="name" rows="5"
         class="shadow-sm focus:ring-indigo focus:border-indigo mt-1 block w-full sm:text-sm border border-gray-300 rounded-md resize-none"
-        :placeholder="placeholder"
-        :required="required"
-      />
+        :placeholder="placeholder" :required="required" />
     </div>
   </div>
 </template>

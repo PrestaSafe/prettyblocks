@@ -7,8 +7,7 @@ const isCollapsed = ref(true)
 <template>
   <div class="flex flex-col">
     <slot name="header" :isCollapsed="isCollapsed" :collapse="() => isCollapsed = !isCollapsed"></slot>
-
-    <div class="ml-10" :class="['collapsable', { 'collapsed' : isCollapsed }]">
+    <div class="ml-10" :class="['collapsable', { 'collapsed': isCollapsed }]">
       <slot name="content"></slot>
     </div>
   </div>
@@ -18,6 +17,7 @@ const isCollapsed = ref(true)
 .collapsable {
   @apply overflow-hidden;
 }
+
 .collapsed {
   @apply h-0;
 }

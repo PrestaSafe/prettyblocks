@@ -5,6 +5,7 @@ import Frame from './Frame.vue'
 import RightPanel from './RightPanel.vue'
 import { defineComponent, ref } from '@vue/runtime-core'
 import emitter from 'tiny-emitter/instance'
+
 defineComponent({
   Header,
   LeftPanel,
@@ -17,54 +18,46 @@ let leftWidth = ref('w-80')
 let hidden_left = ref('sm:block')
 
 emitter.on('hideLeftPanelSize', (value) => {
-  if(value)
-  {
+  if (value) {
     hidden_left.value = ''
-  }else {
+  } else {
     hidden_left.value = 'sm:block'
   }
 })
 
 emitter.on('changeLeftPanelSize', (value) => {
-  if(value)
-  {
+  if (value) {
     leftWidth.value = 'w-5/12'
-  }else {
+  } else {
     leftWidth.value = 'w-80'
   }
 })
 
-
-
 // right panel
+let rightWidth = ref('w-80')
 let hidden_right = ref('sm:block')
 
 emitter.on('hideRightPanelSize', (value) => {
-  if(value)
-  {
+  if (value) {
     hidden_right.value = ''
-  }else {
+  } else {
     hidden_right.value = 'sm:block'
   }
 })
 
-let rightWidth = ref('w-80')
 emitter.on('changeRightPanelSize', (value) => {
-  if(value)
-  {
+  if (value) {
     rightWidth.value = 'w-5/12'
-  }else {
+  } else {
     rightWidth.value = 'w-80'
   }
 })
 </script>
 
 <template>
-  <main class="flex flex-col h-screen"> 
+  <main class="flex flex-col h-screen">
     <Header class="w-full h-10" />
-    <div
-      class="flex flex-grow"
-    >
+    <div class="flex flex-grow">
       <LeftPanel :class="[leftWidth, hidden_left]" class="hidden" />
 
       <Frame class="flex-grow" />
@@ -73,5 +66,3 @@ emitter.on('changeRightPanelSize', (value) => {
     </div>
   </main>
 </template>
-
-<style scoped></style>
