@@ -177,18 +177,15 @@ emitter.on('globalSave', () => {
 </script>
 
 <template>
-  <div id="rightPanel" class="border-l border-gray-200 relative overflow-scroll h-screen">
-    <!-- {{ state }}  -->
-    <!--  {{ config }} -->
-
+  <div id="rightPanel" class="relative border-l border-gray-200">
     <Loader :visible="showLoader">{{ trans('loading') }}...</Loader>
     <Modal />
 
     <!-- Config panel -->
-    <div v-if="config" class="state flex flex-col p-2 bg-slate-100 h-full" @keyup.enter="saveConfig()">
-      <div v-for="f in config" :key="f">
+    <div v-if="config" id="configPanel" class="absolute top-0 left-0 overflow-y-auto w-full h-full flex flex-col p-2 bg-slate-100" @keyup.enter="saveConfig()">
+      <template v-for="f in config" :key="f">
         <FieldRepeater @updateUpload="saveConfig()" :field="f" />
-      </div>
+      </template>
       {{ trans('default_settings') }}
       <Checkbox class="my-4" v-model="config.default.container" :title="trans('use_container')" name="container" />
       {{ trans('bg_color') }}
@@ -202,21 +199,20 @@ emitter.on('globalSave', () => {
     </div>
 
     <!-- State panel  -->
-    <div v-if="!showPanel" class="state flex flex-col p-2 bg-slate-100 h-full" @keyup.enter="save()">
-      <div v-for="f in state" :key="f">
+    <div v-if="state" id="statePanel" class="absolute top-0 left-0 overflow-y-auto w-full h-full flex flex-col p-2 bg-slate-100" @keyup.enter="save()">
+      <template v-for="f in state" :key="f">
         <FieldRepeater @updateUpload="save()" :field="f" />
-      </div>
+      </template>
     </div>
 
-    <div v-if="showPanel" class="bottom-0 w-full text border-top-1">
-      <div>
-        <section @click="displayThemePanel()" class="border hover:bg-indigo hover:text-white bg-indigo text-white">
-          <h2 class="ml-4 p-3 text-center ">
-            <Icon name="CogIcon" class="inline" /> {{ trans('theme_settings') }}
-          </h2>
-        </section>
-        <PanelThemeSettings v-if="showPanel" />
+    <!-- Theme settings panel  -->
+    <div v-if="showPanel" id="themeSettingsPanel" class="absolute top-0 left-0 overflow-y-auto w-full h-full bg-slate-100">
+      <div @click="displayThemePanel()" class="bg-indigo text-white">
+        <h2 class="ml-4 p-3 text-center">
+          <Icon name="CogIcon" class="inline" /> {{ trans('theme_settings') }}
+        </h2>
       </div>
+      <PanelThemeSettings />
     </div>
   </div>
 </template>
