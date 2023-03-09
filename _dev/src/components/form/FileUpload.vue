@@ -28,15 +28,15 @@ const props = defineProps({
     default: '$/prettyblocks/views/images'
   },
   default: {
-    type: String, 
-    default:  {
+    type: String,
+    default: {
       url: 'https://via.placeholder.com/480x453px'
     }
   },
   modelValue: Object
 })
 defineComponent({
-  Icon, 
+  Icon,
   Button
 })
 const emit = defineEmits(['update:modelValue', 'saveParent'])
@@ -52,53 +52,53 @@ onMounted(() => {
   let dropzone = new Dropzone(element, {
     url: props.uploadUrl,
     method: "POST",
-    paramName: "file",  
+    paramName: "file",
     maxFiles: 1,
     uploadMultiple: false,
-    sending: function(file, xhr, formData) {
+    sending: function (file, xhr, formData) {
       formData.append("path", props.path);
     }
   });
-  
-  dropzone.on('success', function(file, responseText){
+
+  dropzone.on('success', function (file, responseText) {
     props.modelValue = updateValue(responseText.imgs)
     file.previewElement.innerHTML = "";
-    dropzone.removeAllFiles(true); 
+    dropzone.removeAllFiles(true);
   })
 })
 
 const removeImg = () => {
-    const params = {
-      action:'removeImage',
-      state: props.modelValue, 
-      path: props.path,
-      ajax_token: security_app.ajax_token
+  const params = {
+    action: 'removeImage',
+    state: props.modelValue,
+    path: props.path,
+    ajax_token: security_app.ajax_token
   }
   axios.post(props.uploadUrl, params).then((reponse) => reponse.data)
-  .then((data) => {
-    updateValue(props.default)
-  })
+    .then((data) => {
+      updateValue(props.default)
+    })
 }
 </script>
 
 <template>
   <div>
-    <label for="price" class="block mb-2 text-sm font-medium text-gray-700"
-      >{{ title }}</label
-    >
+    <label for="price" class="block mb-2 text-sm font-medium text-gray-700">{{ title }}</label>
     <form ref="zone" class="dropzone p-2 rounded-lg" :id="id">
       <div class="dz-message" data-dz-message>
         <div class="flex flex-col items-center">
-          <Icon name="UploadIcon" size="10" class="mb-2"/> 
-            <div v-if="props.modelValue.url">
-                <img :src="props.modelValue.url" width="200"  alt="">
-            </div>
-            <div v-else>Upload a file</div>
+          <Icon name="UploadIcon" size="10" class="mb-2" />
+          <div v-if="props.modelValue.url">
+            <img :src="props.modelValue.url" width="200" alt="">
+          </div>
+          <div v-else>Upload a file</div>
         </div>
       </div>
     </form>
-    <div class="text-center mt-2 outline-none focus:outline-none focus-visible:outline-none" v-if="props.modelValue.url && props.modelValue.url !== props.default.url">
-        <Button class="focus:outline-none focus-visible:outline-none" type="secondary" @click="removeImg()" icon="TrashIcon">Supprimer</Button>
+    <div class="text-center mt-2 outline-none focus:outline-none focus-visible:outline-none"
+      v-if="props.modelValue.url && props.modelValue.url !== props.default.url">
+      <Button class="focus:outline-none focus-visible:outline-none" type="secondary" @click="removeImg()"
+        icon="TrashIcon">Supprimer</Button>
     </div>
   </div>
 </template>
@@ -108,5 +108,4 @@ const removeImg = () => {
   @apply w-full relative;
   @apply border-2 border-gray-200 border-dashed
 }
-
 </style>

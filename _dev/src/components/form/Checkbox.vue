@@ -21,17 +21,10 @@ function onInput(event) {
 
 <template>
   <div class="flex items-center">
-    <input
-      @change="onInput"
-      :checked="props.modelValue"
-      :name="name"
-      :id="name"
-      type="checkbox"
-      class="h-4 w-4 text-indigo focus:ring-indigo border-gray-300 rounded"
-      :required="required"
-    />
+    <input @change="onInput" :checked="props.modelValue" :name="name" :id="name" type="checkbox"
+      class="h-4 w-4 text-indigo focus:ring-indigo border-gray-300 rounded" :required="required" />
     <label :for="name" class="ml-2 block text-sm text-gray-900">
-      {{ title }} 
+      {{ title }}
     </label>
   </div>
 </template>

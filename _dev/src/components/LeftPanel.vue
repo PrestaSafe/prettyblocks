@@ -1,8 +1,6 @@
 <script setup>
-import { ref, onMounted, defineComponent  } from 'vue'
-
+import { ref, onMounted, defineComponent } from 'vue'
 import SortableList from './SortableList.vue'
-
 import MenuGroup from './MenuGroup.vue'
 import MenuItem from './MenuItem.vue'
 import ButtonLight from './ButtonLight.vue'
@@ -13,26 +11,26 @@ import ZoneSelect from './form/ZoneSelect.vue';
 // import { v4 as uuidv4 } from 'uuid'
 import emitter from 'tiny-emitter/instance'
 import { useStore, currentZone, contextShop } from '../store/currentBlock'
-import { trans } from '../scripts/trans'  
+import { trans } from '../scripts/trans'
 
 defineComponent({
   SortableList,
   MenuGroup,
   MenuItem,
-  ButtonLight, 
+  ButtonLight,
   ZoneSelect
 })
 
 const loadStateConfig = async (e) => {
-    let currentBlock = useStore()
-    // set store cuurent block name
-    await currentBlock.$patch({
-        // code: e.id,
-        need_reload: e.need_reload,
-        id_prettyblocks: e.id_prettyblocks,
-        // instance_id: e.instance_id
-    })
-    emitter.emit('displayBlockConfig', e);
+  let currentBlock = useStore()
+  // set store cuurent block name
+  await currentBlock.$patch({
+    // code: e.id,
+    need_reload: e.need_reload,
+    id_prettyblocks: e.id_prettyblocks,
+    // instance_id: e.instance_id
+  })
+  emitter.emit('displayBlockConfig', e);
 
 }
 // emitter.on('loadStateConfig', async (id_prettyblocks) => {
@@ -48,14 +46,14 @@ const loadStateConfig = async (e) => {
 
 let displayZoneName = ref()
 const loadSubState = async (e) => {
-    let currentBlock = useStore()
-    // set store cuurent block name
-    await currentBlock.$patch({
-        need_reload: e.need_reload,
-        id_prettyblocks: e.id_prettyblocks,
-        subSelected: e.id
-    })
-    emitter.emit('displaySubState', e);
+  let currentBlock = useStore()
+  // set store cuurent block name
+  await currentBlock.$patch({
+    need_reload: e.need_reload,
+    id_prettyblocks: e.id_prettyblocks,
+    subSelected: e.id
+  })
+  emitter.emit('displaySubState', e);
 
 }
 
@@ -63,7 +61,7 @@ let groups = ref([])
 
 
 emitter.on('initStates', () => {
-    initStates()
+  initStates()
 })
 const initStates = () => {
   let context = contextShop()
@@ -71,19 +69,19 @@ const initStates = () => {
   displayZoneName.value = current_zone
   const params = {
     ajax: true,
-    action:'GetStates',
+    action: 'GetStates',
     zone: current_zone,
     ctx_id_lang: context.id_lang,
     ctx_id_shop: context.id_shop,
     ajax_token: security_app.ajax_token
   }
-    axios.get(ajax_urls.state, { params }).then((response) => response.data)
-        .then((data) => {
+  axios.get(ajax_urls.state, { params }).then((response) => response.data)
+    .then((data) => {
 
-            groups.value = Object.entries(data.blocks).map(([key, value] = block) => {
-                return value.formatted;
-            })
-        })
+      groups.value = Object.entries(data.blocks).map(([key, value] = block) => {
+        return value.formatted;
+      })
+    })
 }
 /**
  * Push an empty State (repeater)
@@ -94,106 +92,80 @@ const loadEmptyState = (e) => {
   }
   let context = contextShop()
   loadSubState(element)
-    const params = {
-        id_prettyblocks: e.id_prettyblocks, 
-        action: 'getEmptyState',
-        ajax: true,
-        ctx_id_lang: context.id_lang,
-        ctx_id_shop: context.id_shop,
-        ajax_token: security_app.ajax_token
-    }
-    axios.get(ajax_urls.state, { params }).then((response) => response.data)
-        .then((data) => {
-            initStates()
-            if(e.need_reload)
-            {
-              emitter.emit('reloadIframe', e.id_prettyblocks)
-            }
-            emitter.emit('stateUpdated', e.id_prettyblocks)
-        })
+  const params = {
+    id_prettyblocks: e.id_prettyblocks,
+    action: 'getEmptyState',
+    ajax: true,
+    ctx_id_lang: context.id_lang,
+    ctx_id_shop: context.id_shop,
+    ajax_token: security_app.ajax_token
+  }
+  axios.get(ajax_urls.state, { params }).then((response) => response.data)
+    .then((data) => {
+      initStates()
+      if (e.need_reload) {
+        emitter.emit('reloadIframe', e.id_prettyblocks)
+      }
+      emitter.emit('stateUpdated', e.id_prettyblocks)
+    })
 }
 
 let currentBlock = useStore()
- const state = ref( {
+const state = ref({
   name: "displayHome"
-} )
+})
 </script>
 
 <template>
-<div>
-<div id="leftPanel" class="flex flex-col  border-r border-gray-200 h-screen">
-        <section>
-            <!-- <h2 class="ml-4">Zone: {{ displayZoneName }}</h2> -->
-             <ZoneSelect
-        v-model="state"
-        class="md:block min-w-96" />
-        </section>
-        <section>
-            <!-- sortable component is used to sort by drag and drop -->
-            <SortableList :items="groups" group="menu-group">
+  <div>
+    <div id="leftPanel" class="flex flex-col  border-r border-gray-200 h-screen">
+      <section>
+        <!-- <h2 class="ml-4">Zone: {{ displayZoneName }}</h2> -->
+        <ZoneSelect v-model="state" class="md:block min-w-96" />
+      </section>
+      <section>
+        <!-- sortable component is used to sort by drag and drop -->
+        <SortableList :items="groups" group="menu-group">
+          <template v-slot="{ element }">
+            <!-- group of element (collapsable) -->
+            <MenuGroup @changeState="loadStateConfig" @pushEmptyState="loadEmptyState(element)" :id="element.id"
+              :id_prettyblocks="element.id_prettyblocks" :title="element.title" :icon="element.icon" :config="true"
+              :element="element" :is_parent="true">
+              <SortableList :items="element.children" :group="'menu-group-' + element.id_prettyblocks"
+                action="updateStatePosition">
                 <template v-slot="{ element }">
-                      <!-- group of element (collapsable) -->
-                      <MenuGroup
-                        @changeState="loadStateConfig"
-                        @pushEmptyState="loadEmptyState(element)"
-                        :id="element.id"
-                        :id_prettyblocks="element.id_prettyblocks"
-                        :title="element.title"
-                        :icon="element.icon"
-                        :config="true"
-                        :element="element"
-                        :is_parent="true"
-                      >
-                        <SortableList
-                          :items="element.children"
-                          :group="'menu-group-' + element.id_prettyblocks"
-                          action="updateStatePosition"
-                        >
-                          <template v-slot="{ element }">
-                            <!-- items of the group -->
-                            <MenuItem
-                              :id="element.id.toString()"
-                              :title="element.title"
-                              :icon="element.icon"
-                              :element="element"
-                              :is_child="true"
-                              @click="loadSubState(element)"
-                            ></MenuItem>
-                  </template>
-            </SortableList>
-          </MenuGroup>
-        </template>
-      </SortableList>
-  
-    </section>
-    
-    <section>
-      <h2 class="text-center">
-        <ButtonLight
-        icon="ArrowDownOnSquareStackIcon"
-        @click="emitter.emit('toggleModal', displayZoneName)"
-        class="bg-slate-200 p-2 mb-1 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo">
-          {{ trans('add_new_element') }}
-      </ButtonLight>
-      </h2>
-    </section>
-
-  </div>
+                  <!-- items of the group -->
+                  <MenuItem :id="element.id.toString()" :title="element.title" :icon="element.icon" :element="element"
+                    :is_child="true" @click="loadSubState(element)">
+                  </MenuItem>
+                </template>
+              </SortableList>
+            </MenuGroup>
+          </template>
+        </SortableList>
+      </section>
+      <section>
+        <h2 class="text-center">
+          <ButtonLight icon="ArrowDownOnSquareStackIcon" @click="emitter.emit('toggleModal', displayZoneName)"
+            class="bg-slate-200 p-2 mb-1 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo">
+            {{ trans('add_new_element') }}
+          </ButtonLight>
+        </h2>
+      </section>
+    </div>
     <section class="absolute bottom-0 w-80">
       <a class="text-indigo" href="https://prettyblocks.io/" target="_black">Prettyblocks.io</a> Made with ❤️
       <br>by <a class="text-indigo" href="https://www.prestasafe.com" target="_black">www.prestasafe.com</a>
     </section>
-</div>
-    
+  </div>
 </template>
 
 <style scoped>
 section {
-    @apply p-2 border-b border-gray-200;
-}
-#leftPanel
-{
-  transition: all 0.5s ease;  
+  @apply p-2 border-b border-gray-200;
 }
 
+#leftPanel {
+  transition: all 0.5s ease;
+}
 </style>

@@ -1,4 +1,3 @@
-
 <script setup>
 import Layout from './components/Layout.vue';
 </script>
@@ -6,9 +5,3 @@ import Layout from './components/Layout.vue';
 <template>
   <Layout />
 </template>
-
-<style>
-
-</style>
-
-
