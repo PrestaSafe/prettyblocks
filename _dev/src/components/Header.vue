@@ -80,7 +80,7 @@ const adminURL = ajax_urls.adminURL
 </script>
 
 <template>
-  <header class="flex justify-between items-center px-4 py-6 border-b border-gray-200 sticky">
+  <header class="flex justify-between items-center px-4 py-2 border-b border-gray-200">
     <div class="flex items-center gap-2">
       <div class="border-r border-gray-200">
         <ButtonLight @click="goBackEnd" icon="BackspaceIcon" :size="5" class="p-2" />
@@ -101,12 +101,12 @@ const adminURL = ajax_urls.adminURL
         <ButtonLight @click="changeIframeSize('w-full', 'h-full')"
           :class="sizeSelected == 'w-full' ? 'bg-black bg-opacity-10' : ''" icon="ComputerDesktopIcon" :size="5"
           class="p-2" />
-        <ButtonLight @click="changeIframeSize('w-6/12', 'h-full')"
-          :class="sizeSelected == 'w-6/12' ? 'bg-black bg-opacity-10' : ''" icon="DeviceTabletIcon" :size="5"
-          class="p-2" />
         <ButtonLight @click="changeIframeSize('w-5/6', 'h-5/6')"
           :class="sizeSelected == 'w-5/6' ? 'bg-black bg-opacity-10 -rotate-90' : '-rotate-90'" icon="DeviceTabletIcon"
           :size="5" class="p-2" />
+        <ButtonLight @click="changeIframeSize('w-6/12', 'h-full')"
+          :class="sizeSelected == 'w-6/12' ? 'bg-black bg-opacity-10' : ''" icon="DeviceTabletIcon" :size="5"
+          class="p-2" />
         <ButtonLight @click="changeIframeSize('w-4/12', 'h-full')"
           :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10' : ''" icon="DevicePhoneMobileIcon" :size="5"
           class="p-2" />

@@ -117,13 +117,12 @@ const state = ref({
 </script>
 
 <template>
-  <div>
-    <div id="leftPanel" class="flex flex-col  border-r border-gray-200 h-screen">
-      <section>
-        <!-- <h2 class="ml-4">Zone: {{ displayZoneName }}</h2> -->
-        <ZoneSelect v-model="state" class="md:block min-w-96" />
-      </section>
-      <section>
+  <div id="leftPanel" class="border-r border-gray-200">
+    <div class="flex flex-col h-full">
+      <div class="p-2 border-b border-gray-200">
+        <ZoneSelect v-model="state" />
+      </div>
+      <div class="overflow-y-auto flex-grow p-2 border-b border-gray-200">
         <!-- sortable component is used to sort by drag and drop -->
         <SortableList :items="groups" group="menu-group">
           <template v-slot="{ element }">
@@ -143,28 +142,20 @@ const state = ref({
             </MenuGroup>
           </template>
         </SortableList>
-      </section>
-      <section>
-        <h2 class="text-center">
-          <ButtonLight icon="ArrowDownOnSquareStackIcon" @click="emitter.emit('toggleModal', displayZoneName)"
-            class="bg-slate-200 p-2 mb-1 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo">
-            {{ trans('add_new_element') }}
-          </ButtonLight>
-        </h2>
-      </section>
+        <ButtonLight icon="ArrowDownOnSquareStackIcon" @click="emitter.emit('toggleModal', displayZoneName)"
+          class="bg-slate-200 p-2 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo">
+          {{ trans('add_new_element') }}
+        </ButtonLight>
+      </div>
+      <div class="p-2 text-sm text-center">
+        <a class="text-indigo" href="https://prettyblocks.io/" target="_blank">PrettyBlocks</a><br>
+        Made with ❤️ by <a class="text-indigo" href="https://www.prestasafe.com" target="_blank">PrestaSafe</a>
+      </div>
     </div>
-    <section class="absolute bottom-0 w-80">
-      <a class="text-indigo" href="https://prettyblocks.io/" target="_black">Prettyblocks.io</a> Made with ❤️
-      <br>by <a class="text-indigo" href="https://www.prestasafe.com" target="_black">www.prestasafe.com</a>
-    </section>
   </div>
 </template>
 
 <style scoped>
-section {
-  @apply p-2 border-b border-gray-200;
-}
-
 #leftPanel {
   transition: all 0.5s ease;
 }

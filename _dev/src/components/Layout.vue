@@ -56,12 +56,10 @@ emitter.on('changeRightPanelSize', (value) => {
 
 <template>
   <main class="flex flex-col h-screen">
-    <Header class="w-full h-10" />
-    <div class="flex flex-grow">
+    <Header />
+    <div class="overflow-hidden flex flex-grow">
       <LeftPanel :class="[leftWidth, hidden_left]" class="hidden" />
-
       <Frame class="flex-grow" />
-
       <RightPanel :class="[rightWidth, hidden_right]" class="hidden" />
     </div>
   </main>
