@@ -63,25 +63,38 @@ class PrettyBlocksModel extends ObjectModel
 
     public function delete()
     {
-        $this->removeConfig();
-        parent::delete();
+        return parent::delete()
+            && $this->removeConfig();
     }
 
     /**
-     * Remove Configuration %_config keys
+     * Remove related lines from configuration table
      */
     private function removeConfig()
     {
-        $id = $this->id_prettyblocks;
-        $key = $id . "\_%_CONFIG";
-        $sql = 'SELECT name FROM ' . _DB_PREFIX_ . "configuration WHERE name LIKE '" . pSQL($key) . "'";
-        $keys = Db::getInstance()->executeS($sql);
-        if (count($keys) > 0) {
-            foreach ($keys as $k) {
-                $name = $k['name'];
-                Configuration::deleteByName($name);
+        $id = (int) $this->id_prettyblocks;
+
+        $key1 = $id . '\_%\_CONFIG';
+        $key2 = $id . '\_DEFAULT\_PARAMS';
+        $key3 = $id . '\_TEMPLATE';
+
+        $configLines = Db::getInstance()->executeS('
+            SELECT name
+            FROM ' . _DB_PREFIX_ . 'configuration
+            WHERE name LIKE "' . pSQL($key1) . '"
+            OR name LIKE "' . pSQL($key2) . '"
+            OR name LIKE "' . pSQL($key3) . '"
+        ');
+
+        if ($configLines) {
+            foreach ($configLines as $configLine) {
+                if (!Configuration::deleteByName($configLine['name'])) {
+                    return false;
+                }
             }
         }
+
+        return true;
     }
 
     /**
