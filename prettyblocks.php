@@ -47,7 +47,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '1.0.8.1';
+        $this->version = '1.1.0';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -205,7 +205,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $vars = $this->getWidgetVariables($hookName, $configuration);
         $this->smarty->assign($vars);
         if (isset($configuration['zone_name'])) {
-            return $this->magicZone(['zone_name' => pSQL($configuration['zone_name'])]);
+            return $this->renderZone(['zone_name' => pSQL($configuration['zone_name'])]);
         }
         if (isset($configuration['action']) && $configuration['action'] == 'GetBlockRender') {
             $block = $configuration['data'];
@@ -222,7 +222,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             return $this->fetch($template);
         }
         if ($vars['hookName'] !== null) {
-            return $this->magicZone(['zone_name' => $vars['hookName']]);
+            return $this->renderZone(['zone_name' => $vars['hookName']]);
         }
     }
 
@@ -236,27 +236,28 @@ class PrettyBlocks extends Module implements WidgetInterface
      */
     public function hookActionDispatcher()
     {
-        // register {magic_zone} smarty function
-        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'magicZone']);
+        /** @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
+        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
     }
 
-    /**
-     * {magic_zone} Smarty front helper
-     */
-    public static function magicZone($params)
+    public function renderZone($params)
     {
         $zone_name = $params['zone_name'];
-        $context = Context::getContext();
-        $id_lang = $context->language->id;
-        $id_shop = $context->shop->id;
+
+        if (empty($zone_name)) {
+            return false;
+        }
+
+        $id_lang = (int) $this->context->language->id;
+        $id_shop = (int) $this->context->shop->id;
         $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
-        $vars = [
+
+        $this->context->smarty->assign([
             'zone_name' => $zone_name,
             'blocks' => $blocks,
-        ];
-        $c = Context::getContext();
-        $c->smarty->assign($vars);
+        ]);
 
-        return $c->smarty->fetch('module:prettyblocks/views/templates/front/magic_zone.tpl');
+        return $this->context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
     }
 }
