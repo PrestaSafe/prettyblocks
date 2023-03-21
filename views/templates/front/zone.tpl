@@ -18,7 +18,7 @@
  *}
 
 
- <div data-magic-zone="{$zone_name}">
+ <div data-prettyblocks-zone="{$zone_name}">
  {if $blocks|count > 0}
   {foreach from=$blocks item=block name=zoneBlocks}
   <div {if $block.settings.default.load_ajax} load-ajax {/if} data-block data-instance-id="{$block.instance_id}" data-id-prettyblocks="{$block.id_prettyblocks}">
