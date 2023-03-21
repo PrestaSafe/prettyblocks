@@ -93,8 +93,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'tools' => Tools::getAllValues(),
             'path_request' => Tools::getValue('path'),
             'path' => HelperBuilder::pathFormatterFromString(Tools::getValue('path')),
-            'get' => $_GET,
-            'posts' => $_POST,
             'request' => $posts,
             'uploaded' => $uploaded,
             'ext' => $extension,

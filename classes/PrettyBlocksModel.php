@@ -612,6 +612,12 @@ class PrettyBlocksModel extends ObjectModel
         $formatted['icon'] = ($block['icon']) ?? 'PhotographIcon';
         $formatted['module'] = $block['code']; // todo register module name
         $formatted['title'] = $block['name'];
+        
+        // if nameFrom params is present
+        if(isset($block['nameFrom']) && isset($block['settings_formatted'][$block['nameFrom']]['value']))
+        {
+            $formatted['title'] = $block['settings_formatted'][$block['nameFrom']]['value'];
+        }
         $formatted['is_parent'] = true;
         $formatted['is_child'] = false;
         $formatted['need_reload'] = ($block['need_reload']) ?? true;
