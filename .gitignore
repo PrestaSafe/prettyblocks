@@ -1,4 +1,6 @@
 config_*.xml
+build/
+vendor/
 node_modules/
 **/node_modules
 .vscode/

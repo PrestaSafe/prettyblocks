@@ -1,0 +1,9 @@
+change-template: '- #$NUMBER: $TITLE by @$AUTHOR'
+template: |
+  ## Changelog
+
+  $CHANGES
+
+  ## Contributors
+
+  $CONTRIBUTORS
