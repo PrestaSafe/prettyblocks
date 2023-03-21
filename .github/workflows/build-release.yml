@@ -3,15 +3,27 @@ on: [push, pull_request]
 
 jobs:
   deploy:
-    name: build dependencies & create artifact
+    name: Build dependencies & create artifact
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.0.0
       - name: Install composer dependencies
         run: composer install --no-dev -o
-      - name: Clean-up project
-        uses: PrestaShopCorp/github-action-clean-before-deploy@v1.0
+      - name: Setup node env
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Install node dependencies
+        working-directory: ./_dev
+        run: npm i
+      - name: Build assets
+        working-directory: ./_dev
+        run: npm run build
+      - name: Remove unuseful data
+        run: |
+          rm .git/ -rf
+          rm .github/ -rf
       - name: Prepare auto-index tool
         run: |
           composer global require prestashop/autoindex
