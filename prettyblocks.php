@@ -241,7 +241,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
     }
 
-    public function renderZone($params)
+    public static function renderZone($params)
     {
         $zone_name = $params['zone_name'];
 
@@ -249,15 +249,16 @@ class PrettyBlocks extends Module implements WidgetInterface
             return false;
         }
 
-        $id_lang = (int) $this->context->language->id;
-        $id_shop = (int) $this->context->shop->id;
+        $context = Context::getContext();
+        $id_lang = $context->language->id;
+        $id_shop = $context->shop->id;
         $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
 
-        $this->context->smarty->assign([
+        $context->smarty->assign([
             'zone_name' => $zone_name,
             'blocks' => $blocks,
         ]);
 
-        return $this->context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
+        return $context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
     }
 }
