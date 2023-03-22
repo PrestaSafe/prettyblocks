@@ -43,6 +43,17 @@ class PrettyBlocks extends Module implements WidgetInterface
         ],
     ];
 
+    public $hooks = [
+        'displayHeader',
+        'displayHome',
+        'displayLeftColumn',
+        'displayRightColumn',
+        'displayFooter',
+        'displayBlockZone',
+        'actionFrontControllerSetVariables',
+        'actionDispatcher'
+    ];
+
     public function __construct()
     {
         $this->name = 'prettyblocks';
@@ -93,11 +104,12 @@ class PrettyBlocks extends Module implements WidgetInterface
             KEY `id_lang` (`id_lang`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
+        $isOk = true;
         foreach ($db as $sql) {
-            Db::getInstance()->execute($sql);
+            $isOk &= Db::getInstance()->execute($sql);
         }
 
-        return true;
+        return $isOk;
     }
 
     private function removeDb()
@@ -106,11 +118,12 @@ class PrettyBlocks extends Module implements WidgetInterface
         $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks`';
         $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks_lang`';
 
+        $isOk = true;
         foreach ($db as $sql) {
-            Db::getInstance()->execute($sql);
+            $isOk &= Db::getInstance()->execute($sql);
         }
 
-        return true;
+        return $isOk;
     }
 
     public function getContent()
@@ -126,9 +139,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     private function loadDefault()
     {
-        Configuration::updateValue('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
-
-        return true;
+        return Configuration::updateValue('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
     }
 
     public function install()
@@ -136,31 +147,17 @@ class PrettyBlocks extends Module implements WidgetInterface
         return parent::install() &&
         $this->loadDefault() &&
         $this->createBlockDb() &&
-        $this->registerHook('displayHeader') &&
-        $this->registerHook('displayHome') &&
-
-        $this->registerHook('displayLeftColumn') &&
-        $this->registerHook('displayRightColumn') &&
-        $this->registerHook('displayFooter') &&
-        $this->registerHook('ActionFrontControllerSetVariables') &&
-
-        $this->registerHook('displayBlockZone') &&
-        $this->registerHook('ActionDispatcher');
+        $this->registerHook($this->hooks);
     }
 
     public function uninstall()
     {
         return parent::uninstall() &&
         $this->removeDb() &&
-        $this->unregisterHook('displayHeader') &&
-        $this->unregisterHook('displayHome') &&
-        $this->unregisterHook('displayLeftColumn') &&
-        $this->unregisterHook('displayRightColumn') &&
-        $this->unregisterHook('displayFooter') &&
-        $this->unregisterHook('ActionFrontControllerSetVariables');
+        $this->unregisterHook($this->hooks);
     }
 
-    public function hookdisplayHeader()
+    public function hookDisplayHeader()
     {
         $this->context->controller->registerStylesheet(
             'prettyblocksutility',
