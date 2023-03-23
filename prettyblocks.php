@@ -44,14 +44,13 @@ class PrettyBlocks extends Module implements WidgetInterface
     ];
 
     public $hooks = [
-        'displayHeader',
         'displayHome',
+        'displayFooter',
         'displayLeftColumn',
         'displayRightColumn',
-        'displayFooter',
-        'displayBlockZone',
+        'actionDispatcher',
+        'actionFrontControllerSetMedia',
         'actionFrontControllerSetVariables',
-        'actionDispatcher'
     ];
 
     public function __construct()
@@ -157,7 +156,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $this->unregisterHook($this->hooks);
     }
 
-    public function hookDisplayHeader()
+    public function hookActionFrontControllerSetMedia()
     {
         $this->context->controller->registerStylesheet(
             'prettyblocksutility',
