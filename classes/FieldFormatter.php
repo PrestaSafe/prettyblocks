@@ -73,7 +73,7 @@ class FieldFormatter
     /**
      * Format a field type selector
      *
-     * @return ObjectPresenter
+     * @return array|false
      */
     public static function formatFieldSelector($name, $data, $block = false, $context = 'front')
     {
@@ -99,6 +99,11 @@ class FieldFormatter
             $c = new PrestaShopCollection($data['collection'], Context::getContext()->language->id);
             $primary = ($data['primary']) ?? 'id_' . Tools::strtolower($data['collection']);
             $object = $c->where($primary, '=', (int) $json['show']['id'])->getFirst();
+
+            if (!Validate::isLoadedObject($object)) {
+                return false;
+            }
+
             $objectPresenter = new ObjectPresenter();
 
             return $objectPresenter->present($object);
@@ -108,9 +113,9 @@ class FieldFormatter
     }
 
     /**
-     * Format a field type selector
+     * Format a field type select
      *
-     * @return ObjectPresenter
+     * @return mixed
      */
     public static function formatFieldSelect($name, $data, $block = false, $context = 'front')
     {

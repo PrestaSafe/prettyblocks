@@ -41,8 +41,13 @@ class StateFormatter
             $c = new PrestaShopCollection($value['collection'], Context::getContext()->language->id);
             $primary = ($value['primary']) ?? 'id_' . Tools::strtolower($value['collection']);
             $object = $c->where($primary, '=', (int) $json['show']['id'])->getFirst();
+
+            if (!Validate::isLoadedObject($object)) {
+                return false;
+            }
+
             $objectPresenter = new ObjectPresenter();
-            // dump($object);
+
             return $objectPresenter->present($object);
         }
 
