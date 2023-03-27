@@ -62,8 +62,8 @@ function onInput(value) {
   current_zone.$patch({ name: value })
   emit('update:modelValue.name', value)
 
-  emitter.emit('initStates')
   emitter.emit('focusOnZone', value) 
+  emitter.emit('initStates')
 }
 
 watch(() => props.modelValue, onInput)
