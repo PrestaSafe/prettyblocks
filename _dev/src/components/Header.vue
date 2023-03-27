@@ -72,7 +72,7 @@ const leaveApp = () => {
   window.open(domain, '_blank');
 }
 const goBackEnd = () => {
-  window.open(adminURL);
+  window.open(adminURL, '_self');
 }
 
 const domain = ajax_urls.current_domain
