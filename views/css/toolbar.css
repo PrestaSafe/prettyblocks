@@ -1,0 +1,93 @@
+#toggle-prettyblocks {
+	position: sticky;
+	bottom: 2rem;
+	left: 2rem;
+	z-index: 9999;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background-color: rgb(85 48 190);
+	border: none;
+	background-image: url('../images/logo.png');
+	background-size: 25px;
+	background-position: center;
+	background-repeat: no-repeat;
+	opacity: 0;
+	pointer-events: none;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	transform: translateY(20px);
+}
+
+#toggle-prettyblocks:hover {
+	background-color: rgb(167 139 249);
+}
+
+body.pb-active:not(.toggle-pb) #toggle-prettyblocks {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateY(0);
+}
+
+#modal-prettyblocks {
+	position: fixed;
+	bottom: 2rem;
+	left: 2rem;
+	background: #fff;
+	width: 300px;
+	height: 400px;
+	z-index: 10000;
+	border-radius: 10px;
+	overflow: hidden;
+	opacity: 0;
+	pointer-events: none;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	transform: translateY(20px);
+	transition: all 0.3s ease;
+}
+
+body.toggle-pb #modal-prettyblocks {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateY(0);
+}
+
+#modal-prettyblocks .wrapper {
+	padding: 5px 15px;
+	max-height: 344px;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}
+
+#modal-prettyblocks .close-pb::after {
+	content: "×";
+	font-size: 1.5rem;
+	font-weight: 300;
+	color: white;
+}
+
+#modal-prettyblocks .close-pb {
+	cursor: pointer;
+}
+
+#modal-prettyblocks .header {
+	background: rgb(85 48 190);
+	color: #fff;
+	padding: 10px 15px;
+	font-size: 1.2rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#modal-prettyblocks ul {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 20px 0;
+}
+
+#modal-prettyblocks ul li a {
+	color: rgb(85 48 190);
+}

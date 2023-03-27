@@ -46,6 +46,8 @@ class PrettyBlocks extends Module implements WidgetInterface
     public $hooks = [
         'displayHome',
         'displayFooter',
+        'displayBeforeBodyClosingTag',
+        'displayHeader',
         'displayLeftColumn',
         'displayRightColumn',
         'actionDispatcher',
@@ -71,6 +73,17 @@ class PrettyBlocks extends Module implements WidgetInterface
         $this->controllers = ['ajax'];
 
         $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        if (method_exists(\PrestaSafe\PrettyBlocks\Module\Hook::class, $name)) {
+
+            if (substr($name, 0, 4) === 'hook') {
+
+                return \PrestaSafe\PrettyBlocks\Module\Hook::execute($name, $this, $arguments[0] ?? null);
+            }
+        }
     }
 
     public function isUsingNewTranslationSystem()
@@ -165,29 +178,6 @@ class PrettyBlocks extends Module implements WidgetInterface
             && $this->removeDb();
     }
 
-    public function hookActionFrontControllerSetMedia()
-    {
-        $this->context->controller->registerStylesheet(
-            'prettyblocksutility',
-            'modules/' . $this->name . '/views/css/utility.css',
-            [
-                'media' => 'all',
-                'priority' => 100,
-            ]
-        );
-    }
-
-    public function hookActionFrontControllerSetVariables()
-    {
-        return [
-            // 'ajax_builder_url' => $this->context->link->getModuleLink($this->name,'ajax'),
-            'theme_settings' => PrettyBlocksModel::getThemeSettings(false, 'front'),
-            'id_shop' => (int) $this->context->shop->id,
-            'shop_name' => $this->context->shop->name,
-            'shop_current_url' => $this->context->shop->getBaseURL(true, true),
-        ];
-    }
-
     /**
      * Generate $state to block view
      *
@@ -236,16 +226,6 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function registerBlockToZone($zone_name, $block_code)
     {
         return PrettyBlocksModel::registerBlockToZone($zone_name, $block_code);
-    }
-
-    /**
-     * Hook dispatcher for registering smarty function
-     */
-    public function hookActionDispatcher()
-    {
-        /* @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
-        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
-        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
     }
 
     public static function renderZone($params)
