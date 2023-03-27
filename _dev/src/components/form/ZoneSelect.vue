@@ -63,7 +63,7 @@ function onInput(value) {
   emit('update:modelValue.name', value)
 
   emitter.emit('initStates')
-  emitter.emit('focusOnZone', value)
+  emitter.emit('focusOnZone', value) 
 }
 
 watch(() => props.modelValue, onInput)
