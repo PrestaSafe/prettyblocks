@@ -216,6 +216,8 @@ async loadIframe () {
                     block: 'center'
                 })
 
+                emitter.emit('initStates')
+
             })
             body.querySelectorAll('main div.blocks').forEach((div) => {
                 div.addEventListener('click', (el) => {

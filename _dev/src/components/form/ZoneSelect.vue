@@ -11,19 +11,6 @@ defineComponent({
   ChevronUpDownIcon
 })
 let items = ref([]);
-// const zones = storedZones()
-// let items = ref(zones.all)
-// zones.$subscribe((state) => {
-
-//   if(state.payload.zones.indexOf(currentZone().$id) !== -1)
-//   {
-//     items.value = state.payload.zones
-//     if(state.payload.zones.indexOf(currentZone().$id) == -1)
-//     {
-//       console.log('first zones', state.payload.zones[0])
-//     }
-//   }
-// }, { detached: true })
 
 emitter.on('loadZones', (zonesState) => {
   items.value = zonesState
@@ -63,7 +50,7 @@ function onInput(value) {
   emit('update:modelValue.name', value)
 
   emitter.emit('focusOnZone', value) 
-  emitter.emit('initStates')
+  
 }
 
 watch(() => props.modelValue, onInput)
