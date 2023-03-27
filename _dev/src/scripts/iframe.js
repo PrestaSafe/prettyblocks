@@ -209,13 +209,14 @@ async loadIframe () {
                     div.classList.remove('border-dotted')
                 })
                 let el = body.querySelector('[data-prettyblocks-zone="'+zone_name+'"]')
-                console.log('el', el)
                 el.classList.add('border-dotted')
                  el.scrollIntoView({
                     alignToTop: true,
                     behavior: 'smooth',
                     block: 'center'
                 })
+
+                emitter.emit('initStates')
 
             })
             body.querySelectorAll('main div.blocks').forEach((div) => {
