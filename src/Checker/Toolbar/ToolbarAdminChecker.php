@@ -1,13 +1,13 @@
 <?php
 
-namespace PrestaSafe\PrettyBlocks\Checker;
+namespace PrestaSafe\PrettyBlocks\Checker\Toolbar;
 
 use Cookie;
 use Exception;
-use PrestaSafe\PrettyBlocks\Contract\CheckerInterface;
+use PrestaSafe\PrettyBlocks\Contract\Toolbar\ToolbarCheckerInterface;
 use PrestaShopLogger;
 
-final class AdminChecker implements CheckerInterface
+final class ToolbarAdminChecker implements ToolbarCheckerInterface
 {
 	/**
 	 * @return bool

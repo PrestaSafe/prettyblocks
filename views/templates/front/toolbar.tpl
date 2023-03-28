@@ -6,16 +6,17 @@
         </div>
     </div>
     <div class="wrapper">
-        {if isset($prettyblocks.cms)}
         <ul>
-            <strong>Pages CMS disponibles</strong>
-
-            {foreach from=$prettyblocks.cms item=link}
-                <li>
-                    <a href="{$link.link}">{$link.meta_title}</a>
-                </li>
-            {/foreach}
+            <div class="d-inline-block">
+                <strong>Rechercher</strong>
+                <select id="prettyblocks-change-search">
+                    <option value="product">Produit</option>
+                    <option value="category">Category</option>
+                    <option value="cms">CMS</option>
+                </select>
+            </div>
+            <input type="text" id="prettyblocks-search-products">
+            <div id="prettyblocks-search-results"></div>
         </ul>
-        {/if}
     </div>
 </div>

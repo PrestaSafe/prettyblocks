@@ -4,6 +4,7 @@ namespace PrestaSafe\PrettyBlocks\Module;
 
 use CMS;
 use Context;
+use Media;
 use PrestaSafe\PrettyBlocks\Handler\ToolbarCheckerHandler;
 use PrettyBlocks;
 use PrettyBlocksModel;
@@ -85,6 +86,10 @@ class Hook
 
     public function hookActionFrontControllerSetVariables()
     {
+        Media::addJsDef([
+            'toolbarSearchUrl' => $this->context->link->getModuleLink($this->module->name, 'toolbar', ['ajax' => 1])
+        ]);
+
         return [
             // 'ajax_builder_url' => $this->context->link->getModuleLink($this->name,'ajax'),
             'theme_settings' => PrettyBlocksModel::getThemeSettings(false, 'front'),
