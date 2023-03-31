@@ -223,6 +223,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $zone = pSQL(Tools::getValue('zone'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
+ 
         die(json_encode(
             [
                 'blocks' => PrettyBlocksModel::getInstanceByZone($zone, 'back', $id_lang, $id_shop),

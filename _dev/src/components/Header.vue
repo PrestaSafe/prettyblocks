@@ -5,6 +5,7 @@ import Button from './Button.vue';
 import ButtonLight from './ButtonLight.vue';
 import HeaderDropdown from './HeaderDropdown.vue';
 import ZoneSelect from './form/ZoneSelect.vue';
+import ShopSelect from './form/ShopSelect.vue';
 import emitter from 'tiny-emitter/instance'
 import { contextShop } from '../store/currentBlock';
 import { trans } from '../scripts/trans'
@@ -77,10 +78,13 @@ const goBackEnd = () => {
 
 const domain = ajax_urls.current_domain
 const adminURL = ajax_urls.adminURL
+
+
 </script>
 
 <template>
   <header class="flex justify-between items-center px-4 py-2 border-b border-gray-200">
+
     <div class="flex items-center gap-2">
       <div class="border-r border-gray-200">
         <ButtonLight @click="goBackEnd" icon="BackspaceIcon" :size="5" class="p-2" />
@@ -90,8 +94,8 @@ const adminURL = ajax_urls.adminURL
           icon="ArrowLeftOnRectangleIcon" :size="5" class="p-2" />
       </div>
       <span>
-        {{ trans('current_shop') }}: <strong>{{ shop.shop_name }} </strong>
-        <!-- <Icon class="inline -mt-[4px]" @click="changeLeftPanelSize" name="ArrowRightOnRectangleIcon" /> -->
+
+       <ShopSelect v-model="shop" />
       </span>
     </div>
     <div>

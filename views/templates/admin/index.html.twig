@@ -7,7 +7,7 @@
     <title>{{ module_name }} • {{ shop_name }}</title>
   </head>
   <body>
-{% set vitedev = false %}
+{% set vitedev = true %}
   {% if not vitedev %}
     <script type="module" crossorigin src="{{ js_entry }}"></script>
     {% for js in js_build %}
@@ -24,6 +24,7 @@
     {% if vitedev %}
       <script type="module" src="http://localhost:3002/src/main.js"></script>
     {% endif %}
+
     <script>
       var ajax_urls = {{ ajax_urls|json_encode|raw }}
       var trans_app = {{ trans_app|json_encode|raw }}

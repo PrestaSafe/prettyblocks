@@ -38,7 +38,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Tools;
-
+use Shop;
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
     public function uploadAction(Request $request)
@@ -101,13 +101,33 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         ]);
     }
 
+    private function getShops()
+    {
+        $shops = Shop::getShops();
+        $results = [];
+
+        foreach($shops as $shop)
+        {
+            $shop['current_url'] = $this->buildShopUri($shop);
+            $results[] = $shop;
+        }
+        return $results;
+
+    }
+
+    private function buildShopUri($shop)
+    {
+        return Tools::getProtocol() .$shop['domain_ssl'] . $shop['uri'];
+    }
+
     public function indexAction()
     {
-        // dump(Context::getContext());
 
-        $shop = Context::getContext()->shop;
+        $context = $this->get('prestashop.adapter.legacy.context')->getContext();
+
+        $shop = $context->shop;
         $domain = Tools::getShopDomainSsl(true);
-        // if not dev mode
+
         $filesystem = new Filesystem();
         $path = '/modules/prettyblocks/build/';
         $build_dir = _PS_ROOT_DIR_ . $path;
@@ -142,9 +162,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         }
 
         $module = Module::getInstanceByName('prettyblocks');
-        $ctrl = Context::getContext()->controller;
+   
         $uri = $module->getPathUri() . 'views/css/back.css?version=' . $module->version;
-        // $ctrl->registerStylesheet('theme-custom',  $uri , ['media' => 'all', 'priority' => 50]);
+
 
         $domain = Tools::getShopDomainSsl(true);
 
@@ -156,18 +176,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'entity' => 'sf',
             'route' => 'prettyblocks_api',
         ]);
-        $sfAdminGetState = $domain . Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_api_get_state',
-        ]);
-
-        // $updateAjax = $domain . Link::getUrlSmarty(array(
-        //     'entity' => 'sf',
-        //     'route' => 'admin_update_ajax_psfordermanager',
-        //     'sf-params' => array(
-        //         'action' => 'ajax',
-        //     )
-        // ));
+      
+  
 
         $uploadUrl = $domain . Link::getUrlSmarty([
             'entity' => 'sf',
@@ -196,16 +206,18 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'entity' => 'sf',
             'route' => 'prettyblocks_theme_settings',
         ]);
-        $context = Context::getContext();
-        $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
-        $translator = Context::getContext()->getTranslator();
 
+        $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
+
+        $translator = Context::getContext()->getTranslator();
+        $shops = $this->getShops(); 
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
             'favicon_url' => Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
             'module_name' => $module->displayName,
             'shop_name' => $context->shop->name,
             'ajax_urls' => [
+                'shops' => $shops,
                 'simulate_home' => $symfonyUrl,
                 'search_by_ref' => $symfonyUrl,
                 'adminURL' => $context->link->getAdminBaseLink() . basename(_PS_ADMIN_DIR_),
@@ -214,7 +226,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'api' => $blockUrl,
                 'current_domain' => $shop_url,
                 'block_url' => $blockUrl,
-                // 'state' => $sfAdminGetState,
                 'state' => $blockUrl,
                 'upload' => $uploadUrl,
                 'collection' => $collectionURL,

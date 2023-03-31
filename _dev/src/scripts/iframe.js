@@ -59,10 +59,14 @@ export default class Iframe {
     async reloadIframe() {
         this.loader.value = true
         let iframe = document.getElementById('website-iframe')
-        var x = iframe.contentWindow;
-        setTimeout(() => {
-            x.location.reload(true)
-        }, 100)    
+        iframe.src = this.current_url.value
+
+        // setTimeout(() => {
+        //     var x = iframe.contentWindow;
+        //         x.location.reload(true)
+        //     }, 200)    
+        this.loadIframe()
+        this.loader.value = false
     }
 
     /**
@@ -244,17 +248,41 @@ async loadIframe () {
             }
 
             // set prestashop context: 
-            let context = contextShop()
-            context.$patch({
-                id_lang: iwindow.prestashop.language.id,
-                id_shop: iwindow.prestashop.modules.prettyblocks.id_shop,
-                shop_name: iwindow.prestashop.shop.name
-            })
-            emitter.emit('initStates')
-            this.loader.value = false
+            this.loadContext(e)
+           
         }, false)
     }
 }
+
+loadContext(e)
+{
+    let iwindow = e.target.contentWindow
+    let context = contextShop()
+    context.$patch({
+        id_lang: iwindow.prestashop.language.id,
+        id_shop: iwindow.prestashop.modules.prettyblocks.id_shop,
+        shop_name: iwindow.prestashop.modules.prettyblocks.shop_name,
+        current_url: iwindow.prestashop.modules.prettyblocks.shop_current_url,
+    })
+    this.id_lang.value = iwindow.prestashop.language.id
+    this.id_shop.value = iwindow.prestashop.modules.prettyblocks.id_shop
+    emitter.emit('initStates')
+    this.loader.value = false
+}
+
+destroy() {
+    // 1. Supprimer les écouteurs d'événements globaux
+    emitter.off('triggerLoadedEvents');
+    emitter.off('stateUpdated');
+    emitter.off('scrollInIframe');
+    emitter.off('focusOnZone');
+    // 3. Réinitialiser les propriétés de l'objet
+    this.current_url.value = null;
+    this.id_lang.value = 0;
+    this.id_shop.value = 0;
+    this.loader.value = false;
+}
+
 
 
 async getBlockRender (id_prettyblocks) {

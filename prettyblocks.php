@@ -103,6 +103,8 @@ class PrettyBlocks extends Module implements WidgetInterface
             KEY `id_lang` (`id_lang`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
+       $db[] = $this->preprareShopDb();
+
         $isOk = true;
         foreach ($db as $sql) {
             $isOk &= Db::getInstance()->execute($sql);
@@ -110,6 +112,17 @@ class PrettyBlocks extends Module implements WidgetInterface
 
         return $isOk;
     }
+
+    public function preprareShopDb()
+    {
+        $sql = ' CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prettyblocks_shop` (
+            `id_prettyblocks` int(10) unsigned NOT NULL AUTO_INCREMENT,
+            `id_shop` int(10) unsigned NOT NULL,
+            PRIMARY KEY (`id_prettyblocks`, `id_shop`)
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
+        return $sql;
+    }
+
 
     private function removeDb()
     {
@@ -169,10 +182,14 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function hookActionFrontControllerSetVariables()
     {
+
+
         return [
             // 'ajax_builder_url' => $this->context->link->getModuleLink($this->name,'ajax'),
             'theme_settings' => PrettyBlocksModel::getThemeSettings(false, 'front'),
             'id_shop' => (int) $this->context->shop->id,
+            'shop_name' => $this->context->shop->name,
+            'shop_current_url' =>  $this->context->shop->getBaseURL(true, true)
         ];
     }
 

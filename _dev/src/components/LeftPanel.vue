@@ -63,8 +63,12 @@ let groups = ref([])
 emitter.on('initStates', () => {
   initStates()
 })
-const initStates = () => {
-  let context = contextShop()
+const initStates = async () => {
+
+  let contextStore = contextShop();
+  // Attendez que l'action asynchrone getContext soit terminée
+  let context = await contextStore.getContext();
+
   let current_zone = currentZone().name
   displayZoneName.value = current_zone
   const params = {

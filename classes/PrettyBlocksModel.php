@@ -113,12 +113,15 @@ class PrettyBlocksModel extends ObjectModel
         $id_lang = (!is_null($id_lang)) ? (int) $id_lang : $context->language->id;
         $id_shop = (!is_null($id_shop)) ? (int) $id_shop : $context->shop->id;
         $psc = new PrestaShopCollection('PrettyBlocksModel', $id_lang);
+        
         $psc->where('zone_name', '=', $zone_name);
-        $psc->where('l.id_lang', '=', (int) $id_lang);
-        $psc->sqlWhere('a1.id_shop', '=', (int) $id_shop);
+        // $psc->where('l.id_lang', '=', (int) $id_lang);
+        // $psc->where('a0.id_shop', '=', (int) $id_shop);
 
         $psc->orderBy('position');
-
+        $psc->getResults();
+        dump($psc->query->__toString());
+        die();
         $blocks = [];
         foreach ($psc->getResults() as $res) {
             if ($res) {
