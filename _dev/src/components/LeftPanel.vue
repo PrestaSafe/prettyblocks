@@ -79,7 +79,7 @@ const initStates = async () => {
     ctx_id_shop: context.id_shop,
     ajax_token: security_app.ajax_token
   }
-  groups.value = []
+  // groups.value = []
   axios.get(ajax_urls.state, { params }).then((response) => response.data)
     .then((data) => {
 

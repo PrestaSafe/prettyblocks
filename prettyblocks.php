@@ -77,7 +77,11 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         return true;
     }
-
+    
+    /**
+     * create tables on install.
+     * @return bool
+     */
     private function createBlockDb()
     {
         $db = [];
@@ -103,7 +107,6 @@ class PrettyBlocks extends Module implements WidgetInterface
             KEY `id_lang` (`id_lang`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
-       $db[] = $this->preprareShopDb();
 
         $isOk = true;
         foreach ($db as $sql) {
@@ -113,17 +116,10 @@ class PrettyBlocks extends Module implements WidgetInterface
         return $isOk;
     }
 
-    public function preprareShopDb()
-    {
-        $sql = ' CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prettyblocks_shop` (
-            `id_prettyblocks` int(10) unsigned NOT NULL AUTO_INCREMENT,
-            `id_shop` int(10) unsigned NOT NULL,
-            PRIMARY KEY (`id_prettyblocks`, `id_shop`)
-            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
-        return $sql;
-    }
-
-
+    /**
+     * Remove DB on uninstall.
+     * @return bool
+     */
     private function removeDb()
     {
         $db = [];
@@ -176,13 +172,13 @@ class PrettyBlocks extends Module implements WidgetInterface
             [
                 'media' => 'all',
                 'priority' => 100,
-            ]
-        );
-    }
-
-    public function hookActionFrontControllerSetVariables()
-    {
-
+                ]
+            );
+        }
+        
+        public function hookActionFrontControllerSetVariables()
+        {
+            
 
         return [
             // 'ajax_builder_url' => $this->context->link->getModuleLink($this->name,'ajax'),

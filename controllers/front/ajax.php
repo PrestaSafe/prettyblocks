@@ -52,7 +52,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $id_block = (int) Tools::getValue('id_prettyblocks');
-        $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
+        $state = new PrettyBlocksModel($id_block, $id_lang);
         $block = $state->mergeStateWithFields();
 
         die(json_encode([

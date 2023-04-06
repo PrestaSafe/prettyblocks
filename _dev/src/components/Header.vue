@@ -94,8 +94,12 @@ const adminURL = ajax_urls.adminURL
           icon="ArrowLeftOnRectangleIcon" :size="5" class="p-2" />
       </div>
       <span>
-
-       <ShopSelect v-model="shop" />
+        <div class="flex items-center">
+          <ShopSelect v-model="shop" /> 
+          <!-- <Button class="ml-4">
+            <Icon  name="ArrowPathIcon" @click="emitter.emit('reloadIframe')"/>
+          </Button> -->
+        </div>
       </span>
     </div>
     <div>

@@ -7,7 +7,7 @@
     <title>{{ module_name }} • {{ shop_name }}</title>
   </head>
   <body>
-{% set vitedev = true %}
+{% set vitedev = false  %}
   {% if not vitedev %}
     <script type="module" crossorigin src="{{ js_entry }}"></script>
     {% for js in js_build %}

@@ -27,7 +27,7 @@ class PrettyBlocksModel extends ObjectModel
     public $name;
     public $zone_name;
     public $position;
-
+    public $id_shop;
     public $date_add;
     public $date_upd;
 
@@ -38,12 +38,14 @@ class PrettyBlocksModel extends ObjectModel
         'table' => 'prettyblocks',
         'primary' => 'id_prettyblocks',
         'multilang' => true,
-        'multilang_shop' => true,
+        'multilang_shop' => false,
         'fields' => [
             'config' => ['type' => self::TYPE_STRING, 'validate' => 'isJson'],
             'code' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
             // multilang
             'name' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
+            'id_shop' => ['type' => self::TYPE_INT, 'lang' => true,  'validate' => 'isInt'],
+            
             // multishop
             'instance_id' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
             'state' => ['type' => self::TYPE_SQL, 'validate' => 'isJson',  'lang' => true],
@@ -115,13 +117,14 @@ class PrettyBlocksModel extends ObjectModel
         $psc = new PrestaShopCollection('PrettyBlocksModel', $id_lang);
         
         $psc->where('zone_name', '=', $zone_name);
+        $psc->sqlWhere('a1.id_shop = ' . (int) $id_shop);
         // $psc->where('l.id_lang', '=', (int) $id_lang);
         // $psc->where('a0.id_shop', '=', (int) $id_shop);
 
         $psc->orderBy('position');
-        $psc->getResults();
-        dump($psc->query->__toString());
-        die();
+        // $psc->getResults();
+        // dump($psc->query->__toString());
+        // die();
         $blocks = [];
         foreach ($psc->getResults() as $res) {
             if ($res) {
@@ -149,6 +152,7 @@ class PrettyBlocksModel extends ObjectModel
         $block['state_to_push'] = $this->_formatDefautStateFromBlock($repeaterDefault);
         $block['instance_id'] = $this->instance_id;
         $block['id_prettyblocks'] = $this->id;
+        $block['id_shop'] = $this->id_shop;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
         $block['settings_formatted'] = $this->_formatGetConfigForApp($block, 'back');
@@ -497,6 +501,7 @@ class PrettyBlocksModel extends ObjectModel
     private function _formatFieldConfigFront($field, $value, $block, $context = 'front')
     {
         FieldFormatter::setSuffix('_config');
+
         switch ($value['type']) {
             case 'editor':
                 return FieldFormatter::formatFieldText($field, $value, $block, $context);
@@ -696,9 +701,10 @@ class PrettyBlocksModel extends ObjectModel
         $array = [];
         $block->state = json_encode($array, true);
         $block->instance_id = uniqid();
+        $block->id_shop = $id_shop;
         $block->save();
         $state = $block;
-
+        
         $block = $block->mergeStateWithFields();
         $state_to_push = $block['state_to_push'];
 
@@ -748,6 +754,7 @@ class PrettyBlocksModel extends ObjectModel
     private static function _formatSettingsField($name, $type, $params, $context, $block = false)
     {
         $class = new FieldFormatter();
+        dump(Context::getContext()->shop->id);
         $class::setSuffix('_settings');
 
         switch ($type) {

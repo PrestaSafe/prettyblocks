@@ -247,9 +247,8 @@ async loadIframe () {
                 emitter.emit('scrollInIframe', currentBlock.id_prettyblocks)
             }
 
-            // set prestashop context: 
             this.loadContext(e)
-           
+            
         }, false)
     }
 }

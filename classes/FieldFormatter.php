@@ -36,7 +36,7 @@ class FieldFormatter
     {
         $default_value = ($data['default']) ?? '';
         $key = self::getKey($name, $block);
-        $res = Configuration::get($key);
+        $res = Configuration::get($key, null, null, Context::getContext()->shop->id);
         if (!$res) {
             $res = $default_value;
         }
@@ -60,7 +60,7 @@ class FieldFormatter
     {
         $default_value = ($data['default']) ?? '';
         $key = self::getKey($name, $block);
-        $res = Configuration::get($key);
+        $res = Configuration::get($key, null, null, Context::getContext()->shop->id);
         if (!$res) {
             $res = $default_value;
         } else {
@@ -79,7 +79,9 @@ class FieldFormatter
     {
         $collection = false;
         $key = self::getKey($name, $block);
-        $res = Configuration::get($key);
+
+        $res = Configuration::get($key, null, null, (int)$block['id_shop']);
+       
         if (!$res) {
             return $collection;
         }
@@ -120,7 +122,7 @@ class FieldFormatter
     public static function formatFieldSelect($name, $data, $block = false, $context = 'front')
     {
         $key = self::getKey($name, $block);
-        $res = Configuration::get($key);
+        $res = Configuration::get($key, null, null, Context::getContext()->shop->id);
         if ($res === false) {
             if (!isset($data['choices'])) {
                 throw new Exception('Option: "choices" must be present in the field nammed: "' . $name . '"');
