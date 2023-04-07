@@ -36,7 +36,8 @@ class FieldFormatter
     {
         $default_value = ($data['default']) ?? '';
         $key = self::getKey($name, $block);
-        $res = Configuration::get($key, null, null, Context::getContext()->shop->id);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $res = Configuration::get($key, null, null, $id_shop);
         if (!$res) {
             $res = $default_value;
         }
@@ -48,10 +49,11 @@ class FieldFormatter
     {
         $default_value = ($data['default']) ? filter_var($data['default'], FILTER_VALIDATE_BOOLEAN) : false;
         $key = self::getKey($name, $block);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
         if (!Configuration::hasKey($key)) {
             return $default_value;
         }
-        $res = filter_var(Configuration::get($key), FILTER_VALIDATE_BOOLEAN);
+        $res = filter_var(Configuration::get($key, null, null, $id_shop), FILTER_VALIDATE_BOOLEAN);
 
         return $res;
     }
@@ -60,7 +62,8 @@ class FieldFormatter
     {
         $default_value = ($data['default']) ?? '';
         $key = self::getKey($name, $block);
-        $res = Configuration::get($key, null, null, Context::getContext()->shop->id);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $res = Configuration::get($key, null, null, $id_shop);
         if (!$res) {
             $res = $default_value;
         } else {
@@ -79,8 +82,8 @@ class FieldFormatter
     {
         $collection = false;
         $key = self::getKey($name, $block);
-
-        $res = Configuration::get($key, null, null, (int)$block['id_shop']);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $res = Configuration::get($key, null, null, $id_shop);
        
         if (!$res) {
             return $collection;
@@ -122,7 +125,8 @@ class FieldFormatter
     public static function formatFieldSelect($name, $data, $block = false, $context = 'front')
     {
         $key = self::getKey($name, $block);
-        $res = Configuration::get($key, null, null, Context::getContext()->shop->id);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $res = Configuration::get($key, null, null, $id_shop);
         if ($res === false) {
             if (!isset($data['choices'])) {
                 throw new Exception('Option: "choices" must be present in the field nammed: "' . $name . '"');

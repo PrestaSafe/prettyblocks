@@ -26,15 +26,16 @@ class FieldUpdator
     public static function updateFieldText($name, $value = false, $block = false, $suffix = '_config')
     {
         $key = self::getKey($name, $block, $suffix);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
         if ($value !== false) {
-            Configuration::updateValue($key, $value, true, null, (int)$block['id_shop']);
+            Configuration::updateValue($key, $value, true, null, $id_shop);
         }
     }
 
     public static function updateFieldBoxes($name, $value = false, $block = false, $suffix = '_config')
     {
         $key = self::getKey($name, $block, $suffix);
-
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
         if ($value !== false) {
             $bool = filter_var($value, FILTER_VALIDATE_BOOLEAN);
             if (!$bool) {
@@ -43,18 +44,19 @@ class FieldUpdator
                 $bool = 1;
             }
 
-            return Configuration::updateValue($key, $bool, true, null, (int)$block['id_shop']);
+            return Configuration::updateValue($key, $bool, true, null, $id_shop);
         }
-        Configuration::updateValue($key, 0, true, null, (int)$block['id_shop']);
+        Configuration::updateValue($key, 0, true, null, $id_shop);
     }
 
     public static function updateFieldUpload($name, $value = false, $block = false, $suffix = '_config')
     {
         $key = self::getKey($name, $block, $suffix);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
         if ($value !== false) {
             $format = $value;
             $to_json = json_encode($format);
-            Configuration::updateValue($key, $to_json, true, null, (int)$block['id_shop']);
+            Configuration::updateValue($key, $to_json, true, null, $id_shop);
         }
     }
 
@@ -65,7 +67,8 @@ class FieldUpdator
             return false;
         }
         $collection = json_encode($value, true);
-        Configuration::updateValue($key, $collection, true, null, (int)$block['id_shop']);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        Configuration::updateValue($key, $collection, true, null, $id_shop);
     }
 
     public static function updateFieldSelect($name, $value = false, $block = false, $suffix = '_config')
@@ -92,8 +95,9 @@ class FieldUpdator
     public static function updateFieldEditor($name, $value = false, $block = false, $suffix = '_config')
     {
         $key = self::getKey($name, $block, $suffix);
+        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
         if ($value !== false) {
-            Configuration::updateValue($key, $value, true, true, null, (int)$block['id_shop']);
+            Configuration::updateValue($key, $value, true, null, $id_shop);
         }
     }
 }
