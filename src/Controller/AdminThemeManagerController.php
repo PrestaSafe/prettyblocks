@@ -117,7 +117,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
     private function buildShopUri($shop)
     {
-        return Tools::getProtocol() .$shop['domain_ssl'] . $shop['uri'];
+        return Tools::getProtocol(Tools::usingSecureMode()) .$shop['domain_ssl'] . $shop['uri'];
     }
 
     public function indexAction()
