@@ -56,10 +56,10 @@
   resolved "https://registry.npmjs.org/@swc/helpers/-/helpers-0.2.14.tgz"
   integrity sha512-wpCQMhf5p5GhNg2MmGKXzUNwxe7zRiCsmqYsamez2beP7mKPCSiu+BjZcdN95yYSzO857kr0VfQewmGpS77nqA==
 
-"@tailwindcss/forms@^0.4.0-alpha.2":
-  version "0.4.0-alpha.2"
-  resolved "https://registry.npmjs.org/@tailwindcss/forms/-/forms-0.4.0-alpha.2.tgz"
-  integrity sha512-bpo7CkwffVgMZLDMATLZgIcLZZ5PUNwR+nzrJLTbXCG90XReubO8I21HMSQt7Eq2uM9k6+FheZStWKtE4L5N4Q==
+"@tailwindcss/forms@^0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/forms/-/forms-0.5.3.tgz#e4d7989686cbcaf416c53f1523df5225332a86e7"
+  integrity sha512-y5mb86JUoiUgBjY/o6FJSFZSEttfb3Q5gllE4xoKjAAD+vBrnIhE4dViwUuow3va8mpH4s9jyUbUbrRGoRdc2Q==
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
