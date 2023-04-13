@@ -1,10 +1,9 @@
 <?php
 
-namespace PrestaSafe\PrettyBlocks\Checker;
+namespace PrestaSafe\PrettyBlocks\Checker\Toolbar;
 
 use PrestaSafe\PrettyBlocks\Contract\Toolbar\ToolbarCheckerInterface;
 use Tools;
-
 
 final class ToolbarParameterChecker implements ToolbarCheckerInterface
 {

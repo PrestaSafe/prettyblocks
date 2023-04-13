@@ -8,14 +8,16 @@
     <div class="wrapper">
         <ul>
             <div class="d-inline-block">
-                <strong>Rechercher</strong>
+                <small>Rechercher dans les </small>
                 <select id="prettyblocks-change-search">
-                    <option value="product">Produit</option>
-                    <option value="category">Category</option>
-                    <option value="cms">CMS</option>
+                    <option value="product">Produits</option>
+                    <option value="category">Categories</option>
+                    <option value="cms">Pages CMS</option>
                 </select>
+                <input type="text" placeholder="Rechercher.." id="prettyblocks-search-products">
+                <img width="30" id="prettyblocks-delete-search" src="{$prettyblocks.imgDir}delete.png" />
             </div>
-            <input type="text" id="prettyblocks-search-products">
+            <div id="loader"><img src="{$prettyblocks.imgDir}load.gif" width="64"></div>
             <div id="prettyblocks-search-results"></div>
         </ul>
     </div>

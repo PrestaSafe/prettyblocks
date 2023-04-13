@@ -2,14 +2,13 @@
 
 namespace PrestaSafe\PrettyBlocks\Handler;
 
-use PrestaSafe\PrettyBlocks\Checker\ToolbarAdminChecker;
-use PrestaSafe\PrettyBlocks\Checker\ToolbarParameterChecker;
+use PrestaSafe\PrettyBlocks\Checker\Toolbar\ToolbarParameterChecker;
 
 final class ToolbarCheckerHandler
 {
-    public function __invoke()
+    public static function canDisplay()
     {
         // Maybe other checker in the future ?
-        return ToolbarAdminChecker::check() || ToolbarParameterChecker::check();
+        return ToolbarParameterChecker::check();
     }
 }

@@ -16,6 +16,7 @@ class Hook
     private $params;
     private $module;
     private static $instance = null;
+    private bool $displayToolbar;
 
     /**
      * Hook constructor.
@@ -39,13 +40,14 @@ class Hook
         self::$instance->module = $module;
         self::$instance->params = $params;
         self::$instance->context = Context::getContext();
+        self::$instance->displayToolbar = ToolbarCheckerHandler::canDisplay();
         return self::$instance->$hook_name($params);
     }
 
 
     public function hookDisplayHeader($params)
     {
-        if (new ToolbarCheckerHandler()) {
+        if ($this->displayToolbar) {
             $this->context->controller->registerStylesheet('prettyblocks_toolbar_css',
                 'modules/' . $this->module->name . '/views/css/toolbar.css',
                 ['media' => 'all', 'priority' => 150]);
@@ -57,11 +59,12 @@ class Hook
 
     public function hookDisplayBeforeBodyClosingTag($params)
     {
-        if (new ToolbarCheckerHandler()) {
+        if ($this->displayToolbar) {
 
             $this->context->smarty->assign([
                 'prettyblocks' => [
                     'cms'     => CMS::getLinks((int)$this->context->language->id) ?? [],
+                    'imgDir'  => _MODULE_DIR_ . $this->module->name . '/views/images/'
                 ]
             ]);
 

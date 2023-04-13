@@ -91,3 +91,13 @@ body.toggle-pb #modal-prettyblocks {
 #modal-prettyblocks ul li a {
 	color: rgb(85 48 190);
 }
+
+#modal-prettyblocks #loader {
+	display: none;
+	text-align: center;
+	margin-left: -8px;
+}
+#modal-prettyblocks #prettyblocks-delete-search {
+	cursor: pointer;
+	margin-left: -32px;
+}
