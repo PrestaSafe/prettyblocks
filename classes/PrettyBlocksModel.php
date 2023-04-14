@@ -27,7 +27,7 @@ class PrettyBlocksModel extends ObjectModel
     public $name;
     public $zone_name;
     public $position;
-
+    public $id_shop;
     public $date_add;
     public $date_upd;
 
@@ -38,12 +38,14 @@ class PrettyBlocksModel extends ObjectModel
         'table' => 'prettyblocks',
         'primary' => 'id_prettyblocks',
         'multilang' => true,
-        'multilang_shop' => true,
+        'multilang_shop' => false,
         'fields' => [
             'config' => ['type' => self::TYPE_STRING, 'validate' => 'isJson'],
             'code' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
             // multilang
             'name' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
+            'id_shop' => ['type' => self::TYPE_INT, 'lang' => true,  'validate' => 'isInt'],
+            
             // multishop
             'instance_id' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
             'state' => ['type' => self::TYPE_SQL, 'validate' => 'isJson',  'lang' => true],
@@ -109,16 +111,15 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function getInstanceByZone($zone_name, $context = 'back', $id_lang = null, $id_shop = null)
     {
-        $context = Context::getContext();
-        $id_lang = (!is_null($id_lang)) ? (int) $id_lang : $context->language->id;
-        $id_shop = (!is_null($id_shop)) ? (int) $id_shop : $context->shop->id;
+        $contextPS = Context::getContext();
+        $id_lang = (!is_null($id_lang)) ? (int) $id_lang : $contextPS->language->id;
+        $id_shop = (!is_null($id_shop)) ? (int) $id_shop : $contextPS->shop->id;
         $psc = new PrestaShopCollection('PrettyBlocksModel', $id_lang);
+        
         $psc->where('zone_name', '=', $zone_name);
-        $psc->where('l.id_lang', '=', (int) $id_lang);
-        $psc->sqlWhere('a1.id_shop', '=', (int) $id_shop);
+        $psc->sqlWhere('a1.id_shop = ' . (int) $id_shop);
 
         $psc->orderBy('position');
-
         $blocks = [];
         foreach ($psc->getResults() as $res) {
             if ($res) {
@@ -146,6 +147,7 @@ class PrettyBlocksModel extends ObjectModel
         $block['state_to_push'] = $this->_formatDefautStateFromBlock($repeaterDefault);
         $block['instance_id'] = $this->instance_id;
         $block['id_prettyblocks'] = $this->id;
+        $block['id_shop'] = $this->id_shop;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
         $block['settings_formatted'] = $this->_formatGetConfigForApp($block, 'back');
@@ -190,9 +192,11 @@ class PrettyBlocksModel extends ObjectModel
     {
         $id_prettyblocks = (int) $block['id_prettyblocks'];
         $key = Tools::strtoupper($id_prettyblocks . '_template');
+
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
         $default_tpl = (isset($block['templates']['default'])) ? 'default' : 'welcome';
-        $defaultTemplate = Configuration::get($key);
+        $defaultTemplate = Configuration::get($key, null, null, (int)$block['id_shop']);
+        // dump($defaultTemplate);
         if (!$defaultTemplate) {
             return $default_tpl;
         }
@@ -203,11 +207,12 @@ class PrettyBlocksModel extends ObjectModel
     /**
      * Set template chosen in Vue App
      */
-    private function _setConfigTemplate($id_prettyblocks, $template_name)
-    {
+    private function _setConfigTemplate($block, $template_name)
+    {   
+        $id_prettyblocks = (int)$block['id_prettyblocks'];
         $key = Tools::strtoupper($id_prettyblocks . '_template');
 
-        return Configuration::updateValue($key, $template_name);
+        return Configuration::updateValue($key, $template_name, false, null,  (int)$block['id_shop']);
     }
 
     /**
@@ -335,7 +340,7 @@ class PrettyBlocksModel extends ObjectModel
 
         $template_name = pSQL($stateRequest['templateSelected']);
         $this->_updateDefaultParams($block, $stateRequest);
-        $this->_setConfigTemplate($block['id_prettyblocks'], $template_name);
+        $this->_setConfigTemplate($block, $template_name);
     }
 
     /**
@@ -442,9 +447,10 @@ class PrettyBlocksModel extends ObjectModel
                 }
             }
         }
-        // return $res;
-        // dump($res);
-
+        if(!isset($block['templates']))
+        {
+            $block['templates'] = [];
+        }
         return $block['templates'] + $res;
     }
 
@@ -494,6 +500,7 @@ class PrettyBlocksModel extends ObjectModel
     private function _formatFieldConfigFront($field, $value, $block, $context = 'front')
     {
         FieldFormatter::setSuffix('_config');
+
         switch ($value['type']) {
             case 'editor':
                 return FieldFormatter::formatFieldText($field, $value, $block, $context);
@@ -612,6 +619,7 @@ class PrettyBlocksModel extends ObjectModel
         $formatted['icon'] = ($block['icon']) ?? 'PhotographIcon';
         $formatted['module'] = $block['code']; // todo register module name
         $formatted['title'] = $block['name'];
+        // dump($block);
         
         // if nameFrom params is present
         if(isset($block['nameFrom']) && isset($block['settings_formatted'][$block['nameFrom']]['value']))
@@ -682,9 +690,9 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function registerBlockToZone($zone_name, $block_code, $id_lang = null, $id_shop = null)
     {
-        $context = Context::getContext();
-        $id_lang = ($id_lang !== null) ? (int) $id_lang : $context->language->id;
-        $id_shop = ($id_shop !== null) ? (int) $id_shop : $context->shop->id;
+        $contextPS = Context::getContext();
+        $id_lang = ($id_lang !== null) ? (int) $id_lang : $contextPS->language->id;
+        $id_shop = ($id_shop !== null) ? (int) $id_shop : $contextPS->shop->id;
 
         $block = new PrettyBlocksModel(null, $id_lang, $id_shop);
         $block->zone_name = $zone_name;
@@ -693,10 +701,12 @@ class PrettyBlocksModel extends ObjectModel
         $array = [];
         $block->state = json_encode($array, true);
         $block->instance_id = uniqid();
+        $block->id_shop = $id_shop;
         $block->save();
         $state = $block;
-
+        
         $block = $block->mergeStateWithFields();
+        dump($block);
         $state_to_push = $block['state_to_push'];
 
         $state_db = json_decode($state->state, true);

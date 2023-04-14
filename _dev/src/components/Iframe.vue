@@ -43,6 +43,16 @@ const reloadIframe = () => {
 emitter.on('reloadIframe', async (id_prettyblocks) => {
   iframe.reloadIframe()
 })
+
+emitter.on('changeUrl', (shop) => {
+  iframe.destroy()
+  iframe = new Iframe(shop.current_url, shop.id_lang, shop.id_shop)
+  iframe.reloadIframe()
+})
+
+const changeUrl = async (shop) => {
+  console.log('url changed !',shop)
+}
 </script>
 
 <template>
@@ -52,7 +62,8 @@ emitter.on('reloadIframe', async (id_prettyblocks) => {
     <!-- {{ iframe.loader }} -->
     <Loader :visible="iframe.loader.value" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       Chargement en cours</Loader>
-    {{ classes }}
+    <!-- {{ classes }} -->
+
     <iframe id="website-iframe" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
       :class="[height, width]" class="border-none h-full mx-auto rounded" :src="iframe.current_url.value"
       frameborder="0"></iframe>

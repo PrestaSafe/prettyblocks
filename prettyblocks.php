@@ -77,7 +77,11 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         return true;
     }
-
+    
+    /**
+     * create tables on install.
+     * @return bool
+     */
     private function createBlockDb()
     {
         $db = [];
@@ -103,6 +107,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             KEY `id_lang` (`id_lang`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
+
         $isOk = true;
         foreach ($db as $sql) {
             $isOk &= Db::getInstance()->execute($sql);
@@ -111,6 +116,10 @@ class PrettyBlocks extends Module implements WidgetInterface
         return $isOk;
     }
 
+    /**
+     * Remove DB on uninstall.
+     * @return bool
+     */
     private function removeDb()
     {
         $db = [];
@@ -163,16 +172,20 @@ class PrettyBlocks extends Module implements WidgetInterface
             [
                 'media' => 'all',
                 'priority' => 100,
-            ]
-        );
-    }
+                ]
+            );
+        }
+        
+        public function hookActionFrontControllerSetVariables()
+        {
+            
 
-    public function hookActionFrontControllerSetVariables()
-    {
         return [
             // 'ajax_builder_url' => $this->context->link->getModuleLink($this->name,'ajax'),
             'theme_settings' => PrettyBlocksModel::getThemeSettings(false, 'front'),
             'id_shop' => (int) $this->context->shop->id,
+            'shop_name' => $this->context->shop->name,
+            'shop_current_url' =>  $this->context->shop->getBaseURL(true, true)
         ];
     }
 

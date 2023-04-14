@@ -26,9 +26,25 @@ export const contextShop = defineStore('contextStore', {
     return {
       id_lang: 0,
       id_shop: 0,
-      shop_name: null
+      shop_name: null,
+      current_url: null
     } 
-  }
+  },
+  actions: {
+    async getContext() {
+      // Ici, vous pouvez effectuer des opérations asynchrones
+      // comme la récupération des données de l'API ou d'autres tâches asynchrones
+
+      // Retourner les données sous forme de promesse
+      return new Promise((resolve) => {
+        resolve({
+          id_lang: this.id_lang,
+          id_shop: this.id_shop,
+          shop_name: this.shop_name,
+        });
+      });
+    },
+  },
 })
 
 

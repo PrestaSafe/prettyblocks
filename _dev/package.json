@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite --port 3002",
     "build": "vite build",
+    "watch": "vite build --watch",
     "preview": "vite preview"
   },
   "dependencies": {

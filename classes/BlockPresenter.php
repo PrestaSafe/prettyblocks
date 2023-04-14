@@ -28,6 +28,7 @@ class BlockPresenter implements PresenterInterface
             'states' => $block['states'],
             'extra' => $block['extra'],
             'instance_id' => $block['instance_id'],
+            'id_shop' => $block['id_shop'],
             'id_prettyblocks' => $block['id_prettyblocks'],
             'templateSelected' => $block['templateSelected'],
             'templates' => $block['templates'],
