@@ -5,48 +5,50 @@ use PrestaSafe\PrettyBlocks\DataProvider\Toolbar\ToolbarCMSDataProvider;
 use PrestaSafe\PrettyBlocks\DataProvider\Toolbar\ToolbarProductDataProvider;
 
 if (!defined('_PS_VERSION_')) {
-    exit;
+	exit;
 }
 
 class PrettyBlocksToolbarModuleFrontController extends ModuleFrontController
 {
-    public function displayAjax()
-    {
-        $term = Tools::getValue('terms', '');
-        $type = Tools::getValue('type', '');
-        $data = [
-            'success' => false,
-            'data'    => []
-        ];
+	public function displayAjax()
+	{
+		$term = Tools::getValue('terms', '');
+		$type = Tools::getValue('type', '');
+		$data = [
+			'success' => false,
+			'data' => []
+		];
 
-        if (empty($term) || empty($type)) {
-            $this->ajaxRender(json_encode($data));
-        }
+		if (empty($term) || empty($type)) {
+			$this->ajaxRender(json_encode($data));
+		}
 
-        switch ($type) {
-            case 'product':
-                $results = ToolbarProductDataProvider::getByTerms($term);
-                break;
-            case 'category':
-                $results = ToolbarCategoryDataProvider::getByTerms($term);
-                break;
-            case 'cms':
-                $results = ToolbarCMSDataProvider::getByTerms($term);
-                break;
-            default:
-                $results = [];
-                break;
-        }
+		switch ($type) {
+			case 'product':
+				$results = ToolbarProductDataProvider::getByTerms($term);
+				break;
+			case 'category':
+				$results = ToolbarCategoryDataProvider::getByTerms($term);
+				break;
+			case 'cms':
+				$results = ToolbarCMSDataProvider::getByTerms($term);
+				break;
+			default:
+				$results = [];
+				break;
+		}
 
-        $this->context->smarty->assign([
-            'results' => $results
-        ]);
+		//limit results to 10
 
-        $data = [
-            'data'    => $this->module->display($this->module->name, '/views/templates/front/toolbar-search-results.tpl'),
-            'success' => true
-        ];
+		$this->context->smarty->assign([
+			'results' => array_slice($results, 0, 10)
+		]);
 
-        $this->ajaxRender(json_encode($data));
-    }
+		$data = [
+			'data' => $this->module->display($this->module->name, '/views/templates/front/toolbar-search-results.tpl'),
+			'success' => true
+		];
+
+		$this->ajaxRender(json_encode($data));
+	}
 }

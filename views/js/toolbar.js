@@ -21,13 +21,15 @@ window.addEventListener('load', function() {
 	const searchType= document.querySelector('#prettyblocks-change-search');
 	const searchResults= document.querySelector('#prettyblocks-search-results');
 	const searchProducts= document.querySelector('#prettyblocks-search-products');
+	const searchPlaceholder = document.querySelector('.placeholder-value')
 
 	// Change search type
-	if (null !== searchType) {
-		searchType.addEventListener('change', function () {
+	if (searchType instanceof HTMLSelectElement) {
+		searchType.addEventListener('change', function (e) {
 			searchResults.innerHTML = "";
 			searchProducts.value 	= "";
 			loader.style.display = "none";
+			searchPlaceholder.textContent = searchType.options[searchType.selectedIndex].text.toLowerCase();
 		});
 	}
 

@@ -49,7 +49,7 @@ final class ToolbarCategoryDataProvider implements ToolbarDataProviderInterface
             // Image
             if (isset($category['id'])) {
                 $category['img']   = $link->getCatImageLink($category['link_rewrite'] ?? "", $category['id'] ?? 0, 'small_default');
-                $category['link']  = $link->getCategoryLink($category['id']);
+                $category['link']  = $link->getCategoryLink($category['id']).'?prettyblock_preview';
             }
         }
 

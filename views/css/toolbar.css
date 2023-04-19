@@ -69,17 +69,55 @@ body.toggle-pb #modal-prettyblocks {
 
 #modal-prettyblocks .close-pb {
 	cursor: pointer;
+	position: absolute;
+	right: 15px;
+	top: 50%;
+	transform: translateY(-50%);
 }
 
 #modal-prettyblocks .header {
-	background: rgb(85 48 190);
+	background-color: rgb(85 48 190);
+	background-image: url('../images/logo.png');
+	background-repeat: no-repeat;
+	background-size: 28px;
+	background-position: 15px center;
 	color: #fff;
 	padding: 10px 15px;
 	font-size: 1.2rem;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
+	position: relative;
 	align-items: center;
 }
+
+#modal-prettyblocks #prettyblocks-change-search {
+	margin: auto;
+	font-size: .9rem;
+	padding: .1em
+}
+
+#modal-prettyblocks .placeholder-wrapper {
+	margin: .5em 0;
+}
+
+#modal-prettyblocks #prettyblocks-search-products {
+	width: 100%;
+	padding: .25em .5em
+}
+
+#modal-prettyblocks .search-wrapper {
+	position: relative;
+	margin-bottom: 1em;
+}
+
+
+#modal-prettyblocks .search-wrapper #prettyblocks-delete-search {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
 
 #modal-prettyblocks ul {
 	display: flex;

@@ -63,7 +63,7 @@ final class ToolbarProductDataProvider implements ToolbarDataProviderInterface
             if (isset($product['id'])) {
                 $cover            = Product::getCover($product['id']);
                 $product['img']   = $link->getImageLink($product['link_rewrite'], $cover ? $cover['id_image'] : '', 'small_default');
-                $product['link']  = $link->getProductLink($product['id'], null, null, null, $product['id_product_attribute'] ?? 0);
+                $product['link']  = $link->getProductLink($product['id'], null, null, null, $product['id_product_attribute'] ?? 0, null, null, false, false, true, ['prettyblock_preview' => true]);
             }
         }
 

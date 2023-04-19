@@ -48,7 +48,7 @@ final class ToolbarCMSDataProvider implements ToolbarDataProviderInterface
 
             if (isset($cms['id'])) {
                 $cms['img']   = "";
-                $cms['link']  = $link->getCMSLink($cms['id']);
+                $cms['link']  = $link->getCMSLink($cms['id']).'?prettyblock_preview';
             }
         }
 
