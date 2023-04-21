@@ -25,6 +25,7 @@ class BlockPresenter implements PresenterInterface
     {
         $present = [
             'settings' => $block['settings'],
+            'settings_formatted' => !empty($block['settings_formatted']) ? $block['settings_formatted'] : [],
             'states' => $block['states'],
             'extra' => $block['extra'],
             'instance_id' => $block['instance_id'],
