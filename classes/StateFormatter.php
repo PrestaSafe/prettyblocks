@@ -27,7 +27,7 @@ class StateFormatter
 {
     public static function formatFieldUpload($value)
     {
-        return ($value['value']['url']) ? $value['value'] : ['url' => ''];
+        return !empty($value['value']['url']) ? $value['value'] : ['url' => ''];
     }
 
     public static function formatFieldSelector($value)
