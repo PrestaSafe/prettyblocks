@@ -36,7 +36,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     public function init()
     {
         if (empty($_POST)) {
-            $_POST = json_decode(Tools::file_get_contents("php://input"), true);
+            $_POST = json_decode(Tools::file_get_contents('php://input'), true);
             if (!is_array($_POST)) {
                 $_POST = [];
             }
@@ -81,7 +81,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     // remove sub element OK
     public function displayAjaxremoveSubState()
     {
-        $formattedID =  pSQL(Tools::getValue('formattedID'));
+        $formattedID = pSQL(Tools::getValue('formattedID'));
         $ids = explode('-', $formattedID);
         $id_block = $ids[0];
         $substate_key = $ids[1];
@@ -107,7 +107,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     // remove element
     public function displayAjaxremoveState()
     {
-        $id_prettyblocks = (int)Tools::getValue('id_prettyblocks');
+        $id_prettyblocks = (int) Tools::getValue('id_prettyblocks');
         $block = new PrettyBlocksModel($id_prettyblocks);
         if ($block->delete()) {
             die(json_encode([
@@ -223,7 +223,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $zone = pSQL(Tools::getValue('zone'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
- 
+
         die(json_encode(
             [
                 'blocks' => PrettyBlocksModel::getInstanceByZone($zone, 'back', $id_lang, $id_shop),

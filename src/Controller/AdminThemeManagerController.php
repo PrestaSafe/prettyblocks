@@ -34,11 +34,12 @@ use Module;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopCollection;
 use PrettyBlocksModel;
+use Shop;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Tools;
-use Shop;
+
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
     public function uploadAction(Request $request)
@@ -83,7 +84,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $upload_dir = HelperBuilder::pathFormatterFromString($path);
             if (move_uploaded_file($file['tmp_name'], $upload_dir . $new_name . '.' . $extension)) {
                 $uploaded = true;
-                $imgs = ['url' =>  HelperBuilder::pathFormattedToUrl($path). '/' . $new_name . '.' . $extension];
+                $imgs = ['url' => HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension];
             }
         }
 
@@ -106,23 +107,21 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $shops = Shop::getShops();
         $results = [];
 
-        foreach($shops as $shop)
-        {
+        foreach ($shops as $shop) {
             $shop['current_url'] = $this->buildShopUri($shop);
             $results[] = $shop;
         }
-        return $results;
 
+        return $results;
     }
 
     private function buildShopUri($shop)
     {
-        return Tools::getProtocol(Tools::usingSecureMode()) .$shop['domain_ssl'] . $shop['uri'];
+        return Tools::getProtocol(Tools::usingSecureMode()) . $shop['domain_ssl'] . $shop['uri'];
     }
 
     public function indexAction()
     {
-
         $context = $this->get('prestashop.adapter.legacy.context')->getContext();
 
         $shop = $context->shop;
@@ -131,7 +130,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $filesystem = new Filesystem();
         $path = '/modules/prettyblocks/build/';
         $build_dir = _PS_ROOT_DIR_ . $path;
-        $build_dir_https = Tools::getShopDomainSsl(true).$shop->physical_uri . ltrim($path, '/') ;
+        $build_dir_https = Tools::getShopDomainSsl(true) . $shop->physical_uri . ltrim($path, '/');
         $js = [];
         $css = [];
         $js_entry = '';
@@ -162,9 +161,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         }
 
         $module = Module::getInstanceByName('prettyblocks');
-   
-        $uri = $module->getPathUri() . 'views/css/back.css?version=' . $module->version;
 
+        $uri = $module->getPathUri() . 'views/css/back.css?version=' . $module->version;
 
         $domain = Tools::getShopDomainSsl(true);
 
@@ -176,8 +174,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'entity' => 'sf',
             'route' => 'prettyblocks_api',
         ]);
-      
-  
 
         $uploadUrl = $domain . Link::getUrlSmarty([
             'entity' => 'sf',
@@ -210,7 +206,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
 
         $translator = Context::getContext()->getTranslator();
-        $shops = $this->getShops(); 
+        $shops = $this->getShops();
+
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
             'favicon_url' => Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
@@ -558,7 +555,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     {
         $collection = pSQL($request->query->get('collection'));
         $query = pSQL($request->query->get('query'));
-        $selector = ($request->query->get('selector')) ?? '{id} - {name}';
+        $selector = $request->query->get('selector') ?? '{id} - {name}';
         $psCollection = new PrestaShopCollection($collection, Context::getContext()->language->id);
         $columns = FieldFormatter::formatSelectorsToArray($selector);
         $toSearch = FieldFormatter::matchColumnsWithCollection($collection, $columns);
@@ -584,14 +581,14 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 $primary = str_replace('a0.', '', $primary);
                 $primary = str_replace('l.', '', $primary);
                 if ($searchC !== $primary) {
-                    $formattedName .= ($r->{$searchC}) ?? '';
+                    $formattedName .= $r->{$searchC} ?? '';
                 }
             }
             $jayParsedAry[]['show'] = [
                 'id' => $r->id,
                 'primary' => $r->id,
                 'name' => $formattedName,
-                'formatted' => (PrettyBlocksModel::formatFrontSelector($r, $selector)) ?? $r->name,
+                'formatted' => PrettyBlocksModel::formatFrontSelector($r, $selector) ?? $r->name,
             ];
         }
 

@@ -22,9 +22,11 @@ class HelperBuilder
     /**
      * ex: $path $path = '$/modules/prettyblocks/views/images/'
      * return /path/to/prestashop/modules/prettyblocks/views/images/
-     * @param String $path:  begin by $/
-     * @param Bool trim
-     * @return String
+     *
+     * @param string $path: begin by $/
+     * @param bool trim
+     *
+     * @return string
      */
     public static function pathFormatterFromString($path, $rtrim = false)
     {
@@ -73,12 +75,13 @@ class HelperBuilder
         return $res;
     }
 
-
     /**
      * * ex: $path = '$/modules/prettyblocks/views/images/'
      * return https://{prestashop_url}/modules/prettyblocks/views/images/
-     * @param String $path:  begin by $/
-     * @return String
+     *
+     * @param string $path: begin by $/
+     *
+     * @return string
      */
     public static function pathFormattedToUrl($path)
     {
@@ -87,6 +90,7 @@ class HelperBuilder
 
         $context = Context::getContext();
         $domain .= rtrim($context->shop->physical_uri, '/');
+
         return rtrim(str_replace(_PS_ROOT_DIR_, $domain, $path), '/');
     }
 }

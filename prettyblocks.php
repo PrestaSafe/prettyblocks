@@ -77,9 +77,10 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         return true;
     }
-    
+
     /**
      * create tables on install.
+     *
      * @return bool
      */
     private function createBlockDb()
@@ -107,7 +108,6 @@ class PrettyBlocks extends Module implements WidgetInterface
             KEY `id_lang` (`id_lang`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
-
         $isOk = true;
         foreach ($db as $sql) {
             $isOk &= Db::getInstance()->execute($sql);
@@ -118,6 +118,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * Remove DB on uninstall.
+     *
      * @return bool
      */
     private function removeDb()
@@ -152,16 +153,16 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function install()
     {
-        return parent::install() &&
-        $this->loadDefault() &&
-        $this->createBlockDb() &&
-        $this->registerHook($this->hooks);
+        return parent::install()
+            && $this->loadDefault()
+            && $this->createBlockDb()
+            && $this->registerHook($this->hooks);
     }
 
     public function uninstall()
     {
-        return parent::uninstall() &&
-        $this->removeDb();
+        return parent::uninstall()
+            && $this->removeDb();
     }
 
     public function hookActionFrontControllerSetMedia()
@@ -172,20 +173,18 @@ class PrettyBlocks extends Module implements WidgetInterface
             [
                 'media' => 'all',
                 'priority' => 100,
-                ]
-            );
-        }
-        
-        public function hookActionFrontControllerSetVariables()
-        {
-            
+            ]
+        );
+    }
 
+    public function hookActionFrontControllerSetVariables()
+    {
         return [
             // 'ajax_builder_url' => $this->context->link->getModuleLink($this->name,'ajax'),
             'theme_settings' => PrettyBlocksModel::getThemeSettings(false, 'front'),
             'id_shop' => (int) $this->context->shop->id,
             'shop_name' => $this->context->shop->name,
-            'shop_current_url' =>  $this->context->shop->getBaseURL(true, true)
+            'shop_current_url' => $this->context->shop->getBaseURL(true, true),
         ];
     }
 
@@ -225,7 +224,7 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'test' => Hook::exec('beforeRenderingBlock', ['state' => $configuration['data']], null, true),
             ];
             $this->smarty->assign($vars);
-            $template = ($block['templates'][$block['templateSelected']]) ?? 'module:prettyblocks/views/templates/blocks/welcome.tpl';
+            $template = $block['templates'][$block['templateSelected']] ?? 'module:prettyblocks/views/templates/blocks/welcome.tpl';
 
             return $this->fetch($template);
         }
@@ -244,7 +243,7 @@ class PrettyBlocks extends Module implements WidgetInterface
      */
     public function hookActionDispatcher()
     {
-        /** @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
+        /* @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
         $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
         $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
     }
