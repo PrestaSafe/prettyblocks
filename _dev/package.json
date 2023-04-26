@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@headlessui/vue": "^1.7.13",
-    "@heroicons/vue": "^2.0.0",
+    "@heroicons/vue": "^2.0.17",
     "@tailwindcss/forms": "^0.4.0-alpha.2",
     "@vitejs/plugin-vue": "^2.2.0",
     "autoprefixer": "^10.4.7",
