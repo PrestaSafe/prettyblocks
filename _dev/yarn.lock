@@ -53,11 +53,11 @@
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
-"@tinymce/tinymce-vue@^4.0.7":
-  version "4.0.7"
-  resolved "https://registry.npmjs.org/@tinymce/tinymce-vue/-/tinymce-vue-4.0.7.tgz"
+"@tinymce/tinymce-vue@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-vue/-/tinymce-vue-5.1.0.tgz#e74adef6fc10702167588cb53e74be359e5005ea"
   dependencies:
-    tinymce "^5.5.0"
+    tinymce "^6.0.0 || ^5.5.1"
 
 "@vitejs/plugin-vue@^2.2.0":
   version "2.3.4"
@@ -872,9 +872,9 @@ tinycolor2@^1.4.2:
   version "1.4.2"
   resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.2.tgz"
 
-tinymce@^5.5.0:
-  version "5.10.5"
-  resolved "https://registry.npmjs.org/tinymce/-/tinymce-5.10.5.tgz"
+"tinymce@^6.0.0 || ^5.5.1":
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-6.4.2.tgz#dd0a6d1d229ba6d1bf11cc88e418eb29315f6080"
 
 to-regex-range@^5.0.1:
   version "5.0.1"
