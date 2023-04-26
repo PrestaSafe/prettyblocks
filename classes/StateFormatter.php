@@ -33,13 +33,13 @@ class StateFormatter
     public static function formatFieldSelector($value)
     {
         if ($value['collection']) {
-            $json = ($value['value']);
+            $json = $value['value'];
             if (!isset($json['show']['id'])) {
                 return false;
             }
             // @TODO -> Presenter
             $c = new PrestaShopCollection($value['collection'], Context::getContext()->language->id);
-            $primary = ($value['primary']) ?? 'id_' . Tools::strtolower($value['collection']);
+            $primary = $value['primary'] ?? 'id_' . Tools::strtolower($value['collection']);
             $object = $c->where($primary, '=', (int) $json['show']['id'])->getFirst();
 
             if (!Validate::isLoadedObject($object)) {
@@ -56,6 +56,6 @@ class StateFormatter
 
     public static function formatFieldDefault($value)
     {
-        return ($value['value']) ?? '';
+        return $value['value'] ?? '';
     }
 }

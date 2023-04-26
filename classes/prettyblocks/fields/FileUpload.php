@@ -71,7 +71,7 @@ class FileUpload extends FieldCore
         // return format
         $key = $this->getKey();
 
-        $default_value = ($this->default_value) ?? '';
+        $default_value = $this->default_value ?? '';
         $res = Configuration::get($key);
         if (!$res) {
             $res = $default_value;

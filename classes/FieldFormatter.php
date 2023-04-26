@@ -34,9 +34,9 @@ class FieldFormatter
 
     public static function formatFieldText($name, $data, $block = false, $context = 'front')
     {
-        $default_value = ($data['default']) ?? '';
+        $default_value = $data['default'] ?? '';
         $key = self::getKey($name, $block);
-        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $id_shop = ($block && $block['id_shop']) ? (int) $block['id_shop'] : (int) Context::getContext()->shop->id;
         $res = Configuration::get($key, null, null, $id_shop);
         if (!$res) {
             $res = $default_value;
@@ -49,7 +49,7 @@ class FieldFormatter
     {
         $default_value = ($data['default']) ? filter_var($data['default'], FILTER_VALIDATE_BOOLEAN) : false;
         $key = self::getKey($name, $block);
-        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $id_shop = ($block && $block['id_shop']) ? (int) $block['id_shop'] : (int) Context::getContext()->shop->id;
         if (!Configuration::hasKey($key)) {
             return $default_value;
         }
@@ -60,9 +60,9 @@ class FieldFormatter
 
     public static function formatFieldUpload($name, $data, $block = false, $context = 'front')
     {
-        $default_value = ($data['default']) ?? '';
+        $default_value = $data['default'] ?? '';
         $key = self::getKey($name, $block);
-        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $id_shop = ($block && $block['id_shop']) ? (int) $block['id_shop'] : (int) Context::getContext()->shop->id;
         $res = Configuration::get($key, null, null, $id_shop);
         if (!$res) {
             $res = $default_value;
@@ -82,9 +82,9 @@ class FieldFormatter
     {
         $collection = false;
         $key = self::getKey($name, $block);
-        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $id_shop = ($block && $block['id_shop']) ? (int) $block['id_shop'] : (int) Context::getContext()->shop->id;
         $res = Configuration::get($key, null, null, $id_shop);
-       
+
         if (!$res) {
             return $collection;
         }
@@ -102,7 +102,7 @@ class FieldFormatter
                 return false;
             }
             $c = new PrestaShopCollection($data['collection'], Context::getContext()->language->id);
-            $primary = ($data['primary']) ?? 'id_' . Tools::strtolower($data['collection']);
+            $primary = $data['primary'] ?? 'id_' . Tools::strtolower($data['collection']);
             $object = $c->where($primary, '=', (int) $json['show']['id'])->getFirst();
 
             if (!Validate::isLoadedObject($object)) {
@@ -125,7 +125,7 @@ class FieldFormatter
     public static function formatFieldSelect($name, $data, $block = false, $context = 'front')
     {
         $key = self::getKey($name, $block);
-        $id_shop = ($block && $block['id_shop']) ? (int)$block['id_shop'] : (int)Context::getContext()->shop->id;
+        $id_shop = ($block && $block['id_shop']) ? (int) $block['id_shop'] : (int) Context::getContext()->shop->id;
         $res = Configuration::get($key, null, null, $id_shop);
         if ($res === false) {
             if (!isset($data['choices'])) {

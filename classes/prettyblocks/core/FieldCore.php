@@ -30,7 +30,6 @@ class FieldCore implements FieldInterface
     public $block = false;
     public $context = '_settings';
 
-
     public function format()
     {
     }
@@ -42,7 +41,6 @@ class FieldCore implements FieldInterface
     public function save()
     {
     }
-
 
     public function value()
     {

@@ -29,7 +29,6 @@ interface FieldInterface
 
     public function save();
 
-
     public function value();
 
     public function getContext();
