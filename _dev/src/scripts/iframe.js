@@ -1,4 +1,4 @@
-import { ref } from 'vue' 
+import { ref } from 'vue'
 import axios from 'axios'
 import emitter from 'tiny-emitter/instance'
 import { useStore, storedZones, contextShop } from '../store/currentBlock'
@@ -13,12 +13,12 @@ export default class Iframe {
     }
     constructor(current_url, id_lang, id_shop)
     {
-        this.current_url.value = current_url
+        this.current_url.value = current_url + '?prettyblock_preview=1'
         this.id_lang.value = id_lang
-        this.id_shop.value = id_shop  
+        this.id_shop.value = id_shop
         this.loader.value = false
     }
-    
+
 
     /**
      * When register on Element after Ajax
@@ -57,8 +57,8 @@ export default class Iframe {
     // }
 
     /**
-     * 
-     * @param {*} url 
+     *
+     * @param {*} url
      * For set URL in input
      */
     setUrl(url)
@@ -74,7 +74,7 @@ export default class Iframe {
         // setTimeout(() => {
         //     var x = iframe.contentWindow;
         //         x.location.reload(true)
-        //     }, 200)    
+        //     }, 200)
         this.loadIframe()
         this.loader.value = false
     }
@@ -112,7 +112,7 @@ registerClick (el) {
 async getZones(document) {
     let els = document.querySelectorAll('[data-zone-name]')
     let zones = []
-   
+
     await els.forEach((el) => {
         let zone_name = el.getAttribute('data-zone-name')
         if(zones.indexOf(zone_name) == -1){
@@ -164,7 +164,7 @@ async loadIframe () {
                 // currentUrl.value = iwindow.location.href
                 // iframe.src = iwindow.location.href
             });
-  
+
 
             emitter.off('stateUpdated')
             emitter.on('stateUpdated', (id_prettyblocks) => {
@@ -196,7 +196,7 @@ async loadIframe () {
                 }
             })
 
-            // hover blocks 
+            // hover blocks
             body.querySelectorAll('div[data-block]').forEach((div) => {
                 div.addEventListener('click', (el) => {
                     this.registerClick(el.target)
@@ -237,7 +237,7 @@ async loadIframe () {
                 div.addEventListener('click', (el) => {
                     this.registerClickPopup(el)
                 })
-               
+
                 // div.addEventListener('drop', (el) => {
                 //     this.registerDrop(el)
                 // }, false)
@@ -258,7 +258,7 @@ async loadIframe () {
             }
 
             this.loadContext(e)
-            
+
         }, false)
     }
 }
@@ -314,7 +314,7 @@ async getBlockRender (id_prettyblocks) {
     return responseData
 }
 
-   
+
 
 
 
