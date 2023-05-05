@@ -27,7 +27,8 @@ export const contextShop = defineStore('contextStore', {
       id_lang: 0,
       id_shop: 0,
       shop_name: null,
-      current_url: null
+      current_url: null,
+      href: null,
     } 
   },
   actions: {
