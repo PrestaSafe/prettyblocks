@@ -20,7 +20,7 @@ defineComponent({
   ButtonLight,
   ZoneSelect
 })
-
+const prettyblocks_version = ref(security_app.prettyblocks_version)
 const loadStateConfig = async (e) => {
   let currentBlock = useStore()
   // set store cuurent block name
@@ -153,7 +153,7 @@ const state = ref({
         </ButtonLight>
       </div>
       <div class="p-2 text-sm text-center">
-        <a class="text-indigo" href="https://prettyblocks.io/" target="_blank">PrettyBlocks</a><br>
+        <a class="text-indigo" href="https://prettyblocks.io/" target="_blank">PrettyBlocks (v{{ prettyblocks_version }}) </a><br>
         Made with ❤️ by <a class="text-indigo" href="https://www.prestasafe.com" target="_blank">PrestaSafe</a>
       </div>
     </div>

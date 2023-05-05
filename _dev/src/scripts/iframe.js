@@ -56,6 +56,16 @@ export default class Iframe {
     //     })
     // }
 
+    /**
+     * 
+     * @param {*} url 
+     * For set URL in input
+     */
+    setUrl(url)
+    {
+        this.current_url.value = url
+    }
+
     async reloadIframe() {
         this.loader.value = true
         let iframe = document.getElementById('website-iframe')
@@ -262,6 +272,7 @@ loadContext(e)
         id_shop: iwindow.prestashop.modules.prettyblocks.id_shop,
         shop_name: iwindow.prestashop.modules.prettyblocks.shop_name,
         current_url: iwindow.prestashop.modules.prettyblocks.shop_current_url,
+        href: iwindow.document.location.href
     })
     this.id_lang.value = iwindow.prestashop.language.id
     this.id_shop.value = iwindow.prestashop.modules.prettyblocks.id_shop

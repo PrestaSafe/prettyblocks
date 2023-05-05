@@ -229,6 +229,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'blocks_available' => $blockAvailableUrls,
                 'block_action_urls' => $blockActionUrls,
                 'theme_settings' => $settingsUrls,
+               
             ],
             'trans_app' => [
                 'current_shop' => $translator->trans('Shop in modification', [], 'Modules.Prettyblocks.Admin'),
@@ -247,6 +248,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             ],
             'security_app' => [
                 'ajax_token' => Configuration::get('_PRETTYBLOCKS_TOKEN_'),
+                'prettyblocks_version' => $module->version,
             ],
             'css_build' => $css,
             'js_build' => $js,
