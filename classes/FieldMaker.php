@@ -27,6 +27,7 @@ class FieldMaker{
     public $type = 'text';
     public $config = [];
     public $id_lang = 0;
+    public $id_shop = 0;
     public $value = '';
     public $newValue = '';
     public $key = '';
@@ -40,6 +41,9 @@ class FieldMaker{
     public function __construct($block)
     {
         $this->block = $block;
+
+        $this->setIdLang((int)$block['id_lang']);
+        $this->setIdShop((int)$block['id_shop']);
     }
 
     private function getConfig()
@@ -81,10 +85,7 @@ class FieldMaker{
         // set value if exists
         if(isset($this->block['id_prettyblocks']))
         {
-            // IMPORTANT @TODO SET ID LANG ID SHOP
-            // !!!!!!!
-            // !!!!!!!
-            $this->model = new PrettyBlocksModel((int)$this->block['id_prettyblocks'],1,1);
+            $this->model = new PrettyBlocksModel((int)$this->block['id_prettyblocks'],$this->id_lang,$this->id_shop);
             $this->config = json_decode($this->model->config, true);
             $this->id_lang = (int)$this->model->id_lang;
         }
@@ -160,23 +161,36 @@ class FieldMaker{
 
     private function _setFormattedValue()
     {
+        // $data = $this->_getFormattedValue();
+        // foreach (Language::getLanguages() as $lang)
+        // {
+        //     $id_lang = (int) $lang['id_lang'];
+        //     if($this->id_lang == $id_lang)
+        //     {
+        //         $data[$id_lang][$this->key] = $this->format();
+        //     } else{
+        //         $data[$id_lang][$this->key] = $data[$id_lang][$this->key] ?? '';
+        //     }
+        // }
+        // return $data;
+
         $data = $this->_getFormattedValue();
         foreach (Language::getLanguages() as $lang)
         {
-            $id_lang = (int) $lang['id_lang'];
-            if($this->id_lang == $id_lang)
-            {
-                $data[$id_lang][$this->key] = $this->format();
-            } else{
-                $data[$id_lang][$this->key] = $data[$id_lang][$this->key] ?? '';
-            }
+            $data[$this->key] = $this->format();
         }
         return $data;
     }
 
     public function setIdLang($id_lang)
     {
-        $this->id_lang = $id_lang;
+        $this->id_lang = (int)$id_lang;
+        return $this;
+    }
+
+    public function setIdShop($id_shop)
+    {
+        $this->id_shop = (int)$id_shop;
         return $this;
     }
 

@@ -31,6 +31,8 @@ class PrettyBlocksModel extends ObjectModel
     public $date_add;
     public $date_upd;
 
+    public $id_lang;
+
     /**
      * @see ObjectModel::$definition
      */
@@ -148,6 +150,7 @@ class PrettyBlocksModel extends ObjectModel
         $block['instance_id'] = $this->instance_id;
         $block['id_prettyblocks'] = $this->id;
         $block['id_shop'] = $this->id_shop;
+        $block['id_lang'] = $this->id_lang;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
         $block['settings_formatted'] = $this->_formatGetConfigForApp($block, 'back');
@@ -543,9 +546,8 @@ class PrettyBlocksModel extends ObjectModel
     private function _formatRepeaterDb($state, $repeaterDefault)
     {
         $res = [];
-
         foreach ($state as $s) {
-            if (!$s) {
+            if (!$s || $state === null) {
                 return $res;
             }
 
@@ -705,7 +707,7 @@ class PrettyBlocksModel extends ObjectModel
         $state = $block;
 
         $block = $block->mergeStateWithFields();
-        dump($block);
+
         $state_to_push = $block['state_to_push'];
 
         $state_db = json_decode($state->state, true);
