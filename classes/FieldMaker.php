@@ -36,6 +36,7 @@ class FieldMaker{
     public $model = null;
     public $force_default_value = false;
     public $allow_html = true;
+    public $context = 'front';
 
 
     public function __construct($block)
@@ -51,7 +52,18 @@ class FieldMaker{
         $this->config = json_decode($this->block['config'], true);
     }
 
-    
+     /*
+        |
+        |--------------------------------------------------------------------------
+        | set the context: 'front' or 'back' only.
+        |--------------------------------------------------------------------------
+        |
+    */
+    public function setContext($context)
+    {
+        $this->context = $context;
+        return $this;
+    }
 
     public function forceDefaultValue($value = true)
     {
@@ -59,6 +71,14 @@ class FieldMaker{
         $this->setValue();
         return $this;
     }
+
+     /*
+        |
+        |--------------------------------------------------------------------------
+        | if the field can contains html or not
+        |--------------------------------------------------------------------------
+        |
+    */
 
     public function allowHtml($value)
     {
@@ -78,7 +98,7 @@ class FieldMaker{
     /** 
      * Set all essential Data
      */
-    public function shake()
+    public function get()
     {
 
        
@@ -101,11 +121,12 @@ class FieldMaker{
          {
              $this->type = $this->field['type'];   
          }
-         // set id_lang
-         if(isset($this->field['id_lang']))
-         {
-             $this->id_lang = $this->field['id_lang'];   
-         }
+         // force default value
+        if(isset($this->field['force_default_value']) && $this->field['force_default_value'] === true)
+        {
+            $this->force_default_value = true;   
+        }
+
 
         $this->setValue();
         return $this;
@@ -117,7 +138,7 @@ class FieldMaker{
     public function setKey($key)
     {
         $this->key = $key;
-        $this->shake();
+        $this->get();
         $this->_setField();
         return $this;
     }
@@ -140,13 +161,17 @@ class FieldMaker{
     */
     public function setValue()
     {
-        $values = $this->_getFormattedValue();
-        if(isset($values[$this->id_lang][$this->key]))
+
+        $values = $this->getFormattedConfig();
+        if(isset($values[$this->key]))
         {
-            $this->value = $values[$this->id_lang][$this->key];
+            $this->value = $values[$this->key];
         }else{
             $this->value = $this->format();
         }
+
+        $this->field['value'] = $this->value;   
+
         return $this;
     }
 
@@ -161,7 +186,7 @@ class FieldMaker{
 
     private function _setFormattedValue()
     {
-        // $data = $this->_getFormattedValue();
+        // $data = $this->getFormattedConfig();
         // foreach (Language::getLanguages() as $lang)
         // {
         //     $id_lang = (int) $lang['id_lang'];
@@ -174,7 +199,7 @@ class FieldMaker{
         // }
         // return $data;
 
-        $data = $this->_getFormattedValue();
+        $data = $this->getFormattedConfig();
         foreach (Language::getLanguages() as $lang)
         {
             $data[$this->key] = $this->format();
@@ -197,21 +222,20 @@ class FieldMaker{
 
      /*
         |--------------------------------------------------------------------------
-        | _getFormattedValue
+        | getFormattedConfig
         |--------------------------------------------------------------------------
         |
         | Return the json in config block database and decode it
         | format should be like this
         | [
-        |   1: 'Banner title',
-        |   2: 'Banner title 2'
+        |   {field}: {value formatted}
         | ]
         ] 
         |
     */
 
 
-    private function _getFormattedValue()
+    public function getFormattedConfig()
     {
         $value = [];
         // get Json value formatted in database
@@ -221,13 +245,21 @@ class FieldMaker{
             return $value;
         }
         $json = json_decode($json, true);
+
         return $json;
+      
+
     }
     
+    
 
-    /** 
-     * @param int $id_lang
-     */
+    /*
+        |
+        |--------------------------------------------------------------------------
+        | Format the value
+        |--------------------------------------------------------------------------
+        |
+    */
     public function format()
     {
         $method = 'formatField'.ucwords($this->type);
@@ -237,6 +269,14 @@ class FieldMaker{
         return false;
     }
 
+    /*
+        |
+        |--------------------------------------------------------------------------
+        | Save the model
+        |--------------------------------------------------------------------------
+        |
+    */
+
     public function save()
     {
         $json = $this->_setFormattedValue();
@@ -244,8 +284,15 @@ class FieldMaker{
         $this->model->config = $json;
         if($this->model->save())
         {
-            $this->value = $this->newValue;
+            $this->_setNewValue($this->newValue);
         }
+        return $this;
+    }
+
+    private function _setNewValue($newValue)
+    {
+        $this->value = $newValue;
+        $this->field['value'] = $this->value;
         return $this;
     }
 
@@ -265,6 +312,11 @@ class FieldMaker{
             return $this->field['default'] ?? '';
         }
         return stripslashes((string)$this->newValue);
+    }
+
+    private function formatFieldColor()
+    {
+        return $this->formatFieldText();
     }
     
     // private function formatFieldBoxes()

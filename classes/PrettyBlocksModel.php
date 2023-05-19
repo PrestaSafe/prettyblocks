@@ -400,6 +400,14 @@ class PrettyBlocksModel extends ObjectModel
         return true;
     }
 
+    public function getConfigValues()
+    {
+        $block = $this->mergeStateWithFields();
+        $fieldMaker = new FieldMaker($block);
+        return $fieldMaker->getFormattedConfig();
+
+    }
+
     /**
      * Formatted data config for app (state like)
      */
