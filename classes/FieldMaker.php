@@ -17,10 +17,6 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
-/**
- * Please don't judge me
- * it will be refactoring soon.
- */
 class FieldMaker{
 
     private array $block;
@@ -262,7 +258,8 @@ class FieldMaker{
     */
     public function format()
     {
-        $method = 'formatField'.ucwords($this->type);
+        $method = 'formatField'.ucwords(str_replace('_','',$this->type));
+        // dump($method);
         if(method_exists($this, $method)) {
             return $this->{$method}();
         }
@@ -280,19 +277,19 @@ class FieldMaker{
     public function save()
     {
         $json = $this->_setFormattedValue();
-        $json = json_encode($json);
+        $json = json_encode($json, true);
         $this->model->config = $json;
         if($this->model->save())
         {
-            $this->_setNewValue($this->newValue);
+            $this->_assignValues($this->newValue);
         }
         return $this;
     }
 
-    private function _setNewValue($newValue)
+    private function _assignValues($newValue)
     {
         $this->value = $newValue;
-        $this->field['value'] = $this->value;
+        $this->field['value'] = $this->format();
         return $this;
     }
 
@@ -318,21 +315,32 @@ class FieldMaker{
     {
         return $this->formatFieldText();
     }
+
+    private function formatFieldTextarea()
+    {
+        return $this->formatFieldText();
+    }
+
+    private function formatFieldFileupload()
+    {
+
+        if($this->force_default_value && $this->newValue == '')
+        {
+            return $this->field['default'] ? $this->field['default'] : '';
+        }
+        if(is_array($this->newValue) && isset($this->newValue['url']))
+        {
+            return $this->newValue;
+        }
+    }
+
+    private function formatFieldEditor()
+    {
+        $this->allow_html = true;
+        return $this->formatFieldText();
+    }
     
-    // private function formatFieldBoxes()
-    // {
-        
-        //     $default_value = ($data['default']) ? filter_var($data['default'], FILTER_VALIDATE_BOOLEAN) : false;
-        //     $key = self::getKey($name, $block);
-        //     $id_shop = ($block && $block['id_shop']) ? (int) $block['id_shop'] : (int) Context::getContext()->shop->id;
-        //     if (!Configuration::hasKey($key)) {
-            //         return $default_value;
-            //     }
-            //     $res = filter_var(Configuration::get($key, null, null, $id_shop), FILTER_VALIDATE_BOOLEAN);
-            
-            //     return $res;
-            // }
-            
+
     private function formatFieldCheckbox()
     {           
         if($this->force_default_value && $this->newValue == '')
@@ -340,6 +348,37 @@ class FieldMaker{
             return filter_var($this->field['default'], FILTER_VALIDATE_BOOLEAN) ?? false;
         }
         return filter_var($this->newValue, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    private function formatFieldRadioGroup()
+    {
+        if(!is_array($this->field['choices'])){
+            return '';
+        }
+        if($this->force_default_value && $this->newValue == '')
+        {
+            if(is_array($this->field['choices']) 
+            && isset($this->field['default'])
+            && isset($this->field['choices'][(int)$this->field['default']]) )
+            {
+                return $this->field['choices'][(int)$this->field['default']];
+            }
+            return $this->field['choices'][$this->field[0]];
+        }
+        if(is_array($this->field['choices']) && isset($this->field['choices'][$this->newValue]))
+        {
+            return $this->field['choices'][$this->newValue];
+        }
+    }
+
+    private function formatFieldSelect()
+    {
+        return $this->formatFieldRadioGroup();
+    }
+    
+    private function formatFieldSelector()
+    {
+
     }
 
 }
