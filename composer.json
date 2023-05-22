@@ -1,35 +1,40 @@
 {
-    "name": "prestasafe/prettyblocks",
-    "description": "Theme manager for prestashop",
-    "keywords": ["prestashop","theme"],
-    "require-dev": {
-        "scssphp/scssphp": "^1.4.1"
+  "name": "prestasafe/prettyblocks",
+  "description": "Theme manager for prestashop",
+  "license": "AFL-3.0",
+  "keywords": [
+    "prestashop",
+    "theme"
+  ],
+  "authors": [
+    {
+      "name": "PrestaSafe",
+      "homepage": "https://www.prestasafe.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "scssphp/scssphp": "^1.11.0"
+  },
+  "require-dev": {
+    "scssphp/scssphp": "^1.4.1"
+  },
+  "config": {
+    "preferred-install": "dist",
+    "prepend-autoloader": false
+  },
+  "autoload": {
+    "psr-4": {
+      "PrestaSafe\\PrettyBlocks\\": "src/",
+      "PrestaSafe\\PrettyBlocks\\Fields\\": "classes/prettyblocks/fields/",
+      "PrestaSafe\\PrettyBlocks\\Interface\\": "classes/prettyblocks/interface/",
+      "PrestaSafe\\PrettyBlocks\\Core\\": "classes/prettyblocks/core/"
     },
-    "authors": [
-        {
-          "name": "PrestaSafe",
-          "homepage": "https://www.prestasafe.com"
-        }
-      ],
-      "require": {
-        "php": ">=5.6.0",
-        "scssphp/scssphp": "^1.11.0"
-      },
-      "config": {
-        "preferred-install": "dist",
-        "prepend-autoloader": false
-      },
-      "autoload": {
-        
-        "psr-4": {
-          "PrestaSafe\\PrettyBlocks\\": "src/",
-          "PrestaSafe\\PrettyBlocks\\Fields\\": "classes/prettyblocks/fields/",
-          "PrestaSafe\\PrettyBlocks\\Interface\\": "classes/prettyblocks/interface/",
-          "PrestaSafe\\PrettyBlocks\\Core\\": "classes/prettyblocks/core/"
-        },
-        "classmap": ["prettyblocks.php","classes"],
-        "exclude-from-classmap": []
-      },
-      "type": "prestashop-module",
-      "license": "AFL-3.0"
+    "classmap": [
+      "prettyblocks.php",
+      "classes"
+    ],
+    "exclude-from-classmap": []
+  },
+  "type": "prestashop-module"
 }
