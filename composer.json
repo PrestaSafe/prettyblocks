@@ -17,6 +17,7 @@
     "scssphp/scssphp": "^1.11.0"
   },
   "require-dev": {
+    "prestashop/php-dev-tools": "^4.3",
     "scssphp/scssphp": "^1.4.1"
   },
   "config": {
@@ -35,6 +36,11 @@
       "classes"
     ],
     "exclude-from-classmap": []
+  },
+  "scripts": {
+    "lint": [
+      "php-cs-fixer fix --no-interaction --dry-run --diff"
+    ]
   },
   "type": "prestashop-module"
 }
