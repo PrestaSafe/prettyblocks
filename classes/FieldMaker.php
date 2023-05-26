@@ -346,14 +346,19 @@ class FieldMaker{
     private function formatFieldFileupload()
     {
 
-        if($this->force_default_value && $this->newValue == '')
+         // if value exists in DB and newValue is empty
+        if($this->value !== '' && $this->newValue === '')
         {
-            return $this->field['default'] ? $this->secureFileUploadEntry($this->field['default']) : '';
-        }
-        if(is_array($this->newValue) && isset($this->newValue['url']))
+            return $this->secureFileUploadEntry($this->value);
+        }       
+        // if value doesn't exists in DB and new value is set
+        if($this->force_default_value && $this->newValue === '')
         {
-            return $this->secureFileUploadEntry($this->newValue);
+            return $this->secureFileUploadEntry($this->field['default']);
         }
+
+        return $this->secureFileUploadEntry($this->newValue);
+        
     }
 
     private function formatFieldEditor()
@@ -565,7 +570,17 @@ class FieldMaker{
     private function secureFileUploadEntry($array)
     {
         $secure = [];
-        $secure['url'] = pSQL($array['url']);
+        $url = '';
+        if(!isset($array['url']))
+        {
+            if($this->force_default_value && isset($this->field['default']['url']))
+            {
+                $url = $this->field['default']['url'];
+            }
+        }else{
+            $url = $array['url'];
+        }
+        $secure['url'] = pSQL($url);
         return $secure;
     }
 
