@@ -1,4 +1,6 @@
 <?php
+
+use PrestaSafe\PrettyBlocks\Presenter\FieldPresenter;
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -32,6 +34,7 @@ class PrettyBlocksModel extends ObjectModel
     public $date_upd;
 
     public $id_lang;
+    public $fields = [];
 
     /**
      * @see ObjectModel::$definition
@@ -101,11 +104,12 @@ class PrettyBlocksModel extends ObjectModel
         return true;
     }
 
+    
     /**
      * Display blocks for one zone
      *
      * @param zone_name|string
-     * @param context|string : back of front (different results)
+     * @param context|string : back or front (different results)
      * @param id_lang|int
      * @param id_shop|int
      *
@@ -153,7 +157,9 @@ class PrettyBlocksModel extends ObjectModel
         $block['id_lang'] = $this->id_lang;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
-        $block['settings_formatted'] = $this->_formatGetConfigForApp($block, 'back');
+        // $block['settings_formatted'] = $this->_formatGetConfigForApp($block, 'back');
+        $block['settings_formatted'] = $this->_formatConfig($block, 'back');
+        
 
         $block['repeater_db'] = $this->_formatRepeaterDb($state, $repeaterDefault);
 
@@ -187,6 +193,66 @@ class PrettyBlocksModel extends ObjectModel
 
         return $block;
     }
+
+    public function _formatConfig($block, $context = 'front')
+    {
+        $formatted = [];
+        $this->getConfigFields($block, $context);
+
+        foreach($this->fields as $name => $field) {
+            $formatted[$name] = (new FieldPresenter())->present($field);
+        }
+
+        // is settings_formatted section block
+        $formatted['templates'] = $this->_getBlockTemplate($block);
+        $formatted['templateSelected'] = $this->_getTemplateSelected($block);
+        $formatted['default'] = $this->_getDefaultParams($block);
+        return $formatted;
+    }
+
+    public function setConfigFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    public function getConfigFields($block = false, $context = 'front')
+    {   
+        if(!$block)
+        {
+            $block = $this->mergeStateWithFields();
+        }
+
+        $fields = [];
+        if(!isset($block['config']['fields']) && empty($block['config']['fields'])){
+            return $fields;
+        } 
+
+        foreach($block['config']['fields'] as $key => $field)
+        {
+            $fieldMaker = (new FieldMaker($block))
+            ->setKey($key)
+            ->setContext($context)
+            ->get();
+            $fields[$key] = $fieldMaker;
+        }
+        $this->fields = $fields;
+        return $this;
+    }
+
+    public function generateJsonConfig($returnJson = true)
+    {
+        $output = [];
+        foreach($this->fields as $key => $field)
+        {
+            $output[$key] = $field->getValue();
+        }
+        if($returnJson)
+        {
+            return json_encode($output, true);
+        }
+        return $output;
+    }
+
 
     /**
      * get the selected template
@@ -257,10 +323,28 @@ class PrettyBlocksModel extends ObjectModel
 
     public function updateConfig($stateRequest)
     {
+        // dump($stateRequest);
         $block = $this->mergeStateWithFields();
+        $fields = [];
+        $fieldsRequest = array_filter($stateRequest, function ($field) {
+            return isset($field['value']);
+        });
+
+        foreach($fieldsRequest as $key => $field) {  
+            $obj = (new FieldMaker($block))
+            ->setKey($key)
+            ->setModel($this)
+            ->setNewValue($field['value'])
+            ->get();
+            $fields[$key] = $obj;
+        }   
+        $this->setConfigFields($fields);
+        // dump($this->generateJsonConfig());
+        $this->config = $this->generateJsonConfig();
+        $this->save();
+
         $config = $this->_formatGetConfigForApp($block);
         $this->_formatUpdateConfig($config, $stateRequest, $block);
-
         return true;
     }
 
@@ -415,7 +499,6 @@ class PrettyBlocksModel extends ObjectModel
     {
         $config = $block['config']['fields'] ?? [];
         $formatted = [];
-        $config = $block['config']['fields'] ?? [];
         if (is_array($config) && count($config) > 0) {
             $values = $this->_formatGetConfig($block, $context);
             foreach ($config as $name => $field) {
@@ -427,7 +510,7 @@ class PrettyBlocksModel extends ObjectModel
                 $formatted[$name] = $field;
             }
         }
-
+       
         // is settings_formatted section block
         $formatted['templates'] = $this->_getBlockTemplate($block);
         $formatted['templateSelected'] = $this->_getTemplateSelected($block);
@@ -489,12 +572,20 @@ class PrettyBlocksModel extends ObjectModel
     private function _formatGetConfig($block, $context = 'front')
     {
         $formatted = [];
-        $value = '';
-        $config = $block['config']['fields'] ?? [];
-        if (is_array($config) && count($config) > 0) {
-            foreach ($config as $field => $value) {
-                $formatted[$field] = $this->_formatFieldConfigFront($field, $value, $block, $context);
-            }
+        // $value = '';
+        // $config = $block['config']['fields'] ?? [];
+        // if (is_array($config) && count($config) > 0) {
+        //     foreach ($config as $field => $value) {
+        //         $formatted[$field] = $this->_formatFieldConfigFront($field, $value, $block, $context);
+        //     }
+        // }
+        $fields = $this->_formatConfig($block, $context);
+        $fields =  array_filter($fields, function ($field) {
+            return isset($field['formatted_value']);
+        });
+        foreach($fields as $name => $field) {
+
+            $formatted[$name] = $field['formatted_value'] ?? $field['value'];
         }
         $formatted['templates'] = $this->_getBlockTemplate($block);
         $formatted['templateSelected'] = $this->_getTemplateSelected($block);
