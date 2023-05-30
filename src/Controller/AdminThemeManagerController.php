@@ -21,24 +21,11 @@
 namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
-use Configuration;
-use Context;
-use Db;
-use Exception;
-use FieldFormatter;
-use HelperBuilder;
 use Hook;
-use Language;
-use Link;
-use Module;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use PrestaShopCollection;
-use PrettyBlocksModel;
-use Shop;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Tools;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
@@ -55,11 +42,11 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 $url = $posts['state']['imgs']['url'];
             }
 
-            $message = Context::getContext()->getTranslator()->trans('Image removed successfully', [], 'Modules.Prettyblocks.Admin');
-            $path = HelperBuilder::pathFormatterFromUrl($url);
+            $message = \Context::getContext()->getTranslator()->trans('Image removed successfully', [], 'Modules.Prettyblocks.Admin');
+            $path = \HelperBuilder::pathFormatterFromUrl($url);
             $unlink = @unlink($path);
             if (!$unlink) {
-                $message = Context::getContext()->getTranslator()->trans('Image not found', [], 'Modules.Prettyblocks.Admin');
+                $message = \Context::getContext()->getTranslator()->trans('Image not found', [], 'Modules.Prettyblocks.Admin');
             }
 
             return (new JsonResponse())->setData([
@@ -76,24 +63,24 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $imgs = [];
         if (in_array($extension, ['png', 'svg', 'jpg', 'jpeg', 'gif', 'webp'])) {
             // can upload
-            $new_name = Tools::str2url($file['name']);
+            $new_name = \Tools::str2url($file['name']);
             $path = '$/modules/prettyblocks/views/images/';
-            if (Tools::getIsset('path')) {
-                $path = pSQL(Tools::getValue('path'));
+            if (\Tools::getIsset('path')) {
+                $path = pSQL(\Tools::getValue('path'));
             }
-            $upload_dir = HelperBuilder::pathFormatterFromString($path);
+            $upload_dir = \HelperBuilder::pathFormatterFromString($path);
             if (move_uploaded_file($file['tmp_name'], $upload_dir . $new_name . '.' . $extension)) {
                 $uploaded = true;
-                $imgs = ['url' => HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension];
+                $imgs = ['url' => \HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension];
             }
         }
 
         return (new JsonResponse())->setData([
             'file' => $request->files,
-            'test' => json_decode(Tools::file_get_contents('php://input'), true),
-            'tools' => Tools::getAllValues(),
-            'path_request' => Tools::getValue('path'),
-            'path' => HelperBuilder::pathFormatterFromString(Tools::getValue('path')),
+            'test' => json_decode(\Tools::file_get_contents('php://input'), true),
+            'tools' => \Tools::getAllValues(),
+            'path_request' => \Tools::getValue('path'),
+            'path' => \HelperBuilder::pathFormatterFromString(\Tools::getValue('path')),
             'request' => $posts,
             'uploaded' => $uploaded,
             'ext' => $extension,
@@ -104,7 +91,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
     private function getShops()
     {
-        $shops = Shop::getShops();
+        $shops = \Shop::getShops();
         $results = [];
 
         foreach ($shops as $shop) {
@@ -117,7 +104,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
     private function buildShopUri($shop)
     {
-        return Tools::getProtocol(Tools::usingSecureMode()) . $shop['domain_ssl'] . $shop['uri'];
+        return \Tools::getProtocol(\Tools::usingSecureMode()) . $shop['domain_ssl'] . $shop['uri'];
     }
 
     public function indexAction()
@@ -125,12 +112,12 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $context = $this->get('prestashop.adapter.legacy.context')->getContext();
 
         $shop = $context->shop;
-        $domain = Tools::getShopDomainSsl(true);
+        $domain = \Tools::getShopDomainSsl(true);
 
         $filesystem = new Filesystem();
         $path = '/modules/prettyblocks/build/';
         $build_dir = _PS_ROOT_DIR_ . $path;
-        $build_dir_https = Tools::getShopDomainSsl(true) . $shop->physical_uri . ltrim($path, '/');
+        $build_dir_https = \Tools::getShopDomainSsl(true) . $shop->physical_uri . ltrim($path, '/');
         $js = [];
         $css = [];
         $js_entry = '';
@@ -139,9 +126,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $manifest = $build_dir . 'manifest.json';
 
             if (!$filesystem->exists($manifest)) {
-                throw new Exception('manifest.json not exist');
+                throw new \Exception('manifest.json not exist');
             }
-            $json = Tools::file_get_contents($manifest);
+            $json = \Tools::file_get_contents($manifest);
             $json = json_decode($json, true);
 
             foreach ($json as $file) {
@@ -160,57 +147,57 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             }
         }
 
-        $module = Module::getInstanceByName('prettyblocks');
+        $module = \Module::getInstanceByName('prettyblocks');
 
         $uri = $module->getPathUri() . 'views/css/back.css?version=' . $module->version;
 
-        $domain = Tools::getShopDomainSsl(true);
+        $domain = \Tools::getShopDomainSsl(true);
 
-        $symfonyUrl = $domain . Link::getUrlSmarty([
+        $symfonyUrl = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'prettyblocks_homesimulator',
         ]);
-        $sfAdminBlockAPI = $domain . Link::getUrlSmarty([
+        $sfAdminBlockAPI = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'prettyblocks_api',
         ]);
 
-        $uploadUrl = $domain . Link::getUrlSmarty([
+        $uploadUrl = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'prettyblocks_upload',
         ]);
 
-        $collectionURL = $domain . Link::getUrlSmarty([
+        $collectionURL = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'prettyblocks_collection',
         ]);
 
-        $blockActionUrls = $domain . Link::getUrlSmarty([
+        $blockActionUrls = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'prettyblocks_api_get_block_action_urls',
         ]);
 
-        $link = new Link();
+        $link = new \Link();
         $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
 
-        $blockAvailableUrls = $domain . Link::getUrlSmarty([
+        $blockAvailableUrls = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'prettyblocks_api_get_blocks_available',
         ]);
 
-        $settingsUrls = $domain . Link::getUrlSmarty([
+        $settingsUrls = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'prettyblocks_theme_settings',
         ]);
 
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
 
-        $translator = Context::getContext()->getTranslator();
+        $translator = \Context::getContext()->getTranslator();
         $shops = $this->getShops();
 
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
-            'favicon_url' => Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
+            'favicon_url' => \Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
             'module_name' => $module->displayName,
             'shop_name' => $context->shop->name,
             'ajax_urls' => [
@@ -246,7 +233,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'theme_settings' => $translator->trans('Theme settings', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
-                'ajax_token' => Configuration::get('_PRETTYBLOCKS_TOKEN_'),
+                'ajax_token' => \Configuration::get('_PRETTYBLOCKS_TOKEN_'),
+                'prettyblocks_version' => $module->version,
             ],
             'css_build' => $css,
             'js_build' => $js,
@@ -274,10 +262,10 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $id_lang = (int) $request->get('ctx_id_lang');
             $id_shop = (int) $request->get('ctx_id_shop');
             $id_block = (int) $request->query->get('id_prettyblocks');
-            $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
+            $state = new \PrettyBlocksModel($id_block, $id_lang, $id_shop);
             $block = $state->mergeStateWithFields();
 
-            die(json_encode([
+            exit(json_encode([
                 'state' => $block,
                 'config' => $block['settings_formatted'],
             ]));
@@ -285,9 +273,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
         // a tester
         if ($action == 'getState' || $action == 'getSubState') {
-            $state = new PrettyBlocksModel((int) $request->query->get('id_prettyblocks'));
+            $state = new \PrettyBlocksModel((int) $request->query->get('id_prettyblocks'));
             $block = $state->mergeStateWithFields();
-            die(json_encode([
+            exit(json_encode([
                 'state' => $block,
                 'state_db' => ($action == 'getState') ? $block['repeater_db'] : $block['repeater_db'],
             ]));
@@ -302,7 +290,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $substate_key = $ids[1];
             $id_lang = (int) $request->get('ctx_id_lang');
             $id_shop = (int) $request->get('ctx_id_shop');
-            $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
+            $state = new \PrettyBlocksModel($id_block, $id_lang, $id_shop);
             $block = $state->mergeStateWithFields();
             $state_db = json_decode($state->state, true);
 
@@ -312,7 +300,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $encoded = json_encode($state_db);
             $state->state = $encoded;
             if ($state->save()) {
-                die(json_encode([
+                exit(json_encode([
                     'success' => true,
                     'state' => $encoded,
                 ]));
@@ -322,9 +310,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         // remove element
         if ($action == 'removeState') {
             $id_prettyblocks = (string) $request->query->get('id_prettyblocks');
-            $block = new PrettyBlocksModel($id_prettyblocks);
+            $block = new \PrettyBlocksModel($id_prettyblocks);
             if ($block->delete()) {
-                die(json_encode([
+                exit(json_encode([
                     'success' => true,
                 ]));
             }
@@ -336,7 +324,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $id_block = (int) $request->query->get('id_prettyblocks');
             $id_lang = (int) $request->query->get('ctx_id_lang');
             $id_shop = (int) $request->query->get('ctx_id_shop');
-            $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
+            $state = new \PrettyBlocksModel($id_block, $id_lang, $id_shop);
 
             $block = $state->mergeStateWithFields();
             $state_to_push = $block['state_to_push'];
@@ -344,7 +332,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             if (!isset($block['state_to_push'])) {
                 $success = false;
                 $state_to_push = [];
-                die(json_encode([
+                exit(json_encode([
                     'state_to_push' => $state_to_push,
                     'success' => $success,
                 ]));
@@ -363,7 +351,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $encoded = json_encode($state_db);
             $state->state = $encoded;
             if ($state->save()) {
-                die(json_encode([
+                exit(json_encode([
                     'success' => $success,
                     'to_push' => $state_to_push,
                 ]));
@@ -376,7 +364,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $id_block = (int) $item0['id_prettyblocks'];
             $id_lang = (int) $request->query->get('ctx_id_lang');
             $id_shop = (int) $request->query->get('ctx_id_shop');
-            $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
+            $state = new \PrettyBlocksModel($id_block, $id_lang, $id_shop);
             $state_db = json_decode($state->state, true);
             $keyPositions = [];
             foreach ($items as $item) {
@@ -388,7 +376,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
             $state->state = json_encode($keyPositions);
             $state->save();
-            die(json_encode([
+            exit(json_encode([
                 'state' => $items,
                 'errors' => $action,
             ]));
@@ -398,10 +386,10 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $id_block = (int) $request->query->get('id_prettyblocks');
             $id_lang = (int) $request->query->get('ctx_id_lang');
             $id_shop = (int) $request->query->get('ctx_id_shop');
-            $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
+            $state = new \PrettyBlocksModel($id_block, $id_lang, $id_shop);
             $block = $state->mergeStateWithFields();
 
-            return die(json_encode($block, true));
+            return exit(json_encode($block, true));
         }
 
         if ($action == 'updateStateParentPosition') {
@@ -412,22 +400,22 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 $item = (object) $item;
                 $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) pSQL($item->id_prettyblocks);
                 $position[$item->id_prettyblocks] = $position;
-                Db::getInstance()->execute($sql);
+                \Db::getInstance()->execute($sql);
                 ++$i;
             }
         }
 
         if ($action == 'updateThemeSettings') {
             $stateRequest = $request->query->get('stateRequest');
-            PrettyBlocksModel::updateThemeSettings($stateRequest);
-            die(json_encode([
+            \PrettyBlocksModel::updateThemeSettings($stateRequest);
+            exit(json_encode([
                 'success' => true,
                 'saved' => true,
                 'message' => $this->getTranslator()->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
             ], true));
         }
 
-        $blocks = PrettyBlocksModel::getInstanceByZone('displayHome');
+        $blocks = \PrettyBlocksModel::getInstanceByZone('displayHome');
 
         return (new JsonResponse())->setData(['blocks' => $blocks]);
     }
@@ -444,7 +432,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $zone_name = pSQL($request->get('zone_name'));
             $id_lang = (int) $request->get('ctx_id_lang');
             $id_shop = (int) $request->get('ctx_id_shop');
-            $state = PrettyBlocksModel::registerBlockToZone($zone_name, $code, $id_lang, $id_shop);
+            $state = \PrettyBlocksModel::registerBlockToZone($zone_name, $code, $id_lang, $id_shop);
         }
 
         return (new JsonResponse())->setData([
@@ -455,7 +443,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
     public function getSettingsAction()
     {
-        $res = PrettyBlocksModel::getThemeSettings(true, 'back');
+        $res = \PrettyBlocksModel::getThemeSettings(true, 'back');
 
         return (new JsonResponse())->setData([
             'settings' => $res,
@@ -474,7 +462,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     {
         $action = $request->get('action');
         if ($action == 'getState') {
-            $state = new PrettyBlocksModel((int) $request->query->get('id_prettyblocks'));
+            $state = new \PrettyBlocksModel((int) $request->query->get('id_prettyblocks'));
             $block = $state->mergeStateWithFields();
 
             return (new JsonResponse())->setData([
@@ -485,7 +473,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         if ($action == 'updateState') {
             $id_block = (int) $request->query->get('id_prettyblocks');
 
-            $state = new PrettyBlocksModel($id_block);
+            $state = new \PrettyBlocksModel($id_block);
             $stateRequest = $request->get('state');
             // dump(json_decode($stateRequest[0],true));
             // die();
@@ -510,7 +498,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         // remove element
         if ($action == 'removeState') {
             $id_prettyblocks = (string) $request->query->get('id_prettyblocks');
-            $block = new PrettyBlocksModel($id_prettyblocks);
+            $block = new \PrettyBlocksModel($id_prettyblocks);
             if ($block->delete()) {
                 return (new JsonResponse())->setData([
                     'success' => true,
@@ -527,7 +515,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
     private function getTranslator()
     {
-        return Context::getContext()->getTranslator();
+        return \Context::getContext()->getTranslator();
     }
 
     /**
@@ -536,7 +524,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     public function getBlocksAvailableAction()
     {
         return (new JsonResponse())->setData([
-            'blocks' => PrettyBlocksModel::getBlocksAvailable(),
+            'blocks' => \PrettyBlocksModel::getBlocksAvailable(),
             'errors' => 'No action found',
         ]);
     }
@@ -549,16 +537,16 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     /**
      * get collection
      *
-     * @return PrestaShopCollection
+     * @return \PrestaShopCollection
      */
     public function getCollectionAction(Request $request)
     {
         $collection = pSQL($request->query->get('collection'));
         $query = pSQL($request->query->get('query'));
         $selector = $request->query->get('selector') ?? '{id} - {name}';
-        $psCollection = new PrestaShopCollection($collection, Context::getContext()->language->id);
-        $columns = FieldFormatter::formatSelectorsToArray($selector);
-        $toSearch = FieldFormatter::matchColumnsWithCollection($collection, $columns);
+        $psCollection = new \PrestaShopCollection($collection, \Context::getContext()->language->id);
+        $columns = \FieldFormatter::formatSelectorsToArray($selector);
+        $toSearch = \FieldFormatter::matchColumnsWithCollection($collection, $columns);
 
         $sqlHaving = '';
         foreach ($toSearch as $searchC) {
@@ -588,14 +576,14 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'id' => $r->id,
                 'primary' => $r->id,
                 'name' => $formattedName,
-                'formatted' => PrettyBlocksModel::formatFrontSelector($r, $selector) ?? $r->name,
+                'formatted' => \PrettyBlocksModel::formatFrontSelector($r, $selector) ?? $r->name,
             ];
         }
 
         return (new JsonResponse())->setData(
             [
                 'results' => $jayParsedAry,
-                'query' => Tools::getAllValues(),
+                'query' => \Tools::getAllValues(),
                 'request' => $request->query->all(),
             ]
         );
@@ -603,23 +591,23 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
     /**
      * @param int|null $idLang
-     * @param Context|null $context
+     * @param \Context|null $context
      * @param int|null $idShop
      *
      * @return string
      */
-    protected function getLangLink($idLang = null, Context $context = null, $idShop = null)
+    protected function getLangLink($idLang = null, \Context $context = null, $idShop = null)
     {
         static $psRewritingSettings = null;
         if ($psRewritingSettings === null) {
-            $psRewritingSettings = (int) Configuration::get('PS_REWRITING_SETTINGS', null, null, $idShop);
+            $psRewritingSettings = (int) \Configuration::get('PS_REWRITING_SETTINGS', null, null, $idShop);
         }
 
         if (!$context) {
-            $context = Context::getContext();
+            $context = \Context::getContext();
         }
 
-        if (!in_array($idShop, [$context->shop->id,  null]) || !Language::isMultiLanguageActivated($idShop) || !$psRewritingSettings) {
+        if (!in_array($idShop, [$context->shop->id,  null]) || !\Language::isMultiLanguageActivated($idShop) || !$psRewritingSettings) {
             return '';
         }
 
@@ -627,6 +615,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $idLang = $context->language->id;
         }
 
-        return Language::getIsoById($idLang) . '/';
+        return \Language::getIsoById($idLang) . '/';
     }
 }

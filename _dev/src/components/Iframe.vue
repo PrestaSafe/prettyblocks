@@ -4,6 +4,7 @@ import emitter from 'tiny-emitter/instance'
 import Loader from './Loader.vue'
 import Button from './Button.vue'
 import Iframe from '../scripts/iframe'
+import { contextShop } from '../store/currentBlock'
 
 let iframe = new Iframe(ajax_urls.current_domain, 1, 1)
 defineProps({
@@ -41,6 +42,8 @@ const reloadIframe = () => {
   iframe.reloadIframe()
 }
 emitter.on('reloadIframe', async (id_prettyblocks) => {
+  let context = contextShop()
+  iframe.setUrl(context.href)
   iframe.reloadIframe()
 })
 
@@ -50,9 +53,7 @@ emitter.on('changeUrl', (shop) => {
   iframe.reloadIframe()
 })
 
-const changeUrl = async (shop) => {
-  console.log('url changed !',shop)
-}
+
 </script>
 
 <template>

@@ -42,7 +42,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             }
         }
         if (empty($this->ajax_token) || Tools::getValue('ajax_token') !== $this->ajax_token) {
-            die('Wrong ajax token !');
+            exit('Wrong ajax token !');
         }
         parent::init();
     }
@@ -55,7 +55,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $state = new PrettyBlocksModel($id_block, $id_lang);
         $block = $state->mergeStateWithFields();
 
-        die(json_encode([
+        exit(json_encode([
             'state' => $block,
             'config' => $block['settings_formatted'],
         ]));
@@ -66,7 +66,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     {
         $state = new PrettyBlocksModel((int) Tools::getValue('id_prettyblocks'));
         $block = $state->mergeStateWithFields();
-        die(json_encode([
+        exit(json_encode([
             'state' => $block,
             'state_db' => $block['repeater_db'],
         ]));
@@ -97,7 +97,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $encoded = json_encode($state_db);
         $state->state = $encoded;
         if ($state->save()) {
-            die(json_encode([
+            exit(json_encode([
                 'success' => true,
                 'state' => $encoded,
             ]));
@@ -110,7 +110,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_prettyblocks = (int) Tools::getValue('id_prettyblocks');
         $block = new PrettyBlocksModel($id_prettyblocks);
         if ($block->delete()) {
-            die(json_encode([
+            exit(json_encode([
                 'success' => true,
             ]));
         }
@@ -131,7 +131,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         if (!isset($block['state_to_push'])) {
             $success = false;
             $state_to_push = [];
-            die(json_encode([
+            exit(json_encode([
                 'state_to_push' => $state_to_push,
                 'success' => $success,
             ]));
@@ -150,7 +150,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $encoded = json_encode($state_db);
         $state->state = $encoded;
         if ($state->save()) {
-            die(json_encode([
+            exit(json_encode([
                 'success' => $success,
                 'to_push' => $state_to_push,
             ]));
@@ -176,7 +176,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
         $state->state = json_encode($keyPositions);
         $state->save();
-        die(json_encode([
+        exit(json_encode([
             'state' => $items,
             // 'errors' => $action
         ]));
@@ -190,7 +190,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
         $block = $state->mergeStateWithFields();
 
-        return die(json_encode($block, true));
+        return exit(json_encode($block, true));
     }
 
     public function displayAjaxupdateStateParentPosition()
@@ -211,7 +211,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     {
         $stateRequest = Tools::getValue('stateRequest');
         PrettyBlocksModel::updateThemeSettings($stateRequest);
-        die(json_encode([
+        exit(json_encode([
             'success' => true,
             'saved' => true,
             'message' => $this->translator->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
@@ -224,7 +224,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
 
-        die(json_encode(
+        exit(json_encode(
             [
                 'blocks' => PrettyBlocksModel::getInstanceByZone($zone, 'back', $id_lang, $id_shop),
                 'id_lang' => $id_lang,
@@ -244,7 +244,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $state->updateConfig($stateRequest);
 
         if ($state->updateConfig($stateRequest)) {
-            die(json_encode([
+            exit(json_encode([
                 'success' => true,
                 'saved' => true,
                 'state' => $stateRequest,
@@ -270,7 +270,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $state->state = json_encode($state_decoded);
 
         if ($state->save()) {
-            die(json_encode([
+            exit(json_encode([
                 'success' => true,
                 'saved' => true,
                 'state' => $stateRequest,
@@ -290,7 +290,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             'data' => $block->mergeStateWithFields(),
         ]);
 
-        die(json_encode(
+        exit(json_encode(
             [
                 'html' => $html,
             ]
@@ -309,7 +309,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             'instance' => $block,
         ]);
 
-        die(json_encode(
+        exit(json_encode(
             [
                 'html' => $html,
                 'block' => Tools::getValue('block'),
