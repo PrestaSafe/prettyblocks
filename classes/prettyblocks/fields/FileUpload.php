@@ -20,9 +20,7 @@
 
 namespace PrestaSafe\PrettyBlocks\Fields;
 
-use Configuration;
 use PrestaSafe\PrettyBlocks\Core\FieldCore;
-use Tools;
 
 // $field = (new FieldUpload)
 // ->setBlock($block)
@@ -72,7 +70,7 @@ class FileUpload extends FieldCore
         $key = $this->getKey();
 
         $default_value = $this->default_value ?? '';
-        $res = Configuration::get($key);
+        $res = \Configuration::get($key);
         if (!$res) {
             $res = $default_value;
         } else {
@@ -87,9 +85,9 @@ class FileUpload extends FieldCore
     {
         if ($this->key == null) {
             if ($this->block) {
-                $this->key = Tools::strtoupper($this->name . $this->context);
+                $this->key = \Tools::strtoupper($this->name . $this->context);
             } else {
-                $this->key = Tools::strtoupper($this->block['id_prettyblocks'] . '_' . $this->name . $this->context);
+                $this->key = \Tools::strtoupper($this->block['id_prettyblocks'] . '_' . $this->name . $this->context);
             }
         }
 
@@ -115,7 +113,7 @@ class FileUpload extends FieldCore
         if ($this->context !== '_state') {
             if ($this->value != $this->default_value) {
                 $this->getKey();
-                Configuration::updateValue($this->key, $this->value, true);
+                \Configuration::updateValue($this->key, $this->value, true);
             }
         } else {
             // save block
