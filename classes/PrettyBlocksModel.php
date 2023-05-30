@@ -77,7 +77,7 @@ class PrettyBlocksModel extends ObjectModel
     /**
      * Remove related lines from configuration table
      */
-    private function removeConfig()
+    public function removeConfig($onlyConfig = false)
     {
         $id = (int) $this->id_prettyblocks;
 
@@ -85,13 +85,16 @@ class PrettyBlocksModel extends ObjectModel
         $key2 = $id . '\_DEFAULT\_PARAMS';
         $key3 = $id . '\_TEMPLATE';
 
-        $configLines = Db::getInstance()->executeS('
+        $sql = '
             SELECT name
             FROM ' . _DB_PREFIX_ . 'configuration
-            WHERE name LIKE "' . pSQL($key1) . '"
-            OR name LIKE "' . pSQL($key2) . '"
-            OR name LIKE "' . pSQL($key3) . '"
-        ');
+            WHERE name LIKE "' . pSQL($key1) . '"';
+            if (!$onlyConfig) {
+                $sql .= 'OR name LIKE "' . pSQL($key2) . '"
+                    OR name LIKE "' . pSQL($key3) . '"
+                ';
+            }
+        $configLines = Db::getInstance()->executeS($sql);
 
         if ($configLines) {
             foreach ($configLines as $configLine) {
