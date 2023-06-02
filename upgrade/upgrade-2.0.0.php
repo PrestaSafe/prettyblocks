@@ -31,5 +31,5 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_2_0_0($module)
 {
-    return PrettyBlocksMigrate::migrateConfig();
+    return \PrettyBlocksMigrate::migrateConfig();
 }

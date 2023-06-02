@@ -17,8 +17,7 @@
     "scssphp/scssphp": "^1.11.0"
   },
   "require-dev": {
-    "prestashop/php-dev-tools": "^4.3",
-    "scssphp/scssphp": "^1.4.1"
+    "prestashop/php-dev-tools": "^4.3"
   },
   "config": {
     "preferred-install": "dist",
