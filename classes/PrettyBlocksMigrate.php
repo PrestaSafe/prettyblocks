@@ -63,7 +63,7 @@ class PrettyBlocksMigrate
                 $model->save();
 
                 // destroy configuration
-                // $res &= $model->removeConfig();
+                $res &= $model->removeConfig();
             }
         }
         return $res;
