@@ -412,7 +412,6 @@ class PrettyBlocksField{
         // if value doesn't exists in DB and new value is set
         if($this->force_default_value && is_null($this->newValue))
         {
-            dump('value not exists and forced ');
             return $this->secureFileUploadEntry($this->field['default']);
         }
         
