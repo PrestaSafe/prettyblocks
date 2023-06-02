@@ -29,6 +29,7 @@ class PrettyBlocksMigrate
         self::addTemplateField();
         $langs = \Language::getLanguages();
         $res = true;
+        $fields = [];
         foreach($langs as $lang) {
             $lang_id = $lang['id_lang'];
             $blocks = (new \PrestaShopCollection('PrettyBlocksModel', $lang_id))->getAll();
@@ -42,24 +43,27 @@ class PrettyBlocksMigrate
                     }
                 }
                 // convert in fields and save
-               
-
                 foreach($formatted as $name => $data)
                 {
                     $field = (new PrettyBlocksField($block))
                     ->setKey($name)
                     ->setNewValue($data)
-                    ->save();
-                 
+                    ->get();
+                    $fields[$name] = $field;
                 }
+                $model->setConfigFields($fields);
+                $model->config = $model->generateJsonConfig();
+
                 // moving template to model
                 $model->setCurrentTemplate( pSQL(self::_getTemplateSelected($block)) );
-                $model->setDefaultParams(self::_getDefaultParams($block));
+                
                 // moving default params to model
-
+                $model->setDefaultParams(self::_getDefaultParams($block));
+                
                 $model->save();
+
                 // destroy configuration
-                $res &= $model->removeConfig();
+                // $res &= $model->removeConfig();
             }
         }
         return $res;
