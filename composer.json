@@ -17,8 +17,7 @@
     "scssphp/scssphp": "^1.11.0"
   },
   "require-dev": {
-    "prestashop/php-dev-tools": "^4.3",
-    "scssphp/scssphp": "^1.4.1"
+    "prestashop/php-dev-tools": "^4.3"
   },
   "config": {
     "preferred-install": "dist",
@@ -27,9 +26,9 @@
   "autoload": {
     "psr-4": {
       "PrestaSafe\\PrettyBlocks\\": "src/",
-      "PrestaSafe\\PrettyBlocks\\Fields\\": "classes/prettyblocks/fields/",
-      "PrestaSafe\\PrettyBlocks\\Interface\\": "classes/prettyblocks/interface/",
-      "PrestaSafe\\PrettyBlocks\\Core\\": "classes/prettyblocks/core/"
+      "PrestaSafe\\PrettyBlocks\\Fields\\": "classes/prettyblocks/Fields/",
+      "PrestaSafe\\PrettyBlocks\\Interface\\": "classes/prettyblocks/Interface/",
+      "PrestaSafe\\PrettyBlocks\\Core\\": "classes/prettyblocks/Core/"
     },
     "classmap": [
       "prettyblocks.php",
