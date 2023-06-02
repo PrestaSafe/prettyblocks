@@ -1,6 +1,5 @@
 <?php
 
-use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -19,25 +18,35 @@ use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
-class FieldMaker{
+namespace PrestaSafe\PrettyBlocks\Core;
+use PrettyBlocksModel;
+use Tools;
+use Validate;
+use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
+
+class PrettyBlocksField{
 
     private $block;
-    public $type = 'text';
-    public $config = [];
-    public $id_lang = 0;
-    public $id_shop = 0;
-    public $value = '';
+    private $type = 'text';
+    private $config = [];
+    private $id_lang = 0;
+    private $id_shop = 0;
+    private $value = null;
     private $formattedValue = '';
-    public $newValue = '';
-    public $key = '';
+    private $newValue = null;
+    private $key = '';
     private $field = [];
-    public $label = '';
-    public $model = null;
-    public $force_default_value = false;
-    public $allow_html = true;
-    public $context = 'front';
-    public $mode = 'config';
+    private $label = '';
+    private $model = null;
+    private $force_default_value = false;
+    private $allow_html = true;
+    private $context = 'front';
+    private $mode = 'config';
 
+    /** 
+     * Constructor
+     * @param Array $block
+     */
     public function __construct($block)
     {
         $this->block = $block;
@@ -46,20 +55,23 @@ class FieldMaker{
         $this->setIdShop((int)$block['id_shop']);
     }
 
-
-     /*
-        |
-        |--------------------------------------------------------------------------
-        | set the context: 'front' or 'back' only.
-        |--------------------------------------------------------------------------
-        |
-    */
+    /**
+     * set the context of prettyblocks results
+     * back or front only accepted
+     * @param String $context
+     * @return $this
+     */
     public function setContext($context)
     {
         $this->context = $context;
         return $this;
     }
 
+    /**
+     * force default value
+     * @param Bool $value default true
+     * @return $this
+     */
     public function forceDefaultValue($value = true)
     {
         $this->force_default_value = filter_var($value, FILTER_VALIDATE_BOOLEAN);
@@ -74,6 +86,11 @@ class FieldMaker{
         |
     */
 
+    /** 
+     * Allow html in the field
+     * @param Bool $value
+     * @return $this
+     */
     public function allowHtml($value)
     {
         $this->allow_html = (bool)$value;
@@ -81,6 +98,7 @@ class FieldMaker{
     }
 
     /** 
+     * set the type of the field
      * @param String $type
      */
     public function setType($type)
@@ -90,6 +108,7 @@ class FieldMaker{
     }
 
     /** 
+     * get the value
      * @return Any
      */
     public function getValue()
@@ -97,11 +116,20 @@ class FieldMaker{
         return $this->value;
     }
 
+    /** 
+     * get the formatted Value
+     * @return Any
+     */
     public function getFormattedValue()
     {
         return $this->formattedValue;
     }
 
+    /** 
+     * set model
+     * @param PrettyBlocksModel $model
+     * @return $this
+     */
     public function setModel($model)
     {
         $this->model = $model;
@@ -110,6 +138,7 @@ class FieldMaker{
 
     /** 
      * Set all essential Data
+     * @return $this
      */
     public function get()
     {
@@ -143,22 +172,25 @@ class FieldMaker{
         $this->setValues();
         return $this;
     }
-    /*
-        |
-        |--------------------------------------------------------------------------
-        |set value if alrealy exist
-        |--------------------------------------------------------------------------
-        |
-    */
+    
+    /** 
+     * get field Data
+     * @param String $data
+     * @param any $shouldReturn
+     * @return array|any
+     */
     public function getFieldData($data, $shouldReturn = false)
     {
         return $this->field[$data] ?? $shouldReturn;
     }
-
+    /** 
+     * Set values
+     * @return $this
+     */
     public function setValues()
     {
         $values = $this->getFormattedConfig();
-        if(isset($values[$this->key]) && $this->newValue === '')
+        if(isset($values[$this->key]) && is_null($this->newValue))
         {
             $this->value = $values[$this->key];
         } else {
@@ -172,6 +204,7 @@ class FieldMaker{
 
     /** 
      * @param any $value
+     * @return $this
      */
     public function setNewValue($value)
     {
@@ -181,6 +214,7 @@ class FieldMaker{
 
     /**
      * @param String $key
+     * @return $this
      */
     public function setKey($key)
     {
@@ -190,9 +224,12 @@ class FieldMaker{
         return $this;
     }
     
+    /** 
+     * set Field
+     * @return $this
+     */
     private function _setField()
     {   
-
         if(isset($this->block['config']['fields'][$this->key]))
         {
             $this->field = $this->block['config']['fields'][$this->key];
@@ -200,7 +237,10 @@ class FieldMaker{
         return $this;
     }
     
-
+    /**
+     * set formatted value 
+     * @return Array
+     */
     private function _setFormattedValue()
     {
         $data = $this->getFormattedConfig();
@@ -208,12 +248,22 @@ class FieldMaker{
         return $data;
     }
 
+    /** 
+     * set  IDland
+     * @param Int $id_lang
+     * @return $this
+     */
     public function setIdLang($id_lang)
     {
         $this->id_lang = (int)$id_lang;
         return $this;
     }
 
+    /**
+     * set Id Shop 
+     * @param Int $id_shop
+     * @return $this
+     */
     public function setIdShop($id_shop)
     {
         $this->id_shop = (int)$id_shop;
@@ -232,26 +282,18 @@ class FieldMaker{
         |   {field}: {value formatted}
         | ]
         ] 
-        |
+        | 
+        @return Array
     */
-
-
     public function getFormattedConfig()
     {
         $value = [];
-        // get Json value formatted in database
         $jsonConfig = $this->model->config;    
-        
         if(!is_null($jsonConfig) && !Validate::isJson($jsonConfig))
         {
             return $value;
         }
         $json = json_decode($jsonConfig, true);
-        // if(!in_array($this->key, $json))
-        // {
-        //     unset($json[$this->key]);
-        // }
-
         return $json;
     }
     
@@ -316,15 +358,19 @@ class FieldMaker{
         |
     */
 
+    /**
+     * format field text
+     * @return string
+     */
     private function formatFieldText()
     {
         // if value exists in DB and newValue is empty
-        if($this->value !== '' && $this->newValue === '')
+        if(!is_null($this->value) && is_null($this->newValue))
         {
             return $this->secureTextEntry($this->value);
         }       
         // if value doesn't exists in DB and new value is set
-        if($this->force_default_value && $this->newValue === '')
+        if($this->force_default_value && is_null($this->newValue))
         {
             return $this->secureTextEntry($this->field['default']);
         }
@@ -333,51 +379,70 @@ class FieldMaker{
         
     }
 
+    /**
+     * format field color
+     * @return string
+     */
     private function formatFieldColor()
     {
         return $this->formatFieldText();
     }
 
+    /**
+     * format field textarea
+     * @return string
+     */
     private function formatFieldTextarea()
     {
         return $this->formatFieldText();
     }
 
+    /**
+     * format field fileupload 
+     * @return array
+     */
     private function formatFieldFileupload()
     {
 
-         // if value exists in DB and newValue is empty
-        if($this->value !== '' && $this->newValue === '')
+        // if value exists in DB and newValue is empty
+        if(is_array($this->value) && is_null($this->newValue))
         {
             return $this->secureFileUploadEntry($this->value);
         }       
         // if value doesn't exists in DB and new value is set
-        if($this->force_default_value && $this->newValue === '')
+        if($this->force_default_value && is_null($this->newValue))
         {
+            dump('value not exists and forced ');
             return $this->secureFileUploadEntry($this->field['default']);
         }
-
+        
         return $this->secureFileUploadEntry($this->newValue);
         
     }
-
+    /** 
+     * format field editor in HTML 
+     * @return string
+     */
     private function formatFieldEditor()
     {
         $this->allow_html = true;
         return $this->formatFieldText();
     }
     
-
+    /**
+     * return the value for PrettyBlocks (backend)
+     * @return boolean
+     */
     private function formatFieldCheckbox()
     {    
         // if value exists in DB and newValue is empty
 
-        if($this->value !== '' && $this->newValue === '')
+        if(!is_null($this->value) && is_null($this->newValue))
         {
             return filter_var($this->value, FILTER_VALIDATE_BOOLEAN) ?? false;
         }       
         // if value doesn't exists in DB and new value is set
-        if($this->force_default_value && $this->newValue === '')
+        if($this->force_default_value && is_null($this->newValue))
         {
             return filter_var($this->field['default'], FILTER_VALIDATE_BOOLEAN) ?? false;
         }
@@ -387,6 +452,7 @@ class FieldMaker{
 
     /**
      * return the value for PrettyBlocks (backend)
+     * @return String
      */
     private function formatFieldRadioGroup()
     {
@@ -395,12 +461,12 @@ class FieldMaker{
             return '';
         }
         // if value exists in DB and newValue is empty
-        if($this->value !== '' && empty($this->newValue) && isset($this->field['choices'][$this->value]))
+        if(!is_null($this->value) && empty($this->newValue) && isset($this->field['choices'][$this->value]))
         {
             return pSQL($this->value);
         }
         // if value doesn't exists in DB and new value is set
-        if($this->force_default_value && $this->newValue === '')
+        if($this->force_default_value && is_null($this->newValue))
         {
             if(is_array($this->field['choices']) 
             && isset($this->field['default'])
@@ -426,6 +492,10 @@ class FieldMaker{
         return '';
     }
 
+    /** 
+     * return the value for PrettyBlocks (frontend)
+     * @return string
+     */
     private function formatFieldRadioGroupForFront()
     {
 
@@ -434,7 +504,7 @@ class FieldMaker{
             return '';
         }
         // if value exists in DB and newValue is empty
-        if($this->value !== '' && empty($this->newValue) && isset($this->field['choices'][$this->value]))
+        if(!is_null($this->value) && empty($this->newValue) && isset($this->field['choices'][$this->value]))
         {
             if($this->allow_html)
             {
@@ -472,23 +542,32 @@ class FieldMaker{
         // if no matches. 
         return '';
     }   
+
+    /**
+     * return the value for PrettyBlocks (frontend)
+     * @return string
+     */
     private function formatFieldSelectForFront()
     {
         return $this->formatFieldRadioGroupForFront();
     }
 
+    /** 
+     * format the value for select field and radioGroup for PrettyBlocks (backend)
+     */
     private function formatFieldSelect()
     {
         return $this->formatFieldRadioGroup();
     }
 
     /**
-     * @todo CHECK RETURN OBJECT PRESENTER FOR FRONT
+     * return the value for PrettyBlocks (frontend)
+     * @return array|bool
      */
     private function formatFieldSelectorForFront()
     {
         // if value exists in DB && newValue is empty
-        if($this->value !== '' && empty($this->newValue) && is_array($this->value) && isset($this->value['show']['id']))
+        if(!is_null($this->value) && empty($this->newValue) && is_array($this->value) && isset($this->value['show']['id']))
         {
             $idCollection = (int)$this->value['show']['id'];
             return $this->_getCollection($idCollection, $this->field['collection']);
@@ -510,28 +589,39 @@ class FieldMaker{
         return false;
     }
 
+    /**
+     * formatFieldSelector
+     * @return string|bool
+     */
     private function formatFieldSelector()
     {
         // if value exists in DB && newValue is empty
-        if($this->value !== '' && empty($this->newValue) && is_array($this->value) && isset($this->value['show']['id']))
+        if(!is_null($this->value) && empty($this->newValue) && is_array($this->value) && isset($this->value['show']['id']))
         {
-            return $this->secureCollectionEnters($this->value);
+            return $this->secureCollectionEntry($this->value);
         }
         // if value doesn't exists in DB and new value is set
         if($this->force_default_value && $this->newValue == '')
         {
-            return $this->secureCollectionEnters($this->field['default']);
+            return $this->secureCollectionEntry($this->field['default']);
         }
 
         // if value doesn't exists in DB and new value is set and force default value is false
         if( is_array($this->newValue) && isset($this->newValue['show']['id']))
         {
-            return $this->secureCollectionEnters($this->newValue);
+            return $this->secureCollectionEntry($this->newValue);
         }
         // if no matches. 
         return false;
     }
 
+    /**
+     * get Collection by Id and Name
+     * @param int $id
+     * @param string $collectionName
+     * @param string $primaryField
+     * @return ObjectPresenter|bool
+     */
     private function _getCollection($id, $collectionName, $primaryField = null)
     {
         $c = new \PrestaShopCollection($collectionName, $this->id_lang);
@@ -544,8 +634,13 @@ class FieldMaker{
         $objectPresenter = new ObjectPresenter();
         return $objectPresenter->present($object);
     }
-
-    private function secureCollectionEnters($array)
+    
+    /** 
+     * Secure format for selector
+     * @param array $array
+     * @return array
+     */
+    private function secureCollectionEntry($array)
     {
         $secure = [];
         $secure['show'] = [
@@ -557,16 +652,24 @@ class FieldMaker{
         return $secure;
 
     }
-
+    /** 
+     * Secure format for text
+     * @param string $string
+     * @return string
+     */
     private function secureTextEntry($string)
     {
         if($this->allow_html)
         {
-            return Tools::purifyHTML($string);
+            return pSQL(Tools::purifyHTML($string));
         }
         return pSQL(stripslashes($string));
     }
-
+    /** 
+     * Secure format for fileUpload
+     * @param array $array
+     * @return array
+     */
     private function secureFileUploadEntry($array)
     {
         $secure = [];
@@ -577,8 +680,12 @@ class FieldMaker{
             {
                 $url = $this->field['default']['url'];
             }
-        }else{
+        }else if(isset($array['url']) && $array['url'] !== ''){
             $url = $array['url'];
+        }
+        else if($this->force_default_value && isset($this->field['default']['url']))
+        {
+            $url = $this->field['default']['url'];
         }
         $secure['url'] = pSQL($url);
         return $secure;

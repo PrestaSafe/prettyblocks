@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -17,19 +18,10 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
-if (!defined('_PS_VERSION_')) {
-    exit;
-}
 
-/**
- * @param prettyblocks $module
- *
- * @return bool|string
- *
- * @throws PrestaShopDatabaseException
- * @throws PrestaShopException
- */
-function upgrade_module_1_1_3($module)
+namespace PrestaSafe\PrettyBlocks\Core\Interface;
+
+interface BlockInterface
 {
-    PrettyBlocksMigrate::migrateConfig();
+    public function registerBlocks(): array;
 }

@@ -1,5 +1,6 @@
 <?php
 
+use PrestaSafe\PrettyBlocks\Core\PrettyBlocksField;
 use PrestaSafe\PrettyBlocks\Presenter\FieldPresenter;
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
@@ -21,9 +22,12 @@ use PrestaSafe\PrettyBlocks\Presenter\FieldPresenter;
  */
 class PrettyBlocksModel extends ObjectModel
 {
+
     public $id_prettyblocks;
     public $instance_id;
     public $code;
+    public $default_params;
+    public $template;
     public $config;
     public $state;
     public $name;
@@ -47,6 +51,8 @@ class PrettyBlocksModel extends ObjectModel
         'fields' => [
             'config' => ['type' => self::TYPE_STRING, 'validate' => 'isJson'],
             'code' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
+            'default_params' => ['type' => self::TYPE_STRING, 'validate' => 'isJson'],
+            'template' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
             // multilang
             'name' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
             'id_shop' => ['type' => self::TYPE_INT, 'lang' => true,  'validate' => 'isInt'],
@@ -61,6 +67,11 @@ class PrettyBlocksModel extends ObjectModel
         ],
     ];
 
+    /**
+     * Load Block by Code
+     * @param string $code
+     * @return array
+     */
     public static function loadBlock($code)
     {
         $blocks = self::getBlocksAvailable();
@@ -68,6 +79,10 @@ class PrettyBlocksModel extends ObjectModel
         return (isset($blocks[$code])) ? $blocks[$code] : [];
     }
 
+    /**
+     * delete the model
+     * @return bool
+     */
     public function delete()
     {
         return parent::delete()
@@ -76,8 +91,9 @@ class PrettyBlocksModel extends ObjectModel
 
     /**
      * Remove related lines from configuration table
+     * @return bool
      */
-    public function removeConfig($onlyConfig = false)
+    public function removeConfig()
     {
         $id = (int) $this->id_prettyblocks;
 
@@ -88,12 +104,11 @@ class PrettyBlocksModel extends ObjectModel
         $sql = '
             SELECT name
             FROM ' . _DB_PREFIX_ . 'configuration
-            WHERE name LIKE "' . pSQL($key1) . '"';
-            if (!$onlyConfig) {
-                $sql .= 'OR name LIKE "' . pSQL($key2) . '"
-                    OR name LIKE "' . pSQL($key3) . '"
-                ';
-            }
+            WHERE name LIKE "' . pSQL($key1) . '" 
+            OR name LIKE "' . pSQL($key2) . '"
+            OR name LIKE "' . pSQL($key3) . '"
+        ';
+
         $configLines = Db::getInstance()->executeS($sql);
 
         if ($configLines) {
@@ -205,7 +220,6 @@ class PrettyBlocksModel extends ObjectModel
         foreach($this->fields as $name => $field) {
             $formatted[$name] = (new FieldPresenter())->present($field);
         }
-
         // is settings_formatted section block
         $formatted['templates'] = $this->_getBlockTemplate($block);
         $formatted['templateSelected'] = $this->_getTemplateSelected($block);
@@ -213,12 +227,22 @@ class PrettyBlocksModel extends ObjectModel
         return $formatted;
     }
 
+    /** 
+     * set Fields config fields to the model
+     */
     public function setConfigFields($fields)
     {
         $this->fields = $fields;
     }
 
-    public function getConfigFields($block = false, $context = 'front')
+    /**
+     * get Fields config fields to the model
+     * @param block|array
+     * @param context|string : back or front (different results)
+     * @param force_values|bool : force values from db
+     * @return $this
+     */
+    public function getConfigFields($block = false, $context = 'front', $force_values = false)
     {   
         if(!$block)
         {
@@ -232,9 +256,13 @@ class PrettyBlocksModel extends ObjectModel
 
         foreach($block['config']['fields'] as $key => $field)
         {
-            $fieldMaker = (new FieldMaker($block))
-            ->setKey($key)
-            ->setContext($context)
+            $fieldMaker = (new PrettyBlocksField($block))
+            ->setKey($key);
+            if($force_values)
+            {
+                $fieldMaker->forceDefaultValue();
+            }
+            $fieldMaker->setContext($context)
             ->get();
             $fields[$key] = $fieldMaker;
         }
@@ -242,6 +270,10 @@ class PrettyBlocksModel extends ObjectModel
         return $this;
     }
 
+    /**
+     * generate field config in json
+     * @param returnJson|bool : return json or array
+     */
     public function generateJsonConfig($returnJson = true)
     {
         $output = [];
@@ -264,15 +296,18 @@ class PrettyBlocksModel extends ObjectModel
     {
         $id_prettyblocks = (int) $block['id_prettyblocks'];
         $key = Tools::strtoupper($id_prettyblocks . '_template');
-
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
         $default_tpl = (isset($block['templates']['default'])) ? 'default' : 'welcome';
         $defaultTemplate = Configuration::get($key, null, null, (int) $block['id_shop']);
-        // dump($defaultTemplate);
         if (!$defaultTemplate) {
             return $default_tpl;
         }
 
+        $defaultTemplate = (isset($block['templates']['default'])) ? 'default' : 'welcome';
+        if($this->template && isset($block['templates'][$this->template]))
+        {
+            $defaultTemplate = $this->template;
+        }
         return $defaultTemplate;
     }
 
@@ -307,7 +342,13 @@ class PrettyBlocksModel extends ObjectModel
 
         return $empty_state;
     }
-
+    
+    /**
+     * format field state for front
+     * @param fieldName|string
+     * @param array $value
+     * @param repeatedFields|array
+     */
     private function _formatFieldStateFront($fieldName, $value, $repeatedFields)
     {
         $field = $repeatedFields[$fieldName];
@@ -324,6 +365,11 @@ class PrettyBlocksModel extends ObjectModel
         return StateFormatter::formatFieldDefault($value);
     }
 
+    /**
+     * update the model configuration
+     * @param array $stateRequest
+     * @return bool
+     */
     public function updateConfig($stateRequest)
     {
         // dump($stateRequest);
@@ -334,7 +380,7 @@ class PrettyBlocksModel extends ObjectModel
         });
 
         foreach($fieldsRequest as $key => $field) {  
-            $obj = (new FieldMaker($block))
+            $obj = (new PrettyBlocksField($block))
             ->setKey($key)
             ->setModel($this)
             ->setNewValue($field['value'])
@@ -342,15 +388,57 @@ class PrettyBlocksModel extends ObjectModel
             $fields[$key] = $obj;
         }   
         $this->setConfigFields($fields);
-        // dump($this->generateJsonConfig());
         $this->config = $this->generateJsonConfig();
-        $this->save();
+        
+        // $config = $this->_formatGetConfigForApp($block);
+        // $this->_formatUpdateConfig($config, $stateRequest, $block);
+        $template_name = pSQL($stateRequest['templateSelected']);
+        $this->setCurrentTemplate($template_name);
+        $this->setDefaultParams($stateRequest['default']);
+        return $this->save();
 
-        $config = $this->_formatGetConfigForApp($block);
-        $this->_formatUpdateConfig($config, $stateRequest, $block);
-        return true;
+        // $this->_updateDefaultParams($block, $stateRequest);
+        // $this->_setConfigTemplate($block, $template_name);
     }
 
+    /**
+     * update default template
+     * @param string
+     * @return void
+     */
+    public function setCurrentTemplate($tpl)
+    {
+        $this->template = $tpl;
+    }
+
+    /**
+     * update default params
+     * @param block|array
+     * @param json
+     */
+    public function setDefaultParams($params)
+    {
+        $this->default_params = json_encode($params, true);
+    }
+
+    /**
+     * get default params
+     * @return array
+     */
+    public function getDefaultParams()
+    {
+        $data = [];
+        if(Validate::isJson($this->default_params))
+        {
+            $data = $this->default_params;
+        }
+        return json_decode($data, true);
+    }
+
+    /** 
+     * Compile sass files based on hook ActionQueueSassCompile
+     * @return void
+    */
     private static function _compileSass()
     {
         $sass_hook = HelperBuilder::hookToArray('ActionQueueSassCompile');
@@ -369,6 +457,11 @@ class PrettyBlocksModel extends ObjectModel
         }
     }
 
+    /**
+     * update theme settings
+     * @param array $stateRequest
+     * @return void
+     */
     public static function updateThemeSettings($stateRequest)
     {
         $formatted = [];
@@ -414,114 +507,25 @@ class PrettyBlocksModel extends ObjectModel
                 }
             }
         }
-        // dump($stateRequest);
-
         self::_compileSass();
     }
 
+    
     /**
-     * Update configuration block settings
+     * get config values
+     * @return array
      */
-    private function _formatUpdateConfig($config, $stateRequest, $block)
-    {
-        foreach ($config as $name => $field) {
-            $this->_updateFieldValue($stateRequest, $name, $field, $block);
-        }
-
-        $template_name = pSQL($stateRequest['templateSelected']);
-        $this->_updateDefaultParams($block, $stateRequest);
-        $this->_setConfigTemplate($block, $template_name);
-    }
-
-    /**
-     * Update default params of block such as container, load_ajax, bg_color
-     */
-    private function _updateDefaultParams($block, $stateRequest)
-    {
-        $key = Tools::strtoupper($block['id_prettyblocks'] . '_default_params');
-        Configuration::updateValue($key, json_encode($stateRequest['default'], true));
-    }
-
-    /**
-     * Update value and save Configuration
-     */
-    private function _updateFieldValue($stateRequest, $name, $field, $block)
-    {
-        if (!isset($field['type'])) {
-            return false;
-        }
-
-        switch ($field['type']) {
-            case 'text':
-                FieldUpdator::updateFieldText($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'textarea':
-                FieldUpdator::updateFieldText($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'color':
-                FieldUpdator::updateFieldText($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'checkbox':
-                FieldUpdator::updateFieldBoxes($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'radio':
-                FieldUpdator::updateFieldBoxes($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'fileupload':
-                FieldUpdator::updateFieldUpload($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'upload':
-                FieldUpdator::updateFieldUpload($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'selector':
-                FieldUpdator::updateFieldSelector($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'select':
-                FieldUpdator::updateFieldSelect($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-            case 'editor':
-                FieldUpdator::updateFieldEditor($name, $stateRequest[$name]['value'] ?? false, $block);
-                break;
-        }
-
-        return true;
-    }
-
     public function getConfigValues()
     {
         $block = $this->mergeStateWithFields();
-        $fieldMaker = new FieldMaker($block);
+        $fieldMaker = new PrettyBlocksField($block);
         return $fieldMaker->getFormattedConfig();
-
     }
 
     /**
-     * Formatted data config for app (state like)
+     * get blocks templates by using hook actionExtendBlockTemplate{BlockCode}
+     * @return array
      */
-    private function _formatGetConfigForApp($block, $context = 'front')
-    {
-        $config = $block['config']['fields'] ?? [];
-        $formatted = [];
-        if (is_array($config) && count($config) > 0) {
-            $values = $this->_formatGetConfig($block, $context);
-            foreach ($config as $name => $field) {
-                // set the value $block['settings_formatted']['value']
-                // only for VueJS app
-
-                $value = '';
-                $field['value'] = (isset($values[$name])) ? $values[$name] : $value;
-                $formatted[$name] = $field;
-            }
-        }
-       
-        // is settings_formatted section block
-        $formatted['templates'] = $this->_getBlockTemplate($block);
-        $formatted['templateSelected'] = $this->_getTemplateSelected($block);
-        $formatted['default'] = $this->_getDefaultParams($block);
-
-        return $formatted;
-    }
-
     private function _getBlockTemplate(&$block)
     {
         $hookName = 'actionExtendBlockTemplate' . Tools::toCamelCase($this->code);
@@ -531,8 +535,6 @@ class PrettyBlocksModel extends ObjectModel
             null,
             true
         );
-        // dump($hookName);
-
         $res = [];
         if (is_array($extraContent)) {
             foreach ($extraContent as $moduleName => $additionnalFormFields) {
@@ -551,22 +553,27 @@ class PrettyBlocksModel extends ObjectModel
         return $block['templates'] + $res;
     }
 
+    /**
+     * get default params
+     * @param array
+     * @return array
+     */
     private function _getDefaultParams($block)
     {
         $id_prettyblocks = (int) $block['id_prettyblocks'];
         $key = Tools::strtoupper($id_prettyblocks . '_default_params');
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
-        $default_tpl = [
+        $options = [
             'container' => true,
             'load_ajax' => false,
             'bg_color' => '',
         ];
-        $defaultTemplate = Configuration::get($key);
-        if (!$defaultTemplate) {
-            return $default_tpl;
+        $defaultParams = $this->getDefaultParams();
+        if (!$defaultParams) {
+            return $options;
         }
 
-        return json_decode($defaultTemplate, true);
+        return $defaultParams;
     }
 
     /**
@@ -575,13 +582,6 @@ class PrettyBlocksModel extends ObjectModel
     private function _formatGetConfig($block, $context = 'front')
     {
         $formatted = [];
-        // $value = '';
-        // $config = $block['config']['fields'] ?? [];
-        // if (is_array($config) && count($config) > 0) {
-        //     foreach ($config as $field => $value) {
-        //         $formatted[$field] = $this->_formatFieldConfigFront($field, $value, $block, $context);
-        //     }
-        // }
         $fields = $this->_formatConfig($block, $context);
         $fields =  array_filter($fields, function ($field) {
             return isset($field['formatted_value']);
@@ -598,53 +598,8 @@ class PrettyBlocksModel extends ObjectModel
     }
 
     /**
-     * format field for smarty render.
-     *
-     * @return void
+     * Format config for front office
      */
-    private function _formatFieldConfigFront($field, $value, $block, $context = 'front')
-    {
-        FieldFormatter::setSuffix('_config');
-
-        switch ($value['type']) {
-            case 'editor':
-                return FieldFormatter::formatFieldText($field, $value, $block, $context);
-                break;
-            case 'text':
-                return FieldFormatter::formatFieldText($field, $value, $block, $context);
-                break;
-            case 'textarea':
-                return FieldFormatter::formatFieldText($field, $value, $block, $context);
-                break;
-            case 'color':
-                return FieldFormatter::formatFieldText($field, $value, $block, $context);
-                break;
-            case 'radio':
-                return FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
-                break;
-            case 'checkbox':
-                return FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
-                break;
-            case 'fileupload':
-                return FieldFormatter::formatFieldUpload($field, $value, $block, $context);
-                break;
-            case 'upload':
-                return FieldFormatter::formatFieldUpload($field, $value, $block, $context);
-                break;
-            case 'selector':
-                return FieldFormatter::formatFieldSelector($field, $value, $block, $context);
-                break;
-            case 'select':
-                return FieldFormatter::formatFieldSelect($field, $value, $block, $context);
-                break;
-            case 'radio_group':
-                return FieldFormatter::formatFieldRadioGroup($field, $value, $block, $context);
-                break;
-            default:
-                return '';
-        }
-    }
-
     private function _formatRepeaterDb($state, $repeaterDefault)
     {
         $res = [];
@@ -797,37 +752,66 @@ class PrettyBlocksModel extends ObjectModel
         $id_lang = ($id_lang !== null) ? (int) $id_lang : $contextPS->language->id;
         $id_shop = ($id_shop !== null) ? (int) $id_shop : $contextPS->shop->id;
 
-        $block = new PrettyBlocksModel(null, $id_lang, $id_shop);
-        $block->zone_name = $zone_name;
-        $block->code = $block_code;
-        $block->name = $block_code;
+        $model = new PrettyBlocksModel(null, $id_lang, $id_shop);
+        $model->zone_name = $zone_name;
+        $model->code = $block_code;
+        $model->name = $block_code;
         $array = [];
-        $block->state = json_encode($array, true);
-        $block->instance_id = uniqid();
-        $block->id_shop = $id_shop;
-        $block->save();
-        $state = $block;
+        $model->state = json_encode($array, true);
+        $model->instance_id = uniqid();
+        $model->id_shop = $id_shop;
+        $model->save();
 
-        $block = $block->mergeStateWithFields();
+        $block = $model->mergeStateWithFields();
 
-        $state_to_push = $block['state_to_push'];
+        if(isset($block['insert_default_values']) && $block['insert_default_values'] === true)
+        {
+            // force default values
+            $model->setDefaultConfigValues($block);
+            // push one state
+            $state_to_push = $block['state_to_push'];
+            $state_db = json_decode($model->state, true);
+            $state_db[1] = (object) $state_to_push;
+            $encoded = json_encode($state_db);
+            $model->state = $encoded;
+            $model->save();
+        }
 
-        $state_db = json_decode($state->state, true);
-        $state_db[1] = (object) $state_to_push;
-        $encoded = json_encode($state_db);
-        $state->state = $encoded;
-
-        $state->save();
 
         return $block;
     }
 
+    /**
+     * setDefaultConfigValues set default config values
+     * @param $block array
+     * @return bool
+     */
+    private function setDefaultConfigValues($block)
+    {
+        $this->getConfigFields($block, 'back', true);
+        $json = $this->generateJsonConfig();
+        $this->config = $json;
+        $this->save();
+    }
+
+    /**
+     * override add method
+     * @param bool $auto_date
+     * @param bool $null_values
+     * @return void
+     */
     public function add($auto_date = true, $null_values = false)
     {
         $this->position = (int) DB::getInstance()->getValue('SELECT MAX(position)  FROM `' . _DB_PREFIX_ . 'prettyblocks`') + 1;
         parent::add();
     }
 
+    /**
+     * Get Theme Settings
+     * @param bool $with_tabs
+     * @param string $context
+     * @return array
+     */
     public static function getThemeSettings($with_tabs = true, $context = 'front')
     {
         $theme_settings = Hook::exec('ActionRegisterThemeSettings', [], null, true);
@@ -848,6 +832,13 @@ class PrettyBlocksModel extends ObjectModel
         return $res;
     }
 
+    /**
+     * Set Theme Settings
+     * @param string $name
+     * @param array $params
+     * @param string $context (back of front)
+     * @return array
+     */
     private static function _setThemeFieldValue($name, $params, $context)
     {
         $params['value'] = self::_formatSettingsField($name, $params['type'], $params, $context, false);
@@ -855,6 +846,15 @@ class PrettyBlocksModel extends ObjectModel
         return $params;
     }
 
+    /**
+     * Format a field for settings
+     * @param string $name
+     * @param string $type
+     * @param array $params
+     * @param string $context (back of front)
+     * @param bool|array $block
+     * @return any
+     */
     private static function _formatSettingsField($name, $type, $params, $context, $block = false)
     {
         $class = new FieldFormatter();
@@ -899,3 +899,4 @@ class PrettyBlocksModel extends ObjectModel
         }
     }
 }
+

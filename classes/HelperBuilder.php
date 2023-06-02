@@ -1,4 +1,6 @@
 <?php
+
+use PrestaSafe\PrettyBlocks\Core\Interface\BlockInterface;
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -92,5 +94,22 @@ class HelperBuilder
         $domain .= rtrim($context->shop->physical_uri, '/');
 
         return rtrim(str_replace(_PS_ROOT_DIR_, $domain, $path), '/');
+    }
+
+    /**
+     * Return array of blocks
+     * @param $blocks   
+     * @return array
+     */
+    public static function renderBlocks($blocks)
+    {
+        $output = [];
+        foreach($blocks as $block)
+        {
+            if ($block instanceof BlockInterface) {
+                $output[] = $block->registerBlocks();
+            }
+        }
+        return $output;
     }
 }
