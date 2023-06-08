@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -45,6 +46,24 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             exit('Wrong ajax token !');
         }
         parent::init();
+    }
+
+    /**
+     * insert block on zone
+     * @return string
+     */
+    public function displayAjaxinsertBlock()
+    {
+        $code = pSQL(Tools::getValue('code'));
+        $zone_name = pSQL(Tools::getValue('zone_name'));
+        $id_lang = (int) Tools::getValue('ctx_id_lang');
+        $id_shop = (int) Tools::getValue('ctx_id_shop');
+        $state = \PrettyBlocksModel::registerBlockToZone($zone_name, $code, $id_lang, $id_shop);
+
+        exit(json_encode([
+            'state' => $state,
+            'errors' => 'No action found',
+        ]));
     }
 
     public function displayAjaxgetBlockConfig()
@@ -230,8 +249,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
                 'id_lang' => $id_lang,
                 'id_shop' => $id_shop,
             ]
-        )
-        );
+        ));
     }
 
     public function displayAjaxupdateBlockConfig()

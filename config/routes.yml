@@ -61,14 +61,6 @@ prettyblocks_api_get_blocks_available:
     _legacy_controller: AdminThemeManagerController
     _legacy_link: AdminThemeManagerController
 
-prettyblocks_api_get_block_action_urls:
-  path: prettyblocks/block_action_urls/
-  methods: [GET,POST]
-  defaults:
-    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::ajaxPrettyBlocksModelAction'
-    _legacy_controller: AdminThemeManagerController
-    _legacy_link: AdminThemeManagerController
-
 
 
 prettyblocks_homesimulator:

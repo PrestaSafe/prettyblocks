@@ -1,6 +1,7 @@
 <?php
 
 use PrestaSafe\PrettyBlocks\Core\Interface\BlockInterface;
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -104,12 +105,46 @@ class HelperBuilder
     public static function renderBlocks($blocks)
     {
         $output = [];
-        foreach($blocks as $block)
-        {
+        foreach ($blocks as $block) {
             if ($block instanceof BlockInterface) {
                 $output[] = $block->registerBlocks();
             }
         }
         return $output;
+    }
+    /**
+     * return random category formatted for default collection field
+     * @param int $id_lang
+     * @param int $id_shop
+     * @return array
+     */
+    public static function getRandomCategory($id_lang = null, $id_shop = null)
+    {
+        $id_lang = ($id_lang ? $id_lang : Context::getContext()->language->id);
+        $id_shop = ($id_shop ? $id_shop : Context::getContext()->shop->id);
+
+        $ids = Db::getInstance()->executeS('SELECT l.id_category FROM ' . _DB_PREFIX_ . 'category_lang as l
+        INNER JOIN ' . _DB_PREFIX_ . 'category c ON (c.id_category = l.id_category)
+        WHERE c.active = 1
+        AND l.id_shop = ' . (int)$id_shop . ' AND l.id_lang = ' . (int)$id_lang . '
+        ORDER BY RAND() LIMIT 5');
+        $categoriesIDS = array_map(function ($element) {
+            return $element["id_category"];
+        }, $ids);
+
+
+        $randomIndex = array_rand($categoriesIDS);
+        $id_category = $categoriesIDS[$randomIndex];
+
+        $category = (new PrestaShopCollection('Category', $id_lang))
+            ->where('id_category', '=', $id_category)->getFirst();
+        $secure = [];
+        $secure['show'] = [
+            'id' => (int)$id_category,
+            'primary' => (int)$id_category,
+            'name' => $category->name,
+            'formatted' => $id_category . ' - ' . $category->name,
+        ];
+        return $secure;
     }
 }

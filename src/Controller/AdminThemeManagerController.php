@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -107,6 +108,22 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return \Tools::getProtocol(\Tools::usingSecureMode()) . $shop['domain_ssl'] . $shop['uri'];
     }
 
+    /**
+     * return Symfony URL from  route
+     * @param string $route 
+     * @param string $entity
+     * @return string
+     */
+    private function getSFUrl($route, $entity = 'sf')
+    {
+        $domain = \Tools::getShopDomainSsl(true);
+
+        return $domain . \Link::getUrlSmarty([
+            'entity' => $entity,
+            'route' => $route,
+        ]);
+    }
+
     public function indexAction()
     {
         $context = $this->get('prestashop.adapter.legacy.context')->getContext();
@@ -146,55 +163,19 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 }
             }
         }
-
         $module = \Module::getInstanceByName('prettyblocks');
-
         $uri = $module->getPathUri() . 'views/css/back.css?version=' . $module->version;
-
-        $domain = \Tools::getShopDomainSsl(true);
-
-        $symfonyUrl = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_homesimulator',
-        ]);
-        $sfAdminBlockAPI = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_api',
-        ]);
-
-        $uploadUrl = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_upload',
-        ]);
-
-        $collectionURL = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_collection',
-        ]);
-
-        $blockActionUrls = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_api_get_block_action_urls',
-        ]);
-
+        $symfonyUrl = $this->getSFUrl('prettyblocks_homesimulator');
+        $sfAdminBlockAPI =  $this->getSFUrl('prettyblocks_api');
+        $uploadUrl = $this->getSFUrl('prettyblocks_upload');
+        $collectionURL = $this->getSFUrl('prettyblocks_collection');
         $link = new \Link();
         $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
-
-        $blockAvailableUrls = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_api_get_blocks_available',
-        ]);
-
-        $settingsUrls = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_theme_settings',
-        ]);
-
+        $blockAvailableUrls =  $this->getSFUrl('prettyblocks_api_get_blocks_available');
+        $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings'); 
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
-
         $translator = \Context::getContext()->getTranslator();
         $shops = $this->getShops();
-
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
             'favicon_url' => \Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
@@ -214,7 +195,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'upload' => $uploadUrl,
                 'collection' => $collectionURL,
                 'blocks_available' => $blockAvailableUrls,
-                'block_action_urls' => $blockActionUrls,
+                'block_action_urls' => $blockUrl,
                 'theme_settings' => $settingsUrls,
             ],
             'trans_app' => [
@@ -420,26 +401,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return (new JsonResponse())->setData(['blocks' => $blocks]);
     }
 
-    /**
-     * ajax_urls.block_action_urls
-     */
-    public function ajaxPrettyBlocksModelAction(Request $request)
-    {
-        // return Hook::exec('ajax')
-        $action = $request->get('action');
-        if ($action == 'insertBlock') {
-            $code = pSQL($request->get('code'));
-            $zone_name = pSQL($request->get('zone_name'));
-            $id_lang = (int) $request->get('ctx_id_lang');
-            $id_shop = (int) $request->get('ctx_id_shop');
-            $state = \PrettyBlocksModel::registerBlockToZone($zone_name, $code, $id_lang, $id_shop);
-        }
-
-        return (new JsonResponse())->setData([
-            'state' => $state,
-            'errors' => 'No action found',
-        ]);
-    }
 
     public function getSettingsAction()
     {
