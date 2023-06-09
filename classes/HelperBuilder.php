@@ -31,7 +31,7 @@ class HelperBuilder
      *
      * @return string
      */
-    public static function pathFormatterFromString($path, $rtrim = false)
+    public static function pathFormattedFromString($path, $rtrim = false)
     {
         if (substr($path, 0, 1) !== '$') {
             throw new Exception('Path "' . $path . '" should begin by $ ex: "$/prettyblocks/path/to/images/"');
@@ -46,9 +46,13 @@ class HelperBuilder
     }
 
     /**
-     * @todo Security Check
+     * ex: $path = 'https://prestashop_url/modules/prettyblocks/views/images/'
+     * return /path/to/prestashop/modules/prettyblocks/views/images/
+     * @param string $path
+     * @param bool $path_only
+     * @return string
      */
-    public static function pathFormatterFromUrl($path, $path_only = false)
+    public static function pathFormattedFromUrl($path, $path_only = false)
     {
         $shop_domain = Tools::getShopDomainSsl(true);
         $pathFormatted = str_replace($shop_domain, _PS_ROOT_DIR_, $path);
@@ -60,6 +64,12 @@ class HelperBuilder
         return realpath(dirname($pathFormatted)) . '/' . $file_name;
     }
 
+    /**
+     * Retourne hook data module to Array
+     * @param string $hookName
+     * @param array $params
+     * @return array
+     */
     public static function hookToArray($hookName, $params = [])
     {
         $extraContent = Hook::exec($hookName, $params, null, true);
@@ -88,7 +98,7 @@ class HelperBuilder
      */
     public static function pathFormattedToUrl($path)
     {
-        $path = self::pathFormatterFromString($path, true);
+        $path = self::pathFormattedFromString($path, true);
         $domain = Tools::getShopDomainSsl(true);
 
         $context = Context::getContext();
@@ -144,6 +154,86 @@ class HelperBuilder
             'primary' => (int)$id_category,
             'name' => $category->name,
             'formatted' => $id_category . ' - ' . $category->name,
+        ];
+        return $secure;
+    }
+
+    /**
+     * return random product formatted for default collection field
+     * @param string $collectionName
+     * @param int $id_lang
+     * @param int $id_shop
+     * @return array
+     */
+    public static function getRandomProduct($id_lang = null, $id_shop = null)
+    {
+        $collectionName = 'Product';
+        $id_lang = ($id_lang ? $id_lang : Context::getContext()->language->id);
+        $id_shop = ($id_shop ? $id_shop : Context::getContext()->shop->id);
+        $collection = strtolower($collectionName);
+
+        $sql = 'SELECT l.id_' . $collection . ' FROM ' . _DB_PREFIX_ . $collection . '_lang as l
+        INNER JOIN ' . _DB_PREFIX_ . $collection . ' c ON (c.id_' . $collection . ' = l.id_' . $collection . ')
+        WHERE c.active = 1
+        AND l.id_shop = ' . (int)$id_shop . ' AND l.id_lang = ' . (int)$id_lang . '
+        ORDER BY RAND() LIMIT 5';
+        $ids = Db::getInstance()->executeS($sql);
+        $collectionIDS = array_map(function ($element) use($collection) {
+            return $element["id_" . $collection];
+        }, $ids);
+
+        
+        $randomIndex = array_rand($collectionIDS);
+        $id_collection = $collectionIDS[$randomIndex];
+
+        $model = (new PrestaShopCollection($collectionName, $id_lang))
+            ->where('id_' . $collection, '=', $id_collection)->getFirst();
+        $secure = [];
+        $secure['show'] = [
+            'id' => (int)$id_collection,
+            'primary' => (int)$id_collection,
+            'name' => $model->name,
+            'formatted' => $id_collection . ' - ' . $model->name,
+        ];
+        return $secure;
+    }
+
+     /**
+     * return random product formatted for default collection field
+     * @param string $collectionName
+     * @param int $id_lang
+     * @param int $id_shop
+     * @return array
+     */
+    public static function getRandomCMS($id_lang = null, $id_shop = null)
+    {
+        $collectionName = 'CMS';
+        $id_lang = ($id_lang ? $id_lang : Context::getContext()->language->id);
+        $id_shop = ($id_shop ? $id_shop : Context::getContext()->shop->id);
+        $collection = strtolower($collectionName);
+
+        $sql = 'SELECT l.id_' . $collection . ' FROM ' . _DB_PREFIX_ . $collection . '_lang as l
+        INNER JOIN ' . _DB_PREFIX_ . $collection . ' c ON (c.id_' . $collection . ' = l.id_' . $collection . ')
+        WHERE c.active = 1
+        AND l.id_shop = ' . (int)$id_shop . ' AND l.id_lang = ' . (int)$id_lang . '
+        ORDER BY RAND() LIMIT 5';
+        $ids = Db::getInstance()->executeS($sql);
+        $collectionIDS = array_map(function ($element) use($collection) {
+            return $element["id_" . $collection];
+        }, $ids);
+
+        
+        $randomIndex = array_rand($collectionIDS);
+        $id_collection = $collectionIDS[$randomIndex];
+
+        $model = (new PrestaShopCollection($collectionName, $id_lang))
+            ->where('id_' . $collection, '=', $id_collection)->getFirst();
+        $secure = [];
+        $secure['show'] = [
+            'id' => (int)$id_collection,
+            'primary' => (int)$id_collection,
+            'name' => $model->meta_title,
+            'formatted' => $id_collection . ' - ' . $model->meta_title,
         ];
         return $secure;
     }
