@@ -44,7 +44,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             }
 
             $message = \Context::getContext()->getTranslator()->trans('Image removed successfully', [], 'Modules.Prettyblocks.Admin');
-            $path = \HelperBuilder::pathFormatterFromUrl($url);
+            $path = \HelperBuilder::pathFormattedFromUrl($url);
             $unlink = @unlink($path);
             if (!$unlink) {
                 $message = \Context::getContext()->getTranslator()->trans('Image not found', [], 'Modules.Prettyblocks.Admin');
@@ -69,7 +69,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             if (\Tools::getIsset('path')) {
                 $path = pSQL(\Tools::getValue('path'));
             }
-            $upload_dir = \HelperBuilder::pathFormatterFromString($path);
+            $upload_dir = \HelperBuilder::pathFormattedFromString($path);
             if (move_uploaded_file($file['tmp_name'], $upload_dir . $new_name . '.' . $extension)) {
                 $uploaded = true;
                 $imgs = ['url' => \HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension];
@@ -81,7 +81,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'test' => json_decode(\Tools::file_get_contents('php://input'), true),
             'tools' => \Tools::getAllValues(),
             'path_request' => \Tools::getValue('path'),
-            'path' => \HelperBuilder::pathFormatterFromString(\Tools::getValue('path')),
+            'path' => \HelperBuilder::pathFormattedFromString(\Tools::getValue('path')),
             'request' => $posts,
             'uploaded' => $uploaded,
             'ext' => $extension,
