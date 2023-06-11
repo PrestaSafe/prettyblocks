@@ -385,6 +385,33 @@ class PrettyBlocksField
         |
     */
 
+    private function formatFieldTitle()
+    {
+        // if value exists in DB and newValue is empty
+        if(!is_null($this->value) && is_null($this->newValue))
+        {
+            return $this->secureTitleEntry($this->value);
+        }       
+        // if value doesn't exists in DB and new value is set
+        if($this->force_default_value && is_null($this->newValue))
+        {
+            return $this->secureTitleEntry($this->field['default']);
+        }
+
+        return $this->secureTitleEntry($this->newValue);
+        
+    }
+
+    /** 
+     * Secure format for fileUpload
+     * @param array $array
+     * @return array
+     */
+    private function secureTitleEntry($array)
+    {
+       return 'hello';
+    }
+
     /**
      * format field text
      *
