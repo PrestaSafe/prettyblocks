@@ -18,7 +18,7 @@
  * International Registered Trademark & Property of PrestaSafe
  */
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
-
+use PrestaSafe\PrettyBlocks\Core\Components\Title;
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -248,6 +248,21 @@ class PrettyBlocks extends Module implements WidgetInterface
         /* @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
         $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
         $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks_title', [PrettyBlocks::class, 'renderTitle']);
+    }
+
+    /**
+     * Render dynamic title
+     * @param array $params
+     * @return string
+     */
+    public static function renderTitle($params)
+    {
+        // $field = $params['field'];
+        // $block = $params['block'];
+
+        $title = new Title('h1','Hello World');
+        return $title->render();
     }
 
     public static function renderZone($params)
