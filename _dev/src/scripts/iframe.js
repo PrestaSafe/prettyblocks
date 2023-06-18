@@ -1,6 +1,7 @@
 import { ref } from 'vue' 
 import axios from 'axios'
 import emitter from 'tiny-emitter/instance'
+import {toolbar} from './toolbar';
 import { useStore, storedZones, contextShop } from '../store/currentBlock'
 export default class Iframe {
     current_url = ref();
@@ -249,6 +250,9 @@ async loadIframe () {
                 })
 
             })
+
+            const tb = new toolbar( body.querySelectorAll('.editMe'), doc, iwindow);
+            console.log(body.querySelectorAll('.editMe'))
 
             // check if block is already selected
             let currentBlock = useStore()
