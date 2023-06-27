@@ -48,6 +48,12 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         parent::init();
     }
 
+    public function displayAjaxUpdateTitleComponent()
+    {
+        $id_lang = (int) Tools::getValue('ctx_id_lang');
+        $id_shop = (int) Tools::getValue('ctx_id_shop');
+    }
+
     /**
      * insert block on zone
      * @return string
