@@ -3,6 +3,7 @@ import axios from 'axios'
 import emitter from 'tiny-emitter/instance'
 import {toolbar} from './toolbar';
 import { useStore, storedZones, contextShop } from '../store/currentBlock'
+import Block from './block'
 export default class Iframe {
     current_url = ref();
     id_lang = ref(0);
@@ -251,8 +252,8 @@ async loadIframe () {
 
             })
 
-            const tb = new toolbar( body.querySelectorAll('.editMe'), doc, iwindow);
-            console.log(body.querySelectorAll('.editMe'))
+            const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
+            this.loadToolBar(tb)
 
             // check if block is already selected
             let currentBlock = useStore()
@@ -265,6 +266,19 @@ async loadIframe () {
             
         }, false)
     }
+}
+async loadToolBar(tb)
+{
+    tb.on('change', async (oldValue, newValue) => {
+        let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
+        let element = await Block.loadById(id_block)
+        emitter.emit('displayBlockConfig', element)
+    })
+    tb.on('apply', async (oldValue, newValue) => {
+        let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
+        let element = await Block.loadById(id_block)
+        emitter.emit('displayBlockConfig', element)
+    })
 }
 
 loadContext(e)

@@ -1,7 +1,1 @@
-
-<{$tag} 
-{* contenteditable="true"  *}
-data-block-id_prettyblock="" data-block-fields="title" class="{$classes}">{$value nofilter}</{$tag}>
-
-
-
+<{$tag} data-block-id_prettyblock="{$block.id_prettyblocks}" data-field="{$field}" class="ptb-title {$classes}" style="font-size: 21px; font-weight: bold;">{$value nofilter}</{$tag}>
