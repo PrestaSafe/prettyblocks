@@ -26,12 +26,16 @@ class Title implements ComponentInterface{
     private $tag;
     private $value;
     private $classes;
+    private $block;
+    private $field;
 
-    public function __construct($tag, $value, $classes = [])
+    public function __construct($tag, $value, $classes = [], $block, $field)
     {
         $this->tag = $tag;
         $this->value = $value;
         $this->classes = $classes;
+        $this->block = $block;
+        $this->field = $field;
     }
 
     public function render()
@@ -42,8 +46,10 @@ class Title implements ComponentInterface{
         $smarty->assign('tag', $this->tag);
         $smarty->assign('value', $this->value);
         $smarty->assign('classes', $this->getClasses());
+        $smarty->assign('block', $this->block);
+        $smarty->assign('field', $this->field);
 
-        return $context->smarty->fetch('module:prettyblocks/views/templates/front/components/title.tpl');
+        return $smarty->fetch('module:prettyblocks/views/templates/front/components/title.tpl');
 
     }
 

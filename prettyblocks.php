@@ -258,10 +258,13 @@ class PrettyBlocks extends Module implements WidgetInterface
      */
     public static function renderTitle($params)
     {
-        // $field = $params['field'];
-        // $block = $params['block'];
+        $tag = $params['tag'];
+        $content = $params['content'];
+        $field = $params['field'];
+        $block = $params['block'];
+        $classes = ($params['classes']) ?? [];
 
-        $title = new Title('h1','Hello World');
+        $title = new Title($tag,$content, $classes, $block, $field);
         return $title->render();
     }
 

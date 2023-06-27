@@ -56,6 +56,7 @@
   
   #toolbar {
     display: none;
+    z-index: 2000;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
