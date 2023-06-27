@@ -267,18 +267,36 @@ async loadIframe () {
         }, false)
     }
 }
-async loadToolBar(tb)
+
+loadToolBar(tb)
 {
     tb.on('change', async (oldValue, newValue) => {
-        let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
-        let element = await Block.loadById(id_block)
-        emitter.emit('displayBlockConfig', element)
+        this.updateTitleComponent(newValue)
     })
     tb.on('apply', async (oldValue, newValue) => {
-        let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
-        let element = await Block.loadById(id_block)
-        emitter.emit('displayBlockConfig', element)
+        this.updateTitleComponent(newValue)
     })
+}
+/**
+ * Updpate title component in Config field using Toolbar
+ * @param {*} newValue 
+ */
+async  updateTitleComponent(newValue)
+{
+    let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
+    let field = newValue.html.getAttribute('data-field')
+    let element = await Block.loadById(id_block)
+    emitter.emit('displayBlockConfig', element)
+    let context = contextShop()
+    let data = {
+        id_prettyblocks: id_block,
+        element: newValue,
+        id_lang: context.id_lang,
+        id_shop: context.id_shop,
+        field: field,
+        action: 'UpdateTitleComponent'
+    }
+    // fetch(this.urlUpdateTitle, {
 }
 
 loadContext(e)
