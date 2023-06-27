@@ -21,10 +21,10 @@ export class toolbar {
               value: element.innerHTML,
               focus: false,
               inside: false,
-              bold: false,
-              italic: false,
-              underline: false,
-              size: 32
+              bold: element.style.fontWeight == 'bold' ? true : false,
+              italic: element.style.fontStyle == 'italic' ? true : false,
+              underline: element.style.textDecoration == 'underline' ? true : false,
+              size: element.style.fontSize ? element.style.fontSize : 32
           });
           
       });
@@ -123,7 +123,7 @@ export class toolbar {
                 
                 let data_field = e.getAttribute('data-field');
                 newElement.setAttribute('data-field', data_field);
-                
+
                 e = newElement;
                 e.setAttribute('data-id-title', t.id);
                 e.setAttribute('contenteditable', 'true');
