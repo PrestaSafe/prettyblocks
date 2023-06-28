@@ -376,13 +376,33 @@ class PrettyBlocksField{
     }
 
     /** 
-     * Secure format for fileUpload
+     * Secure format for title component
      * @param array $array
      * @return array
      */
     private function secureTitleEntry($array)
     {
-       return 'hello';
+
+        $element = [
+            'tag' => ($array['tag']) ? pSQL($array['tag']) : 'h2',
+            'classes' => ($array['classes']) ? array_map('pSQL',($array['classes'])) : [],
+            'value' => ($array['value']) ? $this->_clearValue($array['value']) : '',
+            'focus' => (bool) $array['focus'],
+            'inside' => (bool) $array['inside'],
+            'bold' => (bool) $array['bold'],
+            'italic' => (bool) $array['italic'],
+            'underline' => (bool) $array['underline'],
+            'size' => (int) $array['size'],
+        ];
+       return $element;
+    }
+    private function _clearValue($value)
+    {
+        $new_value = str_replace(array("\r", "\n"), '',$value);
+        $new_value = str_replace("\\n", '',$new_value);
+
+        $new_value = pSQL(Tools::purifyHTML($new_value));
+        return $new_value;
     }
 
     /**

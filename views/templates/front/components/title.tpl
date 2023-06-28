@@ -1,1 +1,3 @@
-<{$tag} data-block-id_prettyblock="{$block.id_prettyblocks}" data-field="{$field}" class="ptb-title {$classes}" style="font-size: 23px; font-weight: bold; font-style: italic; text-decoration: underline;">{$value nofilter}</{$tag}>
+<{$tag} data-block-id_prettyblock="{$block.id_prettyblocks}" data-field="{$field}" class="ptb-title {$classes}">
+    {$value nofilter}
+</{$tag}>

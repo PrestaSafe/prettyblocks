@@ -45,13 +45,24 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         if (empty($this->ajax_token) || Tools::getValue('ajax_token') !== $this->ajax_token) {
             exit('Wrong ajax token !');
         }
+
         parent::init();
     }
 
-    public function displayAjaxUpdateTitleComponent()
+    public function displayAjaxupdateTitleComponent()
     {
+
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
+        $id_prettyblocks = (int) Tools::getValue('id_prettyblocks');
+        $element = Tools::getValue('element');
+        $block = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
+        $block->getConfigFields();
+        $test = $block->fields['title']->setNewValue($element)->save();
+        exit(json_encode([
+            'success' => $test,
+            'errors' => 'No action found',
+        ]));
     }
 
     /**
