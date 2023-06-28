@@ -291,12 +291,24 @@ async  updateTitleComponent(newValue)
     let data = {
         id_prettyblocks: id_block,
         element: newValue,
-        id_lang: context.id_lang,
-        id_shop: context.id_shop,
+        ctx_id_lang: context.id_lang,
+        ctx_id_shop: context.id_shop,
         field: field,
-        action: 'UpdateTitleComponent'
+        ajax: true,
+        action: 'updateTitleComponent',
+        ajax_token: security_app.ajax_token
     }
-    // fetch(this.urlUpdateTitle, {
+    
+    fetch(ajax_urls.api, {
+        method: 'POST',
+        headers: {
+            'accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then((response) =>  response.json() ).then((data) => { console.log(data) })
+
+
 }
 
 loadContext(e)

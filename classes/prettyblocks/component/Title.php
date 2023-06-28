@@ -25,18 +25,35 @@ class Title implements ComponentInterface{
 
     private $tag;
     private $value;
-    private $classes;
+    private $value_from_block = false;
+    private $classes = [];
     private $block;
     private $field;
 
-    public function __construct($tag, $value, $classes = [], $block, $field)
+    public function __construct($tag, $classes = [], $block, $field)
     {
         $this->tag = $tag;
-        $this->value = $value;
         $this->classes = $classes;
         $this->block = $block;
         $this->field = $field;
     }
+
+    public function setValueFromBlock($value)
+    {
+        $this->value_from_block = (bool) $value;
+        return $this;
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+        if($this->value_from_block)
+        {
+            $this->value = $this->block['settings_formatted'][$this->field]['value']['value'];
+        }
+        return $this;
+    }
+
 
     public function render()
     {
