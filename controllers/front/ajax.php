@@ -50,6 +50,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     /**
      * insert block on zone
+     *
      * @return string
      */
     public function displayAjaxinsertBlock()
