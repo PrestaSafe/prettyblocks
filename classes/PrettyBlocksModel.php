@@ -199,12 +199,7 @@ class PrettyBlocksModel extends ObjectModel
         $res = [];
         if (is_array($extraContent)) {
             foreach ($extraContent as $moduleName => $additionnalFormFields) {
-                if (!is_array($extraContent)) {
-                    continue;
-                }
-                foreach ($extraContent as $formField) {
-                    $res = $formField;
-                }
+                $res = $additionnalFormFields;
             }
         }
 
