@@ -381,7 +381,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $position = [];
             foreach ($items as $item) {
                 $item = (object) $item;
-                $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) pSQL($item->id_prettyblocks);
+                $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) $item->id_prettyblocks;
                 $position[$item->id_prettyblocks] = $position;
                 \Db::getInstance()->execute($sql);
                 ++$i;
