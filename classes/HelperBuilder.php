@@ -1,6 +1,6 @@
 <?php
 
-use PrestaSafe\PrettyBlocks\Core\BlockInterface;
+use PrestaSafe\PrettyBlocks\Core\Interface\BlockInterface;
 
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
