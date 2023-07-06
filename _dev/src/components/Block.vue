@@ -1,6 +1,5 @@
 <script setup>
 import { defineProps, ref, defineComponent } from 'vue'
-import Button from './Button.vue'
 import Icon from './Icon.vue'
 import { currentZone } from '../store/currentBlock'
 import Loader from './Loader.vue'
@@ -27,7 +26,6 @@ defineProps({
 })
 
 defineComponent({
-  Button,
   Icon,
   Loader
 })
@@ -60,15 +58,11 @@ const AddOnZOne = async (code) => {
 </script>
 
 <template>
-  <div class="p-4 bg-gray-100 rounded-lg">
-    <div class="mb-2 mx-auto">
-      <Icon :name="icon" size="1" class="text-indigo" />
-      <!-- <Loader :visible="showLoader"/> -->
+  <div class="flex items-center gap-x-2 p-4 bg-gray-100 hover:bg-gray-200 rounded cursor-pointer transition-colors" @click="AddOnZOne(code)">
+    <Icon :name="icon" size="10" class="shrink-0 text-indigo" />
+    <div class="flex-1">
+      <h3 class="text-lg font-bold">{{ name }}</h3>
+      <p class="text-sm text-gray-600">{{ description }}</p>
     </div>
-    <h3 class="text-lg font-bold mb-2 text-center">{{ name }}</h3>
-    <p class="text-sm leading-6 text-gray-600">{{ description }}</p>
-    <p class="text-center mt-4">
-      <Button icon="PuzzleIcon" type="secondary" @click="AddOnZOne(code)">Insert</Button>
-    </p>
   </div>
 </template>
