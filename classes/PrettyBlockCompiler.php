@@ -60,7 +60,7 @@ class PrettyBlocksCompiler
      */
     public function setOuput($out)
     {
-        $path = HelperBuilder::pathFormatterFromString($out);
+        $path = HelperBuilder::pathFormattedFromString($out);
         $path = rtrim($path, '/');
         if (is_file($path)) {
             $this->out .= $path;
@@ -109,7 +109,7 @@ class PrettyBlocksCompiler
         }
         foreach ($paths as $entry) {
             if (!in_array($entry, $this->import_path)) {
-                $path = HelperBuilder::pathFormatterFromString($entry);
+                $path = HelperBuilder::pathFormattedFromString($entry);
                 $this->import_path[] = $path;
             }
         }
@@ -133,7 +133,7 @@ class PrettyBlocksCompiler
             $scss->setImportPaths($this->import_path);
         }
         foreach ($this->entries as $entry) {
-            $path = HelperBuilder::pathFormatterFromString($entry);
+            $path = HelperBuilder::pathFormattedFromString($entry);
             $path = rtrim($path, '/');
             if (is_file($path)) {
                 $this->_sass .= Tools::file_get_contents($path);
