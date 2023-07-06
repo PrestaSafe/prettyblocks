@@ -14,7 +14,7 @@
     "@tinymce/tinymce-vue": "^5.1.0",
     "axios": "^0.21.1",
     "sortablejs": "^1.10.2",
-    "vue": "^3.2.47",
+    "vue": "^3.3.4",
     "vuedraggable": "^4.1.0",
     "@heroicons/vue": "^2.0.17",
     "@tailwindcss/forms": "^0.5.3",
