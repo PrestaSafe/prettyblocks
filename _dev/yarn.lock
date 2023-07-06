@@ -27,10 +27,10 @@
   resolved "https://registry.yarnpkg.com/@headlessui/vue/-/vue-1.7.14.tgz#cc10712044944bc728f5ef8b2df2174c1194a55e"
   integrity sha512-aL9U9Sa7wdOzlrfjx6EjMIYNRCma5mngWcWzQBcHFwznpRZ8g/QZ/AYFtRDrZZUw22Ttttja4D7ZRXFwhONewA==
 
-"@heroicons/vue@^2.0.17":
-  version "2.0.17"
-  resolved "https://registry.npmjs.org/@heroicons/vue/-/vue-2.0.17.tgz"
-  integrity sha512-M5P6Y9tmctbtv/IC1dO5vTw9xqppYxm/5BKuL4hGlxxLvaxbnTmMAoxTIzezSdYAaLh63emgOCBMa+mxphRxUQ==
+"@heroicons/vue@^2.0.18":
+  version "2.0.18"
+  resolved "https://registry.yarnpkg.com/@heroicons/vue/-/vue-2.0.18.tgz#cd55074dfb1915870b680e2757ca4dad6ab3326a"
+  integrity sha512-BcTC9nq2TkwNSfQuqo96J7ehx4etezypc2YeTq7KsXWxrcrerhkgjLrxGRBnStN0wrXo0Gv4BInybqz5uBG6Cw==
 
 "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.3"
