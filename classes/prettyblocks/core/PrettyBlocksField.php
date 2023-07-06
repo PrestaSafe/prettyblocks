@@ -690,7 +690,7 @@ class PrettyBlocksField
             return Tools::purifyHTML($string);
         }
 
-        return strip_tags($string);
+        return Tools::purifyHTML(strip_tags($string));
     }
 
     /**
