@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -21,7 +22,6 @@
 namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
-use Hook;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,7 +43,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             }
 
             $message = \Context::getContext()->getTranslator()->trans('Image removed successfully', [], 'Modules.Prettyblocks.Admin');
-            $path = \HelperBuilder::pathFormatterFromUrl($url);
+            $path = \HelperBuilder::pathFormattedFromUrl($url);
             $unlink = @unlink($path);
             if (!$unlink) {
                 $message = \Context::getContext()->getTranslator()->trans('Image not found', [], 'Modules.Prettyblocks.Admin');
@@ -68,7 +68,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             if (\Tools::getIsset('path')) {
                 $path = pSQL(\Tools::getValue('path'));
             }
-            $upload_dir = \HelperBuilder::pathFormatterFromString($path);
+            $upload_dir = \HelperBuilder::pathFormattedFromString($path);
             if (move_uploaded_file($file['tmp_name'], $upload_dir . $new_name . '.' . $extension)) {
                 $uploaded = true;
                 $imgs = ['url' => \HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension];
@@ -80,7 +80,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'test' => json_decode(\Tools::file_get_contents('php://input'), true),
             'tools' => \Tools::getAllValues(),
             'path_request' => \Tools::getValue('path'),
-            'path' => \HelperBuilder::pathFormatterFromString(\Tools::getValue('path')),
+            'path' => \HelperBuilder::pathFormattedFromString(\Tools::getValue('path')),
             'request' => $posts,
             'uploaded' => $uploaded,
             'ext' => $extension,
@@ -105,6 +105,24 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     private function buildShopUri($shop)
     {
         return \Tools::getProtocol(\Tools::usingSecureMode()) . $shop['domain_ssl'] . $shop['uri'];
+    }
+
+    /**
+     * return Symfony URL from  route
+     *
+     * @param string $route
+     * @param string $entity
+     *
+     * @return string
+     */
+    private function getSFUrl($route, $entity = 'sf')
+    {
+        $domain = \Tools::getShopDomainSsl(true);
+
+        return $domain . \Link::getUrlSmarty([
+            'entity' => $entity,
+            'route' => $route,
+        ]);
     }
 
     public function indexAction()
@@ -146,52 +164,17 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 }
             }
         }
-
         $module = \Module::getInstanceByName('prettyblocks');
-
         $uri = $module->getPathUri() . 'views/css/back.css?version=' . $module->version;
-
-        $domain = \Tools::getShopDomainSsl(true);
-
-        $symfonyUrl = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_homesimulator',
-        ]);
-        $sfAdminBlockAPI = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_api',
-        ]);
-
-        $uploadUrl = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_upload',
-        ]);
-
-        $collectionURL = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_collection',
-        ]);
-
-        $blockActionUrls = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_api_get_block_action_urls',
-        ]);
-
+        $symfonyUrl = $this->getSFUrl('prettyblocks_homesimulator');
+        $sfAdminBlockAPI = $this->getSFUrl('prettyblocks_api');
+        $uploadUrl = $this->getSFUrl('prettyblocks_upload');
+        $collectionURL = $this->getSFUrl('prettyblocks_collection');
         $link = new \Link();
         $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
-
-        $blockAvailableUrls = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_api_get_blocks_available',
-        ]);
-
-        $settingsUrls = $domain . \Link::getUrlSmarty([
-            'entity' => 'sf',
-            'route' => 'prettyblocks_theme_settings',
-        ]);
-
+        $blockAvailableUrls = $this->getSFUrl('prettyblocks_api_get_blocks_available');
+        $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings');
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
-
         $translator = \Context::getContext()->getTranslator();
         $shops = $this->getShops();
 
@@ -214,7 +197,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'upload' => $uploadUrl,
                 'collection' => $collectionURL,
                 'blocks_available' => $blockAvailableUrls,
-                'block_action_urls' => $blockActionUrls,
+                'block_action_urls' => $blockUrl,
                 'theme_settings' => $settingsUrls,
             ],
             'trans_app' => [
@@ -398,7 +381,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $position = [];
             foreach ($items as $item) {
                 $item = (object) $item;
-                $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) pSQL($item->id_prettyblocks);
+                $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) $item->id_prettyblocks;
                 $position[$item->id_prettyblocks] = $position;
                 \Db::getInstance()->execute($sql);
                 ++$i;
@@ -418,27 +401,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $blocks = \PrettyBlocksModel::getInstanceByZone('displayHome');
 
         return (new JsonResponse())->setData(['blocks' => $blocks]);
-    }
-
-    /**
-     * ajax_urls.block_action_urls
-     */
-    public function ajaxPrettyBlocksModelAction(Request $request)
-    {
-        // return Hook::exec('ajax')
-        $action = $request->get('action');
-        if ($action == 'insertBlock') {
-            $code = pSQL($request->get('code'));
-            $zone_name = pSQL($request->get('zone_name'));
-            $id_lang = (int) $request->get('ctx_id_lang');
-            $id_shop = (int) $request->get('ctx_id_shop');
-            $state = \PrettyBlocksModel::registerBlockToZone($zone_name, $code, $id_lang, $id_shop);
-        }
-
-        return (new JsonResponse())->setData([
-            'state' => $state,
-            'errors' => 'No action found',
-        ]);
     }
 
     public function getSettingsAction()
