@@ -5,6 +5,7 @@ import ColorInput from 'vue-color-input'
 import Input from './form/Input.vue'
 import Select from './form/Select.vue'
 import SimpleSelect from './form/SimpleSelect.vue'
+import MultiSelect from './form/MultiSelect.vue'
 import HeaderDropdown from './HeaderDropdown.vue'
 import Textarea from './form/Textarea.vue'
 import Checkbox from './form/Checkbox.vue'
@@ -32,7 +33,8 @@ defineComponent({
   FileUpload,
   Icon,
   Editor,
-  Choices
+  Choices,
+  MultiSelect
 })
 const props = defineProps({
   field: {
@@ -79,7 +81,8 @@ const removeTinyNotifications = () => {
         toolbar="code bold italic underline link styleselect" v-model="f.value" />
     </div>
     <div v-if="f.type == 'select'">
-      <Choices v-if="Object.keys(f.choices).length > 1" :choices="f.choices" v-model="f.value" :label="f.label" />
+      <MultiSelect v-model="f.value" :label="f.label" :options="f.choices" mode="single"></MultiSelect>
+      <!--<Choices v-if="Object.keys(f.choices).length > 1" :choices="f.choices" v-model="f.value" :label="f.label" />-->
     </div>
     <FormControl class="my-4" :title="f.label" v-if="f.type == 'radio_group'">
       <Radio v-for='(group, value, key) in f.choices' :key="group" v-model="f.value" :title="group"
