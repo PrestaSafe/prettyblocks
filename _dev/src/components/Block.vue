@@ -62,7 +62,7 @@ const AddOnZOne = async (code) => {
 <template>
   <div class="p-4 bg-gray-100 rounded-lg">
     <div class="mb-2 mx-auto">
-      <Icon :name="icon" size="1" class="text-indigo" />
+      <Icon :name="icon" class="h-auto w-full text-indigo" />
       <!-- <Loader :visible="showLoader"/> -->
     </div>
     <h3 class="text-lg font-bold mb-2 text-center">{{ name }}</h3>
