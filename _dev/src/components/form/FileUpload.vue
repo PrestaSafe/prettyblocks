@@ -87,7 +87,7 @@ const removeImg = () => {
     <form ref="zone" class="dropzone p-2 rounded-lg" :id="id">
       <div class="dz-message" data-dz-message>
         <div class="flex flex-col items-center">
-          <Icon name="UploadIcon" size="10" class="mb-2" />
+          <Icon name="UploadIcon" class="h-10 w-10 mb-2" />
           <div v-if="props.modelValue.url">
             <img :src="props.modelValue.url" width="200" alt="">
           </div>

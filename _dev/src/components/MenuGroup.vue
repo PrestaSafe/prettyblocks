@@ -36,8 +36,8 @@ const emit = defineEmits(['pushEmptyState', 'changeState'])
       <MenuItem @click="changeState(element)" class="w-full" :id="id" :element="element" :config="config" :title="title"
         :icon="icon">
       <div class="cursor-pointer mr-2" @click="props.collapse" v-if="element.can_repeat">
-        <Icon name="ChevronRightIcon" v-if="props.isCollapsed" class="h-5 w-5" />
-        <Icon name="ChevronDownIcon" v-else class="h-5 w-5" />
+        <Icon name="ChevronRightIcon" v-if="props.isCollapsed" />
+        <Icon name="ChevronDownIcon" v-else />
       </div>
       <div class="cursor-pointer mr-6" v-else>&nbsp;</div>
       </MenuItem>

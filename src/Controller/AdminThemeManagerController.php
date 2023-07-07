@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -22,7 +21,6 @@
 namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
-use Hook;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -62,7 +60,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $uploaded = false;
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $imgs = [];
-        if (in_array($extension, ['png', 'svg', 'jpg', 'jpeg', 'gif', 'webp'])) {
+        if (in_array($extension, \Module::getInstanceByName('prettyblocks')->valid_types)) {
             // can upload
             $new_name = \Tools::str2url($file['name']);
             $path = '$/modules/prettyblocks/views/images/';
@@ -110,8 +108,10 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
     /**
      * return Symfony URL from  route
-     * @param string $route 
+     *
+     * @param string $route
      * @param string $entity
+     *
      * @return string
      */
     private function getSFUrl($route, $entity = 'sf')
@@ -166,16 +166,17 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $module = \Module::getInstanceByName('prettyblocks');
         $uri = $module->getPathUri() . 'views/css/back.css?version=' . $module->version;
         $symfonyUrl = $this->getSFUrl('prettyblocks_homesimulator');
-        $sfAdminBlockAPI =  $this->getSFUrl('prettyblocks_api');
+        $sfAdminBlockAPI = $this->getSFUrl('prettyblocks_api');
         $uploadUrl = $this->getSFUrl('prettyblocks_upload');
         $collectionURL = $this->getSFUrl('prettyblocks_collection');
         $link = new \Link();
         $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
-        $blockAvailableUrls =  $this->getSFUrl('prettyblocks_api_get_blocks_available');
-        $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings'); 
+        $blockAvailableUrls = $this->getSFUrl('prettyblocks_api_get_blocks_available');
+        $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings');
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
         $translator = \Context::getContext()->getTranslator();
         $shops = $this->getShops();
+
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
             'favicon_url' => \Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
@@ -379,7 +380,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $position = [];
             foreach ($items as $item) {
                 $item = (object) $item;
-                $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) pSQL($item->id_prettyblocks);
+                $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) $item->id_prettyblocks;
                 $position[$item->id_prettyblocks] = $position;
                 \Db::getInstance()->execute($sql);
                 ++$i;
@@ -400,7 +401,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
         return (new JsonResponse())->setData(['blocks' => $blocks]);
     }
-
 
     public function getSettingsAction()
     {

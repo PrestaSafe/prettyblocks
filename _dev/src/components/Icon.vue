@@ -8,12 +8,12 @@
 // so need to import all the icon for now :(
 import * as solid from "@heroicons/vue/24/solid"
 
-defineProps({
+const props = defineProps({
   name: String,
-  size: {
-    type: [Number, String],
-    default: 5
-  }
+  class: {
+    type: String,
+    default: "h-5 w-5",
+  },
 })
 
 function getIcon(name) {
@@ -22,5 +22,5 @@ function getIcon(name) {
 </script>
 
 <template>
-  <component :is="getIcon(name)" :class="`h-${size} w-${size}`" />
+  <component :is="getIcon(name)" :class="props.class" />
 </template>

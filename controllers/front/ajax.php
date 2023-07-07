@@ -29,7 +29,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     public function __construct()
     {
-        $this->ajax_token = Configuration::get('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
+        $this->ajax_token = Configuration::get('_PRETTYBLOCKS_TOKEN_');
         $this->translator = Context::getContext()->getTranslator();
         parent::__construct();
     }
@@ -43,7 +43,8 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             }
         }
         if (empty($this->ajax_token) || Tools::getValue('ajax_token') !== $this->ajax_token) {
-            exit('Wrong ajax token !');
+            header("HTTP/1.1 401 Unauthorized");
+            exit('Wrong token');
         }
 
         parent::init();
@@ -67,6 +68,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     /**
      * insert block on zone
+     *
      * @return string
      */
     public function displayAjaxinsertBlock()
@@ -236,7 +238,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $position = [];
         foreach ($items as $item) {
             $item = (object) $item;
-            $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) pSQL($item->id_prettyblocks);
+            $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) $item->id_prettyblocks;
             $position[$item->id_prettyblocks] = $position;
             Db::getInstance()->execute($sql);
             ++$i;
@@ -276,7 +278,6 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
         $stateRequest = Tools::getValue('state');
-        $state->updateConfig($stateRequest);
 
         if ($state->updateConfig($stateRequest)) {
             exit(json_encode([

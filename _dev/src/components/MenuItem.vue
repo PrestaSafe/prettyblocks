@@ -79,7 +79,7 @@ const disabled = ref(false)
     <!-- icon and name of item -->
     <div :class="['flex items-center flex-grow pr-2', { disabled }]">
       <!-- {{ element }} -->
-      <Icon :name="icon" class="mr-2"></Icon>
+      <Icon :name="icon" class="h-5 w-5 mr-2"></Icon>
       <p class="flex-grow w-0 text-ellipsis whitespace-nowrap overflow-hidden select-none">
         {{ title }}
       </p>

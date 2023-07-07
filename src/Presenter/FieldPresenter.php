@@ -17,7 +17,9 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
+
 namespace PrestaSafe\PrettyBlocks\Presenter;
+
 use PrestaShop\PrestaShop\Adapter\Presenter\PresenterInterface;
 
 class FieldPresenter implements PresenterInterface
@@ -34,7 +36,7 @@ class FieldPresenter implements PresenterInterface
             'collection' => $field->getFieldData('collection'),
             'selector' => $field->getFieldData('selector'),
             'choices' => $field->getFieldData('choices', []),
-            'value' => $field->getValue(), 
+            'value' => $field->getValue(),
             'formatted_value' => $field->getFormattedValue(),
         ];
 

@@ -19,9 +19,17 @@
  * International Registered Trademark & Property of PrestaSafe
  */
 
-namespace PrestaSafe\PrettyBlocks\Core\Interface;
+namespace PrestaSafe\PrettyBlocks\Interfaces;
 
-interface ComponentInterface
+interface FieldInterface
 {
-    public function render();
+    public function format();
+
+    public function setConfig();
+
+    public function save();
+
+    public function value();
+
+    public function getContext();
 }

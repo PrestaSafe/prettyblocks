@@ -2,39 +2,37 @@
 
 use PrestaSafe\PrettyBlocks\Core\PrettyBlocksField;
 
-
-
 class PrettyBlocksMigrate
 {
-    /** 
+    /**
      * add field template to database
+     *
      * @return bool
      */
-    static function addTemplateField()
+    public static function addTemplateField()
     {
         $sql = [];
         $res = true;
         $sql[] = 'ALTER TABLE `' . _DB_PREFIX_ . 'prettyblocks` ADD `template` longtext DEFAULT NULL AFTER `config`;';
         $sql[] = 'ALTER TABLE `' . _DB_PREFIX_ . 'prettyblocks` ADD `default_params` longtext DEFAULT NULL AFTER `config`;';
-        foreach($sql as $query)
-        {
-            $res &= \Db::getInstance()->execute($query);   
+        foreach ($sql as $query) {
+            $res &= \Db::getInstance()->execute($query);
         }
+
         return $res;
     }
 
-
-    static function migrateConfig()
+    public static function migrateConfig()
     {
         self::addTemplateField();
         $langs = \Language::getLanguages();
         $res = true;
         $fields = [];
-        foreach($langs as $lang) {
+        foreach ($langs as $lang) {
             $lang_id = $lang['id_lang'];
             $blocks = (new \PrestaShopCollection('PrettyBlocksModel', $lang_id))->getAll();
             // get old config
-            foreach($blocks as $model) {
+            foreach ($blocks as $model) {
                 $block = $model->mergeStateWithFields();
                 $config = $block['config']['fields'] ?? [];
                 if (is_array($config) && count($config) > 0) {
@@ -43,34 +41,37 @@ class PrettyBlocksMigrate
                     }
                 }
                 // convert in fields and save
-                foreach($formatted as $name => $data)
-                {
+                foreach ($formatted as $name => $data) {
                     $field = (new PrettyBlocksField($block))
-                    ->setKey($name)
-                    ->setNewValue($data)
-                    ->get();
+                        ->setKey($name)
+                        ->setNewValue($data)
+                        ->get();
                     $fields[$name] = $field;
                 }
                 $model->setConfigFields($fields);
                 $model->config = $model->generateJsonConfig();
 
                 // moving template to model
-                $model->setCurrentTemplate( pSQL(self::_getTemplateSelected($block)) );
-                
+                $model->setCurrentTemplate(pSQL(self::_getTemplateSelected($block)));
+
                 // moving default params to model
                 $model->setDefaultParams(self::_getDefaultParams($block));
-                
+
                 $model->save();
 
                 // destroy configuration
                 $res &= $model->removeConfig();
             }
         }
+
         return $res;
     }
-    /** 
+
+    /**
      * Get default params in Configuration
+     *
      * @param array $block
+     *
      * @return array
      */
     private static function _getDefaultParams($block)
@@ -91,12 +92,15 @@ class PrettyBlocksMigrate
         return json_decode($defaultParams, true);
     }
 
-    /** 
-     * get template in Configuration 
+    /**
+     * get template in Configuration
+     *
      * @param array $block
+     *
      * @return string
      */
-    private static function _getTemplateSelected($block){
+    private static function _getTemplateSelected($block)
+    {
         $id_prettyblocks = (int) $block['id_prettyblocks'];
         $key = \Tools::strtoupper($id_prettyblocks . '_template');
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
@@ -105,8 +109,8 @@ class PrettyBlocksMigrate
         if ($currentTemplate !== false && isset($block['templates'][$currentTemplate])) {
             return $currentTemplate;
         }
-        return $default_tpl;
 
+        return $default_tpl;
     }
 
     private static function _formatFieldConfigFront($field, $value, $block, $context = 'front')
