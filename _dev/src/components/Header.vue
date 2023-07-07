@@ -125,7 +125,7 @@ const adminURL = ajax_urls.adminURL
       <div class="border-r">
         <ButtonLight @click="changeRightPanelSize" :class="extendRightPanel ? 'bg-black bg-opacity-10' : 'rotate-180'"
           icon="ArrowRightOnRectangleIcon" class="p-2" />
-        <!-- <Icon class="inline -mt-[4px]" @click="changeRightPanelSize" name="ArrowRightOnRectangleIcon" /> -->
+        <!-- <Icon class="h-5 w-5 inline -mt-[4px]" @click="changeRightPanelSize" name="ArrowRightOnRectangleIcon" /> -->
         <ButtonLight @click="showSettings()" :class="settingsEnabled ? 'bg-black bg-opacity-10' : ''"
           icon="WrenchScrewdriverIcon" class="p-2" />
         <ButtonLight @click="hideRightPanelAction" :class="hideRightPanel ? 'bg-black bg-opacity-10 rotate-180' : ''"
