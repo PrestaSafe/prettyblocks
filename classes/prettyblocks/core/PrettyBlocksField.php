@@ -438,11 +438,11 @@ class PrettyBlocksField
         $value = [];
         // if value exists in DB and newValue is empty
         if (is_array($this->value) && is_null($this->newValue)) {
-            $value = $this->secureFileUploadEntry($this->value);
+            return $this->secureFileUploadEntry($this->value);
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && is_null($this->newValue)) {
-            $value = $this->secureFileUploadEntry($this->field['default']);
+            return $this->secureFileUploadEntry($this->field['default']);
         }
 
         $value = $this->secureFileUploadEntry($this->newValue);
