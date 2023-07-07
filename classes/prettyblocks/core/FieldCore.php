@@ -21,7 +21,7 @@
 
 namespace PrestaSafe\PrettyBlocks\Core;
 
-use PrestaSafe\PrettyBlocks\Core\FieldInterface;
+use PrestaSafe\PrettyBlocks\Interfaces\FieldInterface;
 
 class FieldCore implements FieldInterface
 {
