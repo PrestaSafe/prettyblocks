@@ -27,7 +27,20 @@ class StateFormatter
 {
     public static function formatFieldUpload($value)
     {
-        return !empty($value['value']['url']) ? $value['value'] : ['url' => ''];
+        if (empty($value['value']['url'])) {
+            return ['url' => ''];
+        }
+
+        // add extension
+        $value['value']['extension'] = pathinfo($value['value']['url'], PATHINFO_EXTENSION);
+        // add media type (image, document, video, ...)
+        $value['value']['mediatype'] = HelperBuilder::getMediaTypeForExtension($value['value']['extension']);
+        // add filename
+        $value['value']['filename'] = pathinfo($value['value']['url'], PATHINFO_BASENAME);
+        if (empty($value['value']['filename'])) {
+            $value['value']['filename'] = 'Unknown';
+        }
+        return $value['value'];
     }
 
     public static function formatFieldSelector($value)

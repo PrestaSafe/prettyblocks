@@ -92,7 +92,7 @@ const removeImg = () => {
             <div v-if="props.modelValue.mediatype == 'image'">
               <img :src="props.modelValue.url" width="200" :alt="props.modelValue.filename">
             </div>
-            <div v-if="props.modelValue.mediatype == 'document'">
+            <div v-else>
               <a :src="props.modelValue.url">{{ props.modelValue.filename }}</a>
             </div>
           </template>

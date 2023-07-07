@@ -21,10 +21,11 @@
 namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
-use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use HelperBuilder;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
@@ -70,7 +71,14 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $upload_dir = \HelperBuilder::pathFormattedFromString($path);
             if (move_uploaded_file($file['tmp_name'], $upload_dir . $new_name . '.' . $extension)) {
                 $uploaded = true;
-                $imgs = ['url' => \HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension];
+
+                $myurl = \HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension;
+                $imgs = [
+                    'url' => $myurl,
+                    'extension' => pathinfo($myurl, PATHINFO_EXTENSION),
+                    'mediatype' => HelperBuilder::getMediaTypeForExtension(pathinfo($myurl, PATHINFO_EXTENSION)),
+                    'filename' => pathinfo($myurl, PATHINFO_BASENAME),
+                ];
             }
         }
 
