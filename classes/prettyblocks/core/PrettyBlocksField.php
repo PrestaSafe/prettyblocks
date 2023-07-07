@@ -23,6 +23,7 @@ namespace PrestaSafe\PrettyBlocks\Core;
 
 use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
 use PrettyBlocksModel;
+use HelperBuilder;
 use Tools;
 use Validate;
 
@@ -434,16 +435,29 @@ class PrettyBlocksField
      */
     private function formatFieldFileupload()
     {
+        $value = [];
         // if value exists in DB and newValue is empty
         if (is_array($this->value) && is_null($this->newValue)) {
-            return $this->secureFileUploadEntry($this->value);
+            $value = $this->secureFileUploadEntry($this->value);
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && is_null($this->newValue)) {
-            return $this->secureFileUploadEntry($this->field['default']);
+            $value = $this->secureFileUploadEntry($this->field['default']);
         }
 
-        return $this->secureFileUploadEntry($this->newValue);
+        $value = $this->secureFileUploadEntry($this->newValue);
+
+        // add extension
+        $value['extension'] = pathinfo($value['url'], PATHINFO_EXTENSION);
+        // add media type (image, document, video, ...)
+        $value['mediatype'] = HelperBuilder::getMediaTypeForExtension($value['extension']);
+        // add filename
+        $value['filename'] = pathinfo($value['url'], PATHINFO_BASENAME);
+        if (empty($value['filename'])) {
+            $value['filename'] = 'Unknown';
+        }
+
+        return $value;
     }
 
     /**

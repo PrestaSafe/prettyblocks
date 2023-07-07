@@ -33,6 +33,9 @@ class HelperBuilder
      */
     public static function pathFormattedFromString($path, $rtrim = false)
     {
+        if (strpos($path, '..') !== false) {
+            throw new Exception('Invalid path');
+        }
         if (substr($path, 0, 1) !== '$') {
             throw new Exception('Path "' . $path . '" should begin by $ ex: "$/prettyblocks/path/to/images/"');
         }
@@ -236,5 +239,26 @@ class HelperBuilder
             'formatted' => $id_collection . ' - ' . $model->meta_title,
         ];
         return $secure;
+    }
+
+    /**
+     * The function determines the media type (image, document, video, etc.) based on the file
+     * extension provided.
+     *
+     * @param string extension The parameter "extension" is a string that represents the file extension of a
+     * file. For example, if the file is named "image.jpg", the extension would be "jpg".
+     *
+     * @return string a string that represents the media type.
+     */
+    public static function getMediaTypeForExtension($extension):string {
+        // media type (image, document, video, ...)
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'])) {
+            return 'image';
+        }
+        if (in_array($extension, ['mov', 'mp4', 'webm', 'ogg', 'ogv'])) {
+            return 'image';
+        }
+
+        return 'document';
     }
 }

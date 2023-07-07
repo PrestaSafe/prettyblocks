@@ -31,7 +31,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     public $js_path;
     public $css_path;
     public $dev_ps = true;
-    public $valid_types = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+    public $valid_types = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'pdf'];
     public $upload_dir = __DIR__ . '/views/images/';
     public $form_trans = [];
     public $tabs = [
