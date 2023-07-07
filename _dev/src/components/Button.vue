@@ -17,7 +17,7 @@ defineProps({
         type !== 'secondary',
     },
   ]">
-    <Icon :name="icon" class="-ml-1" aria-hidden="true"></Icon>
+    <Icon :name="icon" class="h-5 w-5 -ml-1" aria-hidden="true"></Icon>
     <slot></slot>
   </button>
 </template>

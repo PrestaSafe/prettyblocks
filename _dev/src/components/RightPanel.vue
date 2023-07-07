@@ -209,7 +209,7 @@ emitter.on('globalSave', () => {
     <div v-if="showPanel" id="themeSettingsPanel" class="absolute top-0 left-0 overflow-y-auto w-full h-full bg-slate-100">
       <div @click="displayThemePanel()" class="bg-indigo text-white">
         <h2 class="ml-4 p-3 text-center">
-          <Icon name="CogIcon" class="inline" /> {{ trans('theme_settings') }}
+          <Icon name="CogIcon" class="h-5 w-5 inline" /> {{ trans('theme_settings') }}
         </h2>
       </div>
       <PanelThemeSettings />
