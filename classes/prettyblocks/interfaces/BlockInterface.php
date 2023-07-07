@@ -19,7 +19,7 @@
  * International Registered Trademark & Property of PrestaSafe
  */
 
-namespace PrestaSafe\PrettyBlocks\Core\Interface;
+namespace PrestaSafe\PrettyBlocks\Interfaces;
 
 interface BlockInterface
 {
