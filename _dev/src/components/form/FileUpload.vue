@@ -90,7 +90,7 @@ const removeImg = () => {
           <Icon name="UploadIcon" class="h-10 w-10 mb-2" />
           <template v-if="props.modelValue.url">
             <div v-if="props.modelValue.mediatype == 'image'">
-              <img :src="props.modelValue.url" width="200" alt="props.modelValue.filename">
+              <img :src="props.modelValue.url" width="200" :alt="props.modelValue.filename">
             </div>
             <div v-if="props.modelValue.mediatype == 'document'">
               <a :src="props.modelValue.url">{{ props.modelValue.filename }}</a>
