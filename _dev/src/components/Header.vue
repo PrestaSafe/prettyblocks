@@ -87,11 +87,11 @@ const adminURL = ajax_urls.adminURL
 
     <div class="flex items-center gap-2">
       <div class="border-r border-gray-200">
-        <ButtonLight @click="goBackEnd" icon="BackspaceIcon" :size="5" class="p-2" />
+        <ButtonLight @click="goBackEnd" icon="BackspaceIcon" class="p-2" />
         <ButtonLight @click="hideLeftPanelAction" :class="hideLeftPanel ? 'bg-black bg-opacity-10 rotate-180' : ''"
-          icon="ArrowLeftOnRectangleIcon" :size="5" class="p-2" />
+          icon="ArrowLeftOnRectangleIcon" class="p-2" />
         <ButtonLight @click="changeLeftPanelSize" :class="extendLeftPanel ? 'bg-black bg-opacity-10' : 'rotate-180'"
-          icon="ArrowLeftOnRectangleIcon" :size="5" class="p-2" />
+          icon="ArrowLeftOnRectangleIcon" class="p-2" />
       </div>
       <span>
         <div class="flex items-center">
@@ -107,34 +107,34 @@ const adminURL = ajax_urls.adminURL
       <!-- Copyright <a class="text-indigo" href="https://www.prestasafe.com">www.prestasafe.com</a> -->
       <div class="border-gray-200">
         <ButtonLight @click="changeIframeSize('w-full', 'h-full')"
-          :class="sizeSelected == 'w-full' ? 'bg-black bg-opacity-10' : ''" icon="ComputerDesktopIcon" :size="5"
+          :class="sizeSelected == 'w-full' ? 'bg-black bg-opacity-10' : ''" icon="ComputerDesktopIcon"
           class="p-2" />
         <ButtonLight @click="changeIframeSize('w-5/6', 'h-5/6')"
           :class="sizeSelected == 'w-5/6' ? 'bg-black bg-opacity-10 -rotate-90' : '-rotate-90'" icon="DeviceTabletIcon"
-          :size="5" class="p-2" />
+          class="p-2" />
         <ButtonLight @click="changeIframeSize('w-6/12', 'h-full')"
-          :class="sizeSelected == 'w-6/12' ? 'bg-black bg-opacity-10' : ''" icon="DeviceTabletIcon" :size="5"
+          :class="sizeSelected == 'w-6/12' ? 'bg-black bg-opacity-10' : ''" icon="DeviceTabletIcon"
           class="p-2" />
         <ButtonLight @click="changeIframeSize('w-4/12', 'h-full')"
-          :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10' : ''" icon="DevicePhoneMobileIcon" :size="5"
+          :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10' : ''" icon="DevicePhoneMobileIcon"
           class="p-2" />
-        <!-- <ButtonLight @click="changeIframeSize('w-3/6', 'h-3/6')" :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10 -rotate-90' : '-rotate-90'" icon="DevicePhoneMobileIcon" :size="5" class="p-2" /> -->
+        <!-- <ButtonLight @click="changeIframeSize('w-3/6', 'h-3/6')" :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10 -rotate-90' : '-rotate-90'" icon="DevicePhoneMobileIcon" class="p-2" /> -->
       </div>
     </div>
     <div class="flex items-center gap-3">
       <div class="border-r">
         <ButtonLight @click="changeRightPanelSize" :class="extendRightPanel ? 'bg-black bg-opacity-10' : 'rotate-180'"
-          icon="ArrowRightOnRectangleIcon" :size="5" class="p-2" />
+          icon="ArrowRightOnRectangleIcon" class="p-2" />
         <!-- <Icon class="inline -mt-[4px]" @click="changeRightPanelSize" name="ArrowRightOnRectangleIcon" /> -->
         <ButtonLight @click="showSettings()" :class="settingsEnabled ? 'bg-black bg-opacity-10' : ''"
-          icon="WrenchScrewdriverIcon" :size="5" class="p-2" />
+          icon="WrenchScrewdriverIcon" class="p-2" />
         <ButtonLight @click="hideRightPanelAction" :class="hideRightPanel ? 'bg-black bg-opacity-10 rotate-180' : ''"
-          icon="ArrowRightOnRectangleIcon" :size="5" class="p-2" />
-        <ButtonLight @click="leaveApp" icon="BuildingStorefrontIcon" :size="5" class="p-2" />
+          icon="ArrowRightOnRectangleIcon" class="p-2" />
+        <ButtonLight @click="leaveApp" icon="BuildingStorefrontIcon" class="p-2" />
       </div>
       <!-- <div class="border-r border-gray-200">
-          <ButtonLight icon="ArrowUturnLeftIcon" :size="5" class="p-2" />
-          <ButtonLight icon="ArrowUturnLeftIcon" :size="5" class="transform -scale-x-100 p-2" />
+          <ButtonLight icon="ArrowUturnLeftIcon" class="p-2" />
+          <ButtonLight icon="ArrowUturnLeftIcon" class="transform -scale-x-100 p-2" />
         </div> -->
       <Button @click="globalSave()" type="primary">{{ trans('save') }}</button>
     </div>

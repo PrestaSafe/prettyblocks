@@ -687,10 +687,10 @@ class PrettyBlocksField
     private function secureTextEntry($string)
     {
         if ($this->allow_html) {
-            return pSQL(Tools::purifyHTML($string));
+            return Tools::purifyHTML($string);
         }
 
-        return pSQL(stripslashes($string));
+        return Tools::purifyHTML(strip_tags($string));
     }
 
     /**
