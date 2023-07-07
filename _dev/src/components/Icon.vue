@@ -10,10 +10,6 @@ import * as solid from "@heroicons/vue/24/solid"
 
 defineProps({
   name: String,
-  size: {
-    type: [Number, String],
-    default: 5
-  }
 })
 
 function getIcon(name) {
@@ -22,5 +18,5 @@ function getIcon(name) {
 </script>
 
 <template>
-  <component :is="getIcon(name)" :class="`h-${size} w-${size}`" />
+  <component :is="getIcon(name)" class="h-5 w-5" />
 </template>
