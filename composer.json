@@ -39,6 +39,9 @@
   "scripts": {
     "lint": [
       "php-cs-fixer fix --no-interaction --dry-run --diff"
+    ],
+    "autoindex": [
+      "vendor/bin/autoindex prestashop:add:index ./"
     ]
   },
   "type": "prestashop-module"
