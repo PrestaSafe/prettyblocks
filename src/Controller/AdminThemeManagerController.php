@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -61,7 +60,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $uploaded = false;
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $imgs = [];
-        if (in_array($extension, ['png', 'svg', 'jpg', 'jpeg', 'gif', 'webp'])) {
+        if (in_array($extension, \Module::getInstanceByName('prettyblocks')->valid_types)) {
             // can upload
             $new_name = \Tools::str2url($file['name']);
             $path = '$/modules/prettyblocks/views/images/';
