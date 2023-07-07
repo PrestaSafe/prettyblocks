@@ -26,9 +26,9 @@
   "autoload": {
     "psr-4": {
       "PrestaSafe\\PrettyBlocks\\": "src/",
-      "PrestaSafe\\PrettyBlocks\\Fields\\": "classes/prettyblocks/Fields/",
-      "PrestaSafe\\PrettyBlocks\\Interface\\": "classes/prettyblocks/Interface/",
-      "PrestaSafe\\PrettyBlocks\\Core\\": "classes/prettyblocks/Core/"
+      "PrestaSafe\\PrettyBlocks\\Fields\\": "classes/prettyblocks/fields/",
+      "PrestaSafe\\PrettyBlocks\\Interfaces\\": "classes/prettyblocks/interfaces/",
+      "PrestaSafe\\PrettyBlocks\\Core\\": "classes/prettyblocks/core/"
     },
     "classmap": [
       "prettyblocks.php",
