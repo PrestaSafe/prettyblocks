@@ -61,10 +61,14 @@ onMounted(() => {
   });
 
   dropzone.on('success', function (file, responseText) {
-    props.modelValue = updateValue(responseText.imgs)
-    file.previewElement.innerHTML = "";
-    dropzone.removeAllFiles(true);
-  })
+    if (responseText.uploaded) {
+      props.modelValue = updateValue(responseText.imgs)
+      file.previewElement.innerHTML = "";
+      dropzone.removeAllFiles(true);
+    } else {
+      file.previewElement.innerHTML = responseText.message;
+    }
+  });
 })
 
 const removeImg = () => {
