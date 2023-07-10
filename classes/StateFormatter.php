@@ -28,7 +28,12 @@ class StateFormatter
     public static function formatFieldUpload($value)
     {
         if (empty($value['value']['url'])) {
-            return ['url' => ''];
+            return [
+                'url' => '',
+                'extension' => '',
+                'mediatype' => '',
+                'filename' => '',
+            ];
         }
 
         // add extension
