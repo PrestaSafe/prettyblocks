@@ -25,7 +25,7 @@ const props = defineProps({
   },
   path: {
     type: String,
-    default: '$/prettyblocks/views/images'
+    default: '$/modules/prettyblocks/views/images'
   },
   default: {
     type: String,
