@@ -21,15 +21,17 @@
 namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
-use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use HelperBuilder;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
     public function uploadAction(Request $request)
     {
+        $message = '';
         $posts = json_decode($request->getContent(), true);
         //  remove
         if (!empty($posts) && $posts['action'] == 'removeImage') {
@@ -62,7 +64,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $imgs = [];
         if (in_array($extension, \Module::getInstanceByName('prettyblocks')->valid_types)) {
             // can upload
-            $new_name = \Tools::str2url($file['name']);
+            $new_name = \Tools::str2url(pathinfo($file['name'], PATHINFO_FILENAME));
             $path = '$/modules/prettyblocks/views/images/';
             if (\Tools::getIsset('path')) {
                 $path = pSQL(\Tools::getValue('path'));
@@ -70,8 +72,35 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             $upload_dir = \HelperBuilder::pathFormattedFromString($path);
             if (move_uploaded_file($file['tmp_name'], $upload_dir . $new_name . '.' . $extension)) {
                 $uploaded = true;
-                $imgs = ['url' => \HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension];
+
+                $myurl = \HelperBuilder::pathFormattedToUrl($path) . '/' . $new_name . '.' . $extension;
+                $imgs = [
+                    'url' => $myurl,
+                    'extension' => pathinfo($myurl, PATHINFO_EXTENSION),
+                    'mediatype' => HelperBuilder::getMediaTypeForExtension(pathinfo($myurl, PATHINFO_EXTENSION)),
+                    'filename' => pathinfo($myurl, PATHINFO_BASENAME),
+                ];
+            } else {
+                switch ($file['error']) {
+                    case UPLOAD_ERR_INI_SIZE:
+                        $imgs['error'] = \Context::getContext()->getTranslator()->trans('The uploaded file exceeds the upload_max_filesize directive.', [], 'Modules.Prettyblocks.Admin');
+                        break;
+                    case UPLOAD_ERR_FORM_SIZE:
+                        $imgs['error'] = \Context::getContext()->getTranslator()->trans('The uploaded file exceeds the post_max_size directive.', [], 'Modules.Prettyblocks.Admin');
+                        break;
+                    break;
+                    case UPLOAD_ERR_PARTIAL:
+                        $imgs['error'] = \Context::getContext()->getTranslator()->trans('The uploaded file was only partially uploaded.', [], 'Modules.Prettyblocks.Admin');
+                        break;
+                    break;
+                    case UPLOAD_ERR_NO_FILE:
+                        $imgs['error'] = \Context::getContext()->getTranslator()->trans('Please provide a file.', [], 'Modules.Prettyblocks.Admin');
+                        break;
+                    break;
+                }
+                $message .= $imgs['error'];
             }
+
         }
 
         return (new JsonResponse())->setData([
@@ -85,6 +114,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'ext' => $extension,
             'imgs' => $imgs,
             'files' => $_FILES['file'],
+            'message' => $message,
         ]);
     }
 

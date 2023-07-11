@@ -67,7 +67,7 @@ const removeTinyNotifications = () => {
         <Input class="flex-auto" placeholder="Add a color ex: #123456" v-model="f.value" name="bg_color" />
       </div>
     </div>
-    <FileUpload class="my-4" :default="f.default" :path="(f.path) ? f.path : '$/prettyblocks/views/images'"
+    <FileUpload class="my-4" :default="f.default" :path="(f.path) ? f.path : '$/modules/prettyblocks/views/images'"
       @saveParent="updateUpload" v-if="f.type == 'fileupload'" v-model="f.value" :id="uuidv4()" :title="f.label" />
     <Textarea class="my-4" v-if="f.type == 'textarea'" v-model="f.value" :title="f.label" :name="uuidv4()"
       placeholder="Entrez du texte" />
