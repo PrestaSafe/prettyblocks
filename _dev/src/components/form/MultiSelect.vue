@@ -14,14 +14,14 @@ defineComponent({
   VueFormMultiselect,
 })
 
-let currentOption = ref(props.modelValue)
+let currentOptions = ref(props.modelValue)
 const emit = defineEmits(['update:modelValue'])
 
 function onChange(e) {
   emit('update:modelValue', e)
 }
 
-watch(currentOption, onChange)
+watch(currentOptions, onChange)
 </script>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
@@ -29,7 +29,7 @@ watch(currentOption, onChange)
 <template>
   <div class="text-sm font-medium text-gray-700 mb-1">{{ label }}</div>
   <VueFormMultiselect
-    v-model="currentOption"
+    v-model="currentOptions"
     :mode="mode"
     :options="options"
     :searchable="searchable"

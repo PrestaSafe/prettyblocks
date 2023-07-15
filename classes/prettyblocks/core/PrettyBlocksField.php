@@ -541,7 +541,7 @@ class PrettyBlocksField
             return '';
         }
         // if value exists in DB and newValue is empty
-        if (!is_null($this->value) && empty($this->newValue) && isset($this->field['choices'][$this->value])) {
+        if (!is_null($this->value) && empty($this->newValue) && (!is_array($this->value) && isset($this->field['choices'][$this->value]))) {
             if ($this->allow_html) {
                 return pSQL(Tools::purifyHTML($this->field['choices'][$this->value]));
             }
@@ -565,7 +565,7 @@ class PrettyBlocksField
             }
         }
         // if value doesn't exists in DB and new value is set and force default value is false
-        if (is_array($this->field['choices']) && isset($this->field['choices'][$this->newValue])) {
+        if (is_array($this->field['choices']) && !is_array($this->newValue) && isset($this->field['choices'][$this->newValue])) {
             if ($this->allow_html) {
                 return pSQL(Tools::purifyHTML($this->field['choices'][$this->newValue]));
             }
@@ -592,6 +592,44 @@ class PrettyBlocksField
     private function formatFieldSelect()
     {
         return $this->formatFieldRadioGroup();
+    }
+    /**
+     * return the value for PrettyBlocks (frontend)
+     *
+     * @return string
+     */
+    private function formatFieldMultiselectForFront()
+    {
+        return $this->formatFieldMultiselect();
+    }
+
+    /**
+     * format the value for select field and radioGroup for PrettyBlocks (backend)
+     */
+    private function formatFieldMultiselect()
+    {
+        // print_r($this->field);die();
+        if (empty($this->field['choices'])) {
+            return [];
+        }
+        // if value exists in DB and newValue is empty
+        if (!is_null($this->value) && !isset($this->newValue)) {
+            return array_filter($this->value, function($val) {
+                return in_array($val, array_keys($this->field['choices']));
+            });
+        }
+        // if value doesn't exists in DB and new value is not set return default value
+        if ($this->force_default_value && !isset($this->newValue) && isset($this->field['default'])) {
+            return $this->field['default'];
+        }
+        // if new value is set and force default value is false retrun new value
+        if (isset($this->newValue) && is_array($this->newValue)) {
+            return array_filter($this->newValue, function($val) {
+                return in_array($val, array_keys($this->field['choices']));
+            });
+        }
+        // if no matches.
+        return [];
     }
 
     /**

@@ -81,8 +81,10 @@ const removeTinyNotifications = () => {
         toolbar="code bold italic underline link styleselect" v-model="f.value" />
     </div>
     <div v-if="f.type == 'select'">
-      <MultiSelect v-model="f.value" :label="f.label" :options="f.choices" mode="single"></MultiSelect>
-      <!--<Choices v-if="Object.keys(f.choices).length > 1" :choices="f.choices" v-model="f.value" :label="f.label" />-->
+      <Choices v-if="Object.keys(f.choices).length > 1" :choices="f.choices" v-model="f.value" :label="f.label" />
+    </div>
+    <div v-if="f.type == 'multiselect'">
+      <MultiSelect v-model="f.value" :label="f.label" :options="f.choices" searchable="true" mode="tags"></MultiSelect>
     </div>
     <FormControl class="my-4" :title="f.label" v-if="f.type == 'radio_group'">
       <Radio v-for='(group, value, key) in f.choices' :key="group" v-model="f.value" :title="group"
