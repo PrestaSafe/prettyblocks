@@ -45,6 +45,7 @@ class StateFormatter
         if (empty($value['value']['filename'])) {
             $value['value']['filename'] = 'Unknown';
         }
+
         return $value['value'];
     }
 

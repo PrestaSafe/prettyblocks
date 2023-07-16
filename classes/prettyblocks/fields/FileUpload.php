@@ -31,7 +31,7 @@ use PrestaSafe\PrettyBlocks\Core\FieldCore;
 // ->renderFront()
 class FileUpload extends FieldCore
 {
-    public $key = null;
+    public $key;
     public $type = 'fileupload';
     public $block = false;
     public $context = '_settings';

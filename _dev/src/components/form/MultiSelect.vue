@@ -27,11 +27,12 @@ watch(currentOptions, onChange)
 <style src="@vueform/multiselect/themes/default.css"></style>
 
 <template>
-  <div class="text-sm font-medium text-gray-700 mb-1">{{ label }}</div>
+  <div class="text-sm font-medium text-gray-700 my-1">{{ label }}</div>
   <VueFormMultiselect
     v-model="currentOptions"
     :mode="mode"
     :options="options"
     :searchable="searchable"
+    class="mb-2"
   />
 </template>
