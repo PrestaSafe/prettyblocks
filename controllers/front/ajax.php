@@ -43,7 +43,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             }
         }
         if (empty($this->ajax_token) || Tools::getValue('ajax_token') !== $this->ajax_token) {
-            header("HTTP/1.1 401 Unauthorized");
+            header('HTTP/1.1 401 Unauthorized');
             exit('Wrong token');
         }
         parent::init();

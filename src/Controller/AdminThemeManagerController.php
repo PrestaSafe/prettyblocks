@@ -21,11 +21,10 @@
 namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
-use HelperBuilder;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
@@ -77,7 +76,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 $imgs = [
                     'url' => $myurl,
                     'extension' => pathinfo($myurl, PATHINFO_EXTENSION),
-                    'mediatype' => HelperBuilder::getMediaTypeForExtension(pathinfo($myurl, PATHINFO_EXTENSION)),
+                    'mediatype' => \HelperBuilder::getMediaTypeForExtension(pathinfo($myurl, PATHINFO_EXTENSION)),
                     'filename' => pathinfo($myurl, PATHINFO_BASENAME),
                 ];
             } else {
@@ -88,19 +87,18 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                     case UPLOAD_ERR_FORM_SIZE:
                         $imgs['error'] = \Context::getContext()->getTranslator()->trans('The uploaded file exceeds the post_max_size directive.', [], 'Modules.Prettyblocks.Admin');
                         break;
-                    break;
+                        break;
                     case UPLOAD_ERR_PARTIAL:
                         $imgs['error'] = \Context::getContext()->getTranslator()->trans('The uploaded file was only partially uploaded.', [], 'Modules.Prettyblocks.Admin');
                         break;
-                    break;
+                        break;
                     case UPLOAD_ERR_NO_FILE:
                         $imgs['error'] = \Context::getContext()->getTranslator()->trans('Please provide a file.', [], 'Modules.Prettyblocks.Admin');
                         break;
-                    break;
+                        break;
                 }
                 $message .= $imgs['error'];
             }
-
         }
 
         return (new JsonResponse())->setData([
