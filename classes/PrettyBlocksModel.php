@@ -294,12 +294,6 @@ class PrettyBlocksModel extends ObjectModel
         $id_prettyblocks = (int) $block['id_prettyblocks'];
         $key = Tools::strtoupper($id_prettyblocks . '_template');
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
-        $default_tpl = (isset($block['templates']['default'])) ? 'default' : 'welcome';
-        $defaultTemplate = Configuration::get($key, null, null, (int) $block['id_shop']);
-        if (!$defaultTemplate) {
-            return $default_tpl;
-        }
-
         $defaultTemplate = (isset($block['templates']['default'])) ? 'default' : 'welcome';
         if ($this->template && isset($block['templates'][$this->template])) {
             $defaultTemplate = $this->template;
