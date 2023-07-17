@@ -33,6 +33,9 @@ class HelperBuilder
      */
     public static function pathFormattedFromString($path, $rtrim = false)
     {
+        if (strpos($path, '..') !== false) {
+            throw new Exception('Invalid path');
+        }
         if (substr($path, 0, 1) !== '$') {
             throw new Exception('Path "' . $path . '" should begin by $ ex: "$/prettyblocks/path/to/images/"');
         }
@@ -48,8 +51,10 @@ class HelperBuilder
     /**
      * ex: $path = 'https://prestashop_url/modules/prettyblocks/views/images/'
      * return /path/to/prestashop/modules/prettyblocks/views/images/
+     *
      * @param string $path
      * @param bool $path_only
+     *
      * @return string
      */
     public static function pathFormattedFromUrl($path, $path_only = false)
@@ -66,8 +71,10 @@ class HelperBuilder
 
     /**
      * Retourne hook data module to Array
+     *
      * @param string $hookName
      * @param array $params
+     *
      * @return array
      */
     public static function hookToArray($hookName, $params = [])
@@ -109,7 +116,9 @@ class HelperBuilder
 
     /**
      * Return array of blocks
-     * @param $blocks   
+     *
+     * @param $blocks
+     *
      * @return array
      */
     public static function renderBlocks($blocks)
@@ -120,12 +129,16 @@ class HelperBuilder
                 $output[] = $block->registerBlocks();
             }
         }
+
         return $output;
     }
+
     /**
      * return random category formatted for default collection field
+     *
      * @param int $id_lang
      * @param int $id_shop
+     *
      * @return array
      */
     public static function getRandomCategory($id_lang = null, $id_shop = null)
@@ -136,12 +149,11 @@ class HelperBuilder
         $ids = Db::getInstance()->executeS('SELECT l.id_category FROM ' . _DB_PREFIX_ . 'category_lang as l
         INNER JOIN ' . _DB_PREFIX_ . 'category c ON (c.id_category = l.id_category)
         WHERE c.active = 1
-        AND l.id_shop = ' . (int)$id_shop . ' AND l.id_lang = ' . (int)$id_lang . '
+        AND l.id_shop = ' . (int) $id_shop . ' AND l.id_lang = ' . (int) $id_lang . '
         ORDER BY RAND() LIMIT 5');
         $categoriesIDS = array_map(function ($element) {
-            return $element["id_category"];
+            return $element['id_category'];
         }, $ids);
-
 
         $randomIndex = array_rand($categoriesIDS);
         $id_category = $categoriesIDS[$randomIndex];
@@ -150,19 +162,22 @@ class HelperBuilder
             ->where('id_category', '=', $id_category)->getFirst();
         $secure = [];
         $secure['show'] = [
-            'id' => (int)$id_category,
-            'primary' => (int)$id_category,
+            'id' => (int) $id_category,
+            'primary' => (int) $id_category,
             'name' => $category->name,
             'formatted' => $id_category . ' - ' . $category->name,
         ];
+
         return $secure;
     }
 
     /**
      * return random product formatted for default collection field
+     *
      * @param string $collectionName
      * @param int $id_lang
      * @param int $id_shop
+     *
      * @return array
      */
     public static function getRandomProduct($id_lang = null, $id_shop = null)
@@ -175,14 +190,13 @@ class HelperBuilder
         $sql = 'SELECT l.id_' . $collection . ' FROM ' . _DB_PREFIX_ . $collection . '_lang as l
         INNER JOIN ' . _DB_PREFIX_ . $collection . ' c ON (c.id_' . $collection . ' = l.id_' . $collection . ')
         WHERE c.active = 1
-        AND l.id_shop = ' . (int)$id_shop . ' AND l.id_lang = ' . (int)$id_lang . '
+        AND l.id_shop = ' . (int) $id_shop . ' AND l.id_lang = ' . (int) $id_lang . '
         ORDER BY RAND() LIMIT 5';
         $ids = Db::getInstance()->executeS($sql);
-        $collectionIDS = array_map(function ($element) use($collection) {
-            return $element["id_" . $collection];
+        $collectionIDS = array_map(function ($element) use ($collection) {
+            return $element['id_' . $collection];
         }, $ids);
 
-        
         $randomIndex = array_rand($collectionIDS);
         $id_collection = $collectionIDS[$randomIndex];
 
@@ -190,19 +204,22 @@ class HelperBuilder
             ->where('id_' . $collection, '=', $id_collection)->getFirst();
         $secure = [];
         $secure['show'] = [
-            'id' => (int)$id_collection,
-            'primary' => (int)$id_collection,
+            'id' => (int) $id_collection,
+            'primary' => (int) $id_collection,
             'name' => $model->name,
             'formatted' => $id_collection . ' - ' . $model->name,
         ];
+
         return $secure;
     }
 
-     /**
+    /**
      * return random product formatted for default collection field
+     *
      * @param string $collectionName
      * @param int $id_lang
      * @param int $id_shop
+     *
      * @return array
      */
     public static function getRandomCMS($id_lang = null, $id_shop = null)
@@ -215,14 +232,13 @@ class HelperBuilder
         $sql = 'SELECT l.id_' . $collection . ' FROM ' . _DB_PREFIX_ . $collection . '_lang as l
         INNER JOIN ' . _DB_PREFIX_ . $collection . ' c ON (c.id_' . $collection . ' = l.id_' . $collection . ')
         WHERE c.active = 1
-        AND l.id_shop = ' . (int)$id_shop . ' AND l.id_lang = ' . (int)$id_lang . '
+        AND l.id_shop = ' . (int) $id_shop . ' AND l.id_lang = ' . (int) $id_lang . '
         ORDER BY RAND() LIMIT 5';
         $ids = Db::getInstance()->executeS($sql);
-        $collectionIDS = array_map(function ($element) use($collection) {
-            return $element["id_" . $collection];
+        $collectionIDS = array_map(function ($element) use ($collection) {
+            return $element['id_' . $collection];
         }, $ids);
 
-        
         $randomIndex = array_rand($collectionIDS);
         $id_collection = $collectionIDS[$randomIndex];
 
@@ -230,11 +246,34 @@ class HelperBuilder
             ->where('id_' . $collection, '=', $id_collection)->getFirst();
         $secure = [];
         $secure['show'] = [
-            'id' => (int)$id_collection,
-            'primary' => (int)$id_collection,
+            'id' => (int) $id_collection,
+            'primary' => (int) $id_collection,
             'name' => $model->meta_title,
             'formatted' => $id_collection . ' - ' . $model->meta_title,
         ];
+
         return $secure;
+    }
+
+    /**
+     * The function determines the media type (image, document, video, etc.) based on the file
+     * extension provided.
+     *
+     * @param string extension The parameter "extension" is a string that represents the file extension of a
+     * file. For example, if the file is named "image.jpg", the extension would be "jpg".
+     *
+     * @return string a string that represents the media type
+     */
+    public static function getMediaTypeForExtension($extension): string
+    {
+        // media type (image, document, video, ...)
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'])) {
+            return 'image';
+        }
+        if (in_array($extension, ['mov', 'mp4', 'webm', 'ogg', 'ogv'])) {
+            return 'image';
+        }
+
+        return 'document';
     }
 }

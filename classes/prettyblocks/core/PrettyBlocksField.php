@@ -22,9 +22,6 @@
 namespace PrestaSafe\PrettyBlocks\Core;
 
 use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
-use PrettyBlocksModel;
-use Tools;
-use Validate;
 
 class PrettyBlocksField
 {
@@ -33,13 +30,13 @@ class PrettyBlocksField
     private $config = [];
     private $id_lang = 0;
     private $id_shop = 0;
-    private $value = null;
+    private $value;
     private $formattedValue = '';
-    private $newValue = null;
+    private $newValue;
     private $key = '';
     private $field = [];
     private $label = '';
-    private $model = null;
+    private $model;
     private $force_default_value = false;
     private $allow_html = true;
     private $context = 'front';
@@ -144,7 +141,7 @@ class PrettyBlocksField
     /**
      * set model
      *
-     * @param PrettyBlocksModel $model
+     * @param \PrettyBlocksModel $model
      *
      * @return $this
      */
@@ -164,7 +161,7 @@ class PrettyBlocksField
     {
         // set value if exists
         if (is_null($this->model) && isset($this->block['id_prettyblocks'])) {
-            $this->model = new PrettyBlocksModel((int) $this->block['id_prettyblocks'], $this->id_lang, $this->id_shop);
+            $this->model = new \PrettyBlocksModel((int) $this->block['id_prettyblocks'], $this->id_lang, $this->id_shop);
             $this->config = json_decode($this->model->config, true);
             $this->id_lang = (int) $this->model->id_lang;
         }
@@ -319,7 +316,7 @@ class PrettyBlocksField
     {
         $value = [];
         $jsonConfig = $this->model->config;
-        if (!is_null($jsonConfig) && !Validate::isJson($jsonConfig)) {
+        if (!is_null($jsonConfig) && !\Validate::isJson($jsonConfig)) {
             return $value;
         }
         $json = json_decode($jsonConfig, true);
@@ -431,7 +428,7 @@ class PrettyBlocksField
         $new_value = str_replace(array("\r", "\n"), '',$value);
         $new_value = str_replace("\\n", '',$new_value);
 
-        $new_value = pSQL(Tools::purifyHTML($new_value));
+        $new_value = pSQL(\Tools::purifyHTML($new_value));
         return $new_value;
     }
 
@@ -481,6 +478,7 @@ class PrettyBlocksField
      */
     private function formatFieldFileupload()
     {
+        $value = [];
         // if value exists in DB and newValue is empty
         if (is_array($this->value) && is_null($this->newValue)) {
             return $this->secureFileUploadEntry($this->value);
@@ -490,7 +488,19 @@ class PrettyBlocksField
             return $this->secureFileUploadEntry($this->field['default']);
         }
 
-        return $this->secureFileUploadEntry($this->newValue);
+        $value = $this->secureFileUploadEntry($this->newValue);
+
+        // add extension
+        $value['extension'] = pathinfo($value['url'], PATHINFO_EXTENSION);
+        // add media type (image, document, video, ...)
+        $value['mediatype'] = \HelperBuilder::getMediaTypeForExtension($value['extension']);
+        // add filename
+        $value['filename'] = pathinfo($value['url'], PATHINFO_BASENAME);
+        if (empty($value['filename'])) {
+            $value['filename'] = 'Unknown';
+        }
+
+        return $value;
     }
 
     /**
@@ -543,7 +553,7 @@ class PrettyBlocksField
         if ($this->force_default_value && is_null($this->newValue)) {
             if (is_array($this->field['choices'])
             && isset($this->field['default'], $this->field['choices'][$this->field['default']])
-              ) {
+            ) {
                 return pSQL($this->field['default']);
             }
 
@@ -574,9 +584,9 @@ class PrettyBlocksField
             return '';
         }
         // if value exists in DB and newValue is empty
-        if (!is_null($this->value) && empty($this->newValue) && isset($this->field['choices'][$this->value])) {
+        if (!is_null($this->value) && empty($this->newValue) && (!is_array($this->value) && isset($this->field['choices'][$this->value]))) {
             if ($this->allow_html) {
-                return pSQL(Tools::purifyHTML($this->field['choices'][$this->value]));
+                return pSQL(\Tools::purifyHTML($this->field['choices'][$this->value]));
             }
 
             return pSQL($this->field['choices'][$this->value]);
@@ -585,7 +595,7 @@ class PrettyBlocksField
         if ($this->force_default_value && $this->newValue == '') {
             if (is_array($this->field['choices'])
             && isset($this->field['default'], $this->field['choices'][$this->field['default']])
-              ) {
+            ) {
                 return $this->field['choices'][$this->field['default']];
             }
 
@@ -598,9 +608,9 @@ class PrettyBlocksField
             }
         }
         // if value doesn't exists in DB and new value is set and force default value is false
-        if (is_array($this->field['choices']) && isset($this->field['choices'][$this->newValue])) {
+        if (is_array($this->field['choices']) && !is_array($this->newValue) && isset($this->field['choices'][$this->newValue])) {
             if ($this->allow_html) {
-                return pSQL(Tools::purifyHTML($this->field['choices'][$this->newValue]));
+                return pSQL(\Tools::purifyHTML($this->field['choices'][$this->newValue]));
             }
 
             return pSQL($this->field['choices'][$this->newValue]);
@@ -625,6 +635,45 @@ class PrettyBlocksField
     private function formatFieldSelect()
     {
         return $this->formatFieldRadioGroup();
+    }
+
+    /**
+     * return the value for PrettyBlocks (frontend)
+     *
+     * @return string
+     */
+    private function formatFieldMultiselectForFront()
+    {
+        return $this->formatFieldMultiselect();
+    }
+
+    /**
+     * format the value for select field and radioGroup for PrettyBlocks (backend)
+     */
+    private function formatFieldMultiselect()
+    {
+        // print_r($this->field);die();
+        if (empty($this->field['choices'])) {
+            return [];
+        }
+        // if value exists in DB and newValue is empty
+        if (!is_null($this->value) && !isset($this->newValue)) {
+            return array_filter($this->value, function ($val) {
+                return in_array($val, array_keys($this->field['choices']));
+            });
+        }
+        // if value doesn't exists in DB and new value is not set return default value
+        if ($this->force_default_value && !isset($this->newValue) && isset($this->field['default'])) {
+            return $this->field['default'];
+        }
+        // if new value is set and force default value is false retrun new value
+        if (isset($this->newValue) && is_array($this->newValue)) {
+            return array_filter($this->newValue, function ($val) {
+                return in_array($val, array_keys($this->field['choices']));
+            });
+        }
+        // if no matches.
+        return [];
     }
 
     /**
@@ -696,7 +745,7 @@ class PrettyBlocksField
         $primary = $primaryField ?? 'id_' . \Tools::strtolower($collectionName);
 
         $object = $c->where($primary, '=', (int) $id)->getFirst();
-        if (!Validate::isLoadedObject($object)) {
+        if (!\Validate::isLoadedObject($object)) {
             return false;
         }
         $objectPresenter = new ObjectPresenter();
@@ -734,10 +783,10 @@ class PrettyBlocksField
     private function secureTextEntry($string)
     {
         if ($this->allow_html) {
-            return Tools::purifyHTML($string);
+            return \Tools::purifyHTML($string);
         }
 
-        return Tools::purifyHTML(strip_tags($string));
+        return \Tools::purifyHTML(strip_tags($string));
     }
 
     /**
