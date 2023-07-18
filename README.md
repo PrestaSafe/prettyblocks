@@ -15,7 +15,7 @@ Vous trouverez toutes informations sur la documentation dédiée:
 cd modules
 git clone https://github.com/PrestaSafe/prettyblocks.git
 cd prettyblocks
-composer instal`
+composer install
 cd _dev
 npm install && npm run build
 cd ../../ && php bin/console prestashop:module install prettyblocks
@@ -45,7 +45,7 @@ You will find the technial documentation here (only in French, soon in english t
 cd modules
 git clone https://github.com/PrestaSafe/prettyblocks.git
 cd prettyblocks
-composer instal`
+composer install
 cd _dev
 npm install && npm run build
 cd ../../ && php bin/console prestashop:module install prettyblocks
