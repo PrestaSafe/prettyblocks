@@ -21,7 +21,7 @@ export class toolbar {
         id: id,
         html: element,
         value: element.innerHTML,
-        tag: element.tagName,
+        tag: element.tagName.toLowerCase(),
         classes: element.classList,
         focus: this.getAttributeValue(attrObject, "focus"),
         inside: false, // Ici, je suppose que "inside" n'est pas un attribut de données, donc je le laisse inchangé
@@ -431,7 +431,7 @@ export class toolbar {
   refreshToolbar(obj) {
     const id = obj.id;
     const e = this.document.querySelector('[data-id-title="' + id + '"]');
-    const tag = this.select.value;
+    const tag = e.tagName.toLowerCase()
 
     const top = this.findTop(e);
     const left = this.findLeft(e);
