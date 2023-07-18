@@ -472,33 +472,74 @@ class PrettyBlocksField
     }
 
     /**
-     * format field fileupload
+     * format field fileupload (backend)
      *
      * @return array
      */
     private function formatFieldFileupload()
     {
         $value = [];
-        // if value exists in DB and newValue is empty
-        if (is_array($this->value) && is_null($this->newValue)) {
-            return $this->secureFileUploadEntry($this->value);
-        }
-        // if value doesn't exists in DB and new value is set
-        if ($this->force_default_value && is_null($this->newValue)) {
-            return $this->secureFileUploadEntry($this->field['default']);
+
+        if (isset($this->newValue)) {
+            // if new value exists
+            $value = $this->secureFileUploadEntry($this->newValue);
+        } elseif (isset($this->value) && is_array($this->value)) {
+            // if value exists in DB
+            $value = $this->secureFileUploadEntry($this->value);
+        } elseif ($this->force_default_value && !empty($this->field['default'])) {
+            // if we need to use default value
+            $value = $this->secureFileUploadEntry($this->field['default']);
         }
 
-        $value = $this->secureFileUploadEntry($this->newValue);
+        $extension = '';
+        $mediatype = '';
+        $filename = '';
 
-        // add extension
-        $value['extension'] = pathinfo($value['url'], PATHINFO_EXTENSION);
-        // add media type (image, document, video, ...)
-        $value['mediatype'] = \HelperBuilder::getMediaTypeForExtension($value['extension']);
-        // add filename
-        $value['filename'] = pathinfo($value['url'], PATHINFO_BASENAME);
-        if (empty($value['filename'])) {
-            $value['filename'] = 'Unknown';
+        if (!empty($value['url'])) {
+            // add extension
+            $extension = pathinfo($value['url'], PATHINFO_EXTENSION);
+            // add media type (image, document, video, ...)
+            $mediatype = \HelperBuilder::getMediaTypeForExtension($extension);
+            // add filename
+            $filename = pathinfo($value['url'], PATHINFO_BASENAME);
         }
+
+        $value['extension'] = $extension;
+        $value['mediatype'] = $mediatype;
+        $value['filename'] = $filename;
+
+        return $value;
+    }
+
+    /**
+     * format field fileupload (frontend)
+     *
+     * @return array
+     */
+    private function formatFieldFileuploadForFront()
+    {
+        $value = $this->formatFieldFileupload();
+
+        $size = 0;
+        $width = 0;
+        $height = 0;
+
+        if (!empty($value['url'])) {
+            $path = \HelperBuilder::pathFormattedFromUrl($value['url']);
+
+            if (file_exists($path)) {
+                $size = filesize($path);
+
+                // if file is an image, we return width and height
+                if ($value['mediatype'] == 'image') {
+                    list($width, $height) = getimagesize($path);
+                }
+            }
+        }
+
+        $value['size'] = (int) $size;
+        $value['width'] = (int) $width;
+        $value['height'] = (int) $height;
 
         return $value;
     }
