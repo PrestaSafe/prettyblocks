@@ -81,7 +81,7 @@ const removeTinyNotifications = () => {
         toolbar="code bold italic underline link styleselect" v-model="f.value" />
     </div>
     <div v-if="f.type == 'select'">
-      <Choices v-if="Object.keys(f.choices).length > 1" :choices="f.choices" v-model="f.value" :label="f.label" />
+      <Choices :choices="f.choices" v-model="f.value" :label="f.label" />
     </div>
     <div v-if="f.type == 'multiselect'">
       <MultiSelect v-model="f.value" :label="f.label" :options="f.choices" searchable="true" mode="tags"></MultiSelect>
