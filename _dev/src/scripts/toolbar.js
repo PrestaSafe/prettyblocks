@@ -14,18 +14,21 @@ export class toolbar {
         .substr(2, 9);
       element.setAttribute("data-id-title", id);
 
+      let dataAttributesString = element.dataset.attributes; 
+      const attrObject = JSON.parse(dataAttributesString);
+
       this.arr.push({
         id: id,
         html: element,
         value: element.innerHTML,
         tag: element.tagName,
         classes: element.classList,
-        focus: false,
-        inside: false,
-        bold: element.style.fontWeight == "bold" ? true : false,
-        italic: element.style.fontStyle == "italic" ? true : false,
-        underline: element.style.textDecoration == "underline" ? true : false,
-        size: element.style.fontSize ? element.style.fontSize : 32,
+        focus: this.getAttributeValue(attrObject, "focus"),
+        inside: false, // Ici, je suppose que "inside" n'est pas un attribut de données, donc je le laisse inchangé
+        bold: this.getAttributeValue(attrObject, "bold"),
+        italic: this.getAttributeValue(attrObject, "italic"),
+        underline: this.getAttributeValue(attrObject, "underline"),
+        size: this.getAttributeValue(attrObject, "size") ? this.getAttributeValue(attrObject, "size") : 32,
       });
     });
 
@@ -100,14 +103,15 @@ export class toolbar {
         const z = {
           id: t.id,
           focus: t.focus,
-          tag: e.tagName,
-          classes: e.classList,
+          tag: this.select.value,
+          classes: Array.from(e.classList), 
           inside: t.inside,
           bold: t.bold,
           italic: t.italic,
           underline: t.underline,
           size: t.size,
         };
+
         const lastT = structuredClone(z);
 
         if (this.tEdited == t.id) {
@@ -149,8 +153,8 @@ export class toolbar {
           const z = {
             id: t.id,
             focus: t.focus,
-            tag: e.tagName,
-            classes: e.classList,
+            tag: this.select.value,
+            classes: Array.from(e.classList), 
             inside: t.inside,
             bold: t.bold,
             italic: t.italic,
@@ -171,8 +175,8 @@ export class toolbar {
           const z = {
             id: t.id,
             focus: t.focus,
-            tag: e.tagName,
-            classes: e.classList,
+            tag: this.select.value,
+            classes: Array.from(e.classList), 
             inside: t.inside,
             bold: t.bold,
             italic: t.italic,
@@ -201,8 +205,8 @@ export class toolbar {
           const z = {
             id: t.id,
             focus: t.focus,
-            tag: e.tagName,
-            classes: e.classList,
+            tag: this.select.value,
+            classes: Array.from(e.classList), 
             inside: t.inside,
             bold: t.bold,
             italic: t.italic,
@@ -228,32 +232,34 @@ export class toolbar {
       });
       this.U.addEventListener("click", () => {
         if (this.tEdited == t.id) {
+          let underline = !t.underline;
+          console.log('underline', underline)
+          this.setAttributeValue(e,"underline", underline);
+          t.underline = underline;
           const z = {
             id: t.id,
             focus: t.focus,
             inside: t.inside,
-            tag: e.tagName,
-            classes: e.classList,
+            tag: this.select.value,
+            classes: Array.from(e.classList), 
             bold: t.bold,
             italic: t.italic,
             underline: t.underline,
             size: t.size,
           };
+
           const lastT = structuredClone(z);
 
-          if (t.underline == false) {
-            t.underline = true;
+
+          if (t.underline) {
             this.U.style.color = "#6ae26a";
             e.style.textDecoration = "underline";
-
-            this.change(lastT, t);
           } else {
             this.U.style.color = "white";
-            this.underline = false;
             e.style.textDecoration = "none";
-
-            this.change(lastT, t);
           }
+
+          this.change(lastT, t);
         }
       });
     }
@@ -264,7 +270,7 @@ export class toolbar {
       let send = false;
       i.addEventListener("blur", () => {
         t.value = e.innerHTML;
-        this.apply(this.pApply, t);
+        this.change(this.pApply, t);
         send = true;
       });
 
@@ -280,7 +286,7 @@ export class toolbar {
       function doneTyping() {
         if (!send) {
           t.value = e.innerHTML;
-          that.apply(that.pApply, t);
+          that.change(that.pApply, t);
         }
       }
 
@@ -294,7 +300,7 @@ export class toolbar {
           k.preventDefault();
 
           t.value = e.innerHTML;
-          this.apply(this.pApply, t);
+          this.change(this.pApply, t);
           i.blur();
         }
         if (k.shiftKey && k.key == "Enter") {
@@ -303,12 +309,31 @@ export class toolbar {
         } else if (k.key == "Enter") {
           k.preventDefault();
           t.value = e.innerHTML;
-          this.apply(this.pApply, t);
+          this.change(this.pApply, t);
           i.blur();
         }
       });
     }
   }
+
+  getAttributeValue(attrObject, attributeName) {
+    return attrObject.hasOwnProperty(attributeName) ? attrObject[attributeName] : false;
+  }
+  
+  setAttributeValue(element, attributeName, newValue) {
+    let attrString = element.getAttribute('data-attributes');
+    let attrObject = null;
+    attrObject = JSON.parse(attrString);  
+    if (attrObject && attrObject.hasOwnProperty(attributeName)) {
+        attrObject[attributeName] = newValue;
+    } else {
+        console.log("L'attribut " + attributeName + " n'existe pas dans l'objet.");
+    }
+    console.log('OK', attrObject)
+    element.setAttribute('data-attributes', JSON.stringify(attrObject || {}));
+    
+  }
+
 
   setVisibility() {
     for (const t of this.arr) {
@@ -326,11 +351,13 @@ export class toolbar {
           focus: t.focus,
           inside: t.inside,
           bold: t.bold,
+          tag: this.select.value,
           italic: t.italic,
           underline: t.underline,
           size: t.size,
           value: e.target.innerHTML,
         };
+
         this.pApply = structuredClone(z);
       });
 
@@ -404,7 +431,8 @@ export class toolbar {
   refreshToolbar(obj) {
     const id = obj.id;
     const e = this.document.querySelector('[data-id-title="' + id + '"]');
-    const tag = e.tagName;
+    const tag = this.select.value;
+
     const top = this.findTop(e);
     const left = this.findLeft(e);
     const fz = Math.round(
@@ -423,12 +451,12 @@ export class toolbar {
     this.size.value = fz;
     obj.size = fz;
 
-    if (tag == "H1") this.select.selectedIndex = 0;
-    if (tag == "H2") this.select.selectedIndex = 1;
-    if (tag == "H3") this.select.selectedIndex = 2;
-    if (tag == "H4") this.select.selectedIndex = 3;
-    if (tag == "H5") this.select.selectedIndex = 4;
-    if (tag == "H6") this.select.selectedIndex = 5;
+    if (tag == "h1") this.select.selectedIndex = 0;
+    if (tag == "h2") this.select.selectedIndex = 1;
+    if (tag == "h3") this.select.selectedIndex = 2;
+    if (tag == "h4") this.select.selectedIndex = 3;
+    if (tag == "h5") this.select.selectedIndex = 4;
+    if (tag == "h6") this.select.selectedIndex = 5;
 
     if (obj.bold) {
       this.B.style.color = "#6ae26a";
@@ -466,6 +494,13 @@ export class toolbar {
 
   change(lastValue, newValue) {
     lastValue.html = newValue.html;
+    lastValue.value = newValue.value;  
+    lastValue.classes = newValue.classes;  
+    lastValue.bold = newValue.bold;  
+    lastValue.italic = newValue.italic;
+    lastValue.underline = newValue.underline;
+    
+    lastValue.size = newValue.size;
     this.trigger("change", lastValue, newValue);
   }
 

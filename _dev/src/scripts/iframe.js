@@ -4,6 +4,11 @@ import emitter from 'tiny-emitter/instance'
 import {toolbar} from './toolbar';
 import { useStore, storedZones, contextShop } from '../store/currentBlock'
 import Block from './block'
+
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({
+    position: 'top',
+  });
 export default class Iframe {
     current_url = ref();
     id_lang = ref(0);
@@ -271,10 +276,7 @@ async loadIframe () {
 loadToolBar(tb)
 {
     tb.on('change', async (oldValue, newValue) => {
-        this.updateTitleComponent(newValue)
-    })
-    tb.on('apply', async (oldValue, newValue) => {
-        this.updateTitleComponent(newValue)
+        this.updateTitleComponent(oldValue)
     })
 }
 /**
@@ -286,7 +288,7 @@ async  updateTitleComponent(newValue)
     let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
     let field = newValue.html.getAttribute('data-field')
     let element = await Block.loadById(id_block)
-    emitter.emit('displayBlockConfig', element)
+    // emitter.emit('displayBlockConfig', element)
     let context = contextShop()
     let data = {
         id_prettyblocks: id_block,
@@ -306,7 +308,9 @@ async  updateTitleComponent(newValue)
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }).then((response) =>  response.json() ).then((data) => { console.log(data) })
+    }).then((response) =>  response.json() ).then((data) => { 
+        toaster.show(data.message)
+    })
 
 
 }
