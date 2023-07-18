@@ -17,6 +17,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
+use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 if (!defined('_PS_VERSION_')) {
@@ -248,6 +249,28 @@ class PrettyBlocks extends Module implements WidgetInterface
         /* @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
         $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
         $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks_title', [PrettyBlocks::class, 'renderTitle']);
+    }
+
+    /**
+     * Render dynamic title
+     *
+     * @param array $params
+     *
+     * @return string
+     */
+    public static function renderTitle($params)
+    {
+        $tag = $params['tag'] ?? null;
+        $value = $params['value'] ?? '';
+        $value_from_block = ($params['value_from_block']) ? true : false;
+        $field = $params['field'];
+        $block = $params['block'];
+        $classes = $params['classes'] ?? [];
+
+        $title = new Title($tag, $classes, $block, $field);
+
+        return $title->setValueFromBlock($value_from_block)->setValue($value)->render();
     }
 
     public static function renderZone($params)

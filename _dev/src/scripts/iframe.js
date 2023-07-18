@@ -1,7 +1,14 @@
 import { ref } from 'vue' 
 import axios from 'axios'
 import emitter from 'tiny-emitter/instance'
+import {toolbar} from './toolbar';
 import { useStore, storedZones, contextShop } from '../store/currentBlock'
+import Block from './block'
+
+import { createToaster } from "@meforma/vue-toaster";
+const toaster = createToaster({
+    position: 'top',
+  });
 export default class Iframe {
     current_url = ref();
     id_lang = ref(0);
@@ -250,6 +257,9 @@ async loadIframe () {
 
             })
 
+            const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
+            this.loadToolBar(tb)
+
             // check if block is already selected
             let currentBlock = useStore()
             if(currentBlock.subSelected)
@@ -261,6 +271,48 @@ async loadIframe () {
             
         }, false)
     }
+}
+
+loadToolBar(tb)
+{
+    tb.on('change', async (oldValue, newValue) => {
+        this.updateTitleComponent(oldValue)
+    })
+}
+/**
+ * Updpate title component in Config field using Toolbar
+ * @param {*} newValue 
+ */
+async  updateTitleComponent(newValue)
+{
+    let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
+    let field = newValue.html.getAttribute('data-field')
+    let element = await Block.loadById(id_block)
+    // emitter.emit('displayBlockConfig', element)
+    let context = contextShop()
+    let data = {
+        id_prettyblocks: id_block,
+        element: newValue,
+        ctx_id_lang: context.id_lang,
+        ctx_id_shop: context.id_shop,
+        field: field,
+        ajax: true,
+        action: 'updateTitleComponent',
+        ajax_token: security_app.ajax_token
+    }
+    
+    fetch(ajax_urls.api, {
+        method: 'POST',
+        headers: {
+            'accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then((response) =>  response.json() ).then((data) => { 
+        toaster.show(data.message)
+    })
+
+
 }
 
 loadContext(e)
