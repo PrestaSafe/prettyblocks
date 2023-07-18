@@ -27,26 +27,43 @@ class StateFormatter
 {
     public static function formatFieldUpload($value)
     {
-        if (empty($value['value']['url'])) {
-            return [
-                'url' => '',
-                'extension' => '',
-                'mediatype' => '',
-                'filename' => '',
-            ];
+        $url = $value['value']['url'] ?: '';
+        $extension = '';
+        $mediatype = '';
+        $filename = '';
+        $size = 0;
+        $width = 0;
+        $height = 0;
+
+        if (!empty($url)) {
+            // add extension
+            $extension = pathinfo($url, PATHINFO_EXTENSION);
+            // add media type (image, document, video, ...)
+            $mediatype = HelperBuilder::getMediaTypeForExtension($extension);
+            // add filename
+            $filename = pathinfo($url, PATHINFO_BASENAME);
+
+            $path = HelperBuilder::pathFormattedFromUrl($url);
+
+            if (file_exists($path)) {
+                $size = filesize($path);
+
+                // if file is an image, we return width and height
+                if ($mediatype == 'image') {
+                    list($width, $height) = getimagesize($path);
+                }
+            }
         }
 
-        // add extension
-        $value['value']['extension'] = pathinfo($value['value']['url'], PATHINFO_EXTENSION);
-        // add media type (image, document, video, ...)
-        $value['value']['mediatype'] = HelperBuilder::getMediaTypeForExtension($value['value']['extension']);
-        // add filename
-        $value['value']['filename'] = pathinfo($value['value']['url'], PATHINFO_BASENAME);
-        if (empty($value['value']['filename'])) {
-            $value['value']['filename'] = 'Unknown';
-        }
-
-        return $value['value'];
+        return $value['value'] = [
+            'url' => $url,
+            'extension' => $extension,
+            'mediatype' => $mediatype,
+            'filename' => $filename,
+            'size' => (int) $size,
+            'width' => (int) $width,
+            'height' => (int) $height,
+        ];
     }
 
     public static function formatFieldSelector($value)
