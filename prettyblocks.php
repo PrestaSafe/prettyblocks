@@ -17,8 +17,9 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
-use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
+use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -253,19 +254,22 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * Render dynamic title
+     *
      * @param array $params
+     *
      * @return string
      */
     public static function renderTitle($params)
     {
-        $tag = $params['tag'];
-        $value = ($params['value']) ?? '';
+        $tag = $params['tag'] ?? null;
+        $value = $params['value'] ?? '';
         $value_from_block = ($params['value_from_block']) ? true : false;
         $field = $params['field'];
         $block = $params['block'];
-        $classes = ($params['classes']) ?? [];
+        $classes = $params['classes'] ?? [];
 
         $title = new Title($tag, $classes, $block, $field);
+
         return $title->setValueFromBlock($value_from_block)->setValue($value)->render();
     }
 

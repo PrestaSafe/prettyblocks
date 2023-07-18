@@ -388,31 +388,31 @@ class PrettyBlocksField
     private function formatFieldTitle()
     {
         // if value exists in DB and newValue is empty
-        if(!is_null($this->value) && is_null($this->newValue))
-        {
+        if (!is_null($this->value) && is_null($this->newValue)) {
             return $this->secureTitleEntry($this->value);
-        }       
+        }
         // if value doesn't exists in DB and new value is set
-        if($this->force_default_value && is_null($this->newValue))
-        {
+        if ($this->force_default_value && is_null($this->newValue)) {
             return $this->secureTitleEntry($this->field['default']);
         }
 
         return $this->secureTitleEntry($this->newValue);
-        
     }
 
-    /** 
+    /**
      * Secure format for title component
+     *
      * @param array $array
+     *
      * @return array
      */
     private function secureTitleEntry($array)
     {
-
+        // dump($array);
+        // die();
         $element = [
             'tag' => ($array['tag']) ? pSQL($array['tag']) : 'h2',
-            'classes' => ($array['classes']) ? array_map('pSQL',($array['classes'])) : [],
+            'classes' => ($array['classes']) ? array_map('pSQL', $array['classes']) : [],
             'value' => ($array['value']) ? $this->_clearValue($array['value']) : '',
             'focus' => (bool) $array['focus'],
             'inside' => (bool) $array['inside'],
@@ -421,14 +421,17 @@ class PrettyBlocksField
             'underline' => (bool) $array['underline'],
             'size' => (int) $array['size'],
         ];
-       return $element;
+
+        return $element;
     }
+
     private function _clearValue($value)
     {
-        $new_value = str_replace(array("\r", "\n"), '',$value);
-        $new_value = str_replace("\\n", '',$new_value);
+        $new_value = str_replace(["\r", "\n"], '', $value);
+        $new_value = str_replace('\\n', '', $new_value);
 
         $new_value = pSQL(Tools::purifyHTML($new_value));
+
         return $new_value;
     }
 

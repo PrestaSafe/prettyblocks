@@ -352,4 +352,23 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             ]
         ));
     }
+
+    /**
+     * @return json
+     */
+    public function displayAjaxupdateTitleComponent()
+    {
+        $id_lang = (int) Tools::getValue('ctx_id_lang');
+        $id_shop = (int) Tools::getValue('ctx_id_shop');
+        $id_prettyblocks = (int) Tools::getValue('id_prettyblocks');
+        $element = Tools::getValue('element');
+        $block = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
+        $block->getConfigFields();
+        $test = $block->fields['title']->setNewValue($element)->save();
+        exit(json_encode([
+            'success' => $test,
+            'message' => $this->translator->trans('Title updated with success', [], 'Modules.Prettyblocks.Admin'),
+            'errors' => 'No action found',
+        ]));
+    }
 }
