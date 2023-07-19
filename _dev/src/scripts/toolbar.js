@@ -52,6 +52,8 @@ export class toolbar {
       <option value="h4">H4</option>
       <option value="h5">H5</option>
       <option value="h6">H6</option>
+      <option value="p">p</option>
+      <option value="span">span</option>
       `;
 
     this.select.selectedIndex = 1;
@@ -267,29 +269,6 @@ export class toolbar {
 
   setBinging(i, t, e) {
     if (i.getAttribute("data-id-title") == t.id) {
-      let send = false;
-      i.addEventListener("blur", () => {
-        t.value = e.innerHTML;
-        this.change(this.pApply, t);
-        send = true;
-      });
-
-      let typingTimer;
-      let doneTypingInterval = 2000;
-
-      i.addEventListener("input", () => {
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(doneTyping, doneTypingInterval);
-      });
-
-      const that = this;
-      function doneTyping() {
-        if (!send) {
-          t.value = e.innerHTML;
-          that.change(that.pApply, t);
-        }
-      }
-
       i.addEventListener("keydown", (k) => {
         if (
           (k.ctrlKey && k.key == "s") ||
@@ -359,18 +338,6 @@ export class toolbar {
         };
 
         this.pApply = structuredClone(z);
-      });
-
-      e.addEventListener("mouseenter", (e) => {
-        inside = true;
-
-        if (!focus) {
-          this.toolbar.style.display = "flex";
-        }
-
-        const id = e.target.getAttribute("data-id-title");
-        const res = this.arr.filter((item) => item.id == id)[0];
-        this.refreshToolbar(res);
       });
 
       e.addEventListener("mouseleave", () => {
@@ -457,6 +424,8 @@ export class toolbar {
     if (tag == "h4") this.select.selectedIndex = 3;
     if (tag == "h5") this.select.selectedIndex = 4;
     if (tag == "h6") this.select.selectedIndex = 5;
+    if (tag == "p") this.select.selectedIndex = 6;
+    if (tag == "span") this.select.selectedIndex = 7;
 
     if (obj.bold) {
       this.B.style.color = "#6ae26a";

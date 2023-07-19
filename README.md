@@ -18,7 +18,7 @@ cd prettyblocks
 composer install
 cd _dev
 npm install && npm run build
-cd ../../ && php bin/console prestashop:module install prettyblocks
+cd ../../../ && php bin/console prestashop:module install prettyblocks
 ```
 
 ### Release
@@ -48,7 +48,7 @@ cd prettyblocks
 composer install
 cd _dev
 npm install && npm run build
-cd ../../ && php bin/console prestashop:module install prettyblocks
+cd ../../../ && php bin/console prestashop:module install prettyblocks
 ```
 
 ### From Release

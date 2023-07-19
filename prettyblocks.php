@@ -263,14 +263,13 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $tag = $params['tag'] ?? null;
         $value = $params['value'] ?? '';
-        $value_from_block = ($params['value_from_block']) ? true : false;
         $field = $params['field'];
         $block = $params['block'];
         $classes = $params['classes'] ?? [];
 
         $title = new Title($tag, $classes, $block, $field);
 
-        return $title->setValueFromBlock($value_from_block)->setValue($value)->render();
+        return $title->setValueFromBlock(true)->setValue($value)->render();
     }
 
     public static function renderZone($params)
