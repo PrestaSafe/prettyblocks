@@ -241,6 +241,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'bg_color' => $translator->trans('Background color', [], 'Modules.Prettyblocks.Admin'),
                 'ex_color' => $translator->trans('Add a color ex: #123456', [], 'Modules.Prettyblocks.Admin'),
                 'theme_settings' => $translator->trans('Theme settings', [], 'Modules.Prettyblocks.Admin'),
+                'type_search_here' => $translator->trans('Type your search here', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::get('_PRETTYBLOCKS_TOKEN_'),

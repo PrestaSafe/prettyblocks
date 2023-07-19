@@ -1,6 +1,7 @@
 <script setup>
 import { defineComponent, defineEmits, ref, watch } from 'vue'
 import VueFormMultiselect from '@vueform/multiselect'
+import { trans } from '../../scripts/trans'
 
 const props = defineProps({
   label: String,
@@ -28,11 +29,31 @@ watch(currentOptions, onChange)
 
 <style>
   .multiselect-tag {
-    --ms-tag-py: .25rem;
-    --ms-tag-font-weight: 500;
+    --ms-tag-bg: #99be30;
     --ms-tag-font-size: .75rem;
+    --ms-tag-font-weight: 500;
     --ms-tag-line-height: 1.25;
+    --ms-tag-py: .25rem;
     white-space: normal;
+  }
+
+  .multiselect-tags-search-wrapper {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  input.multiselect-tags-search {
+    padding-right: .375rem;
+    padding-left: .375rem;
+    font-size: .875rem;
+  }
+
+  .multiselect-dropdown {
+    font-size: .875rem;
+  }
+
+  .multiselect-option {
+    font-size: inherit;
   }
 </style>
 
@@ -43,6 +64,7 @@ watch(currentOptions, onChange)
     :mode="mode"
     :options="options"
     :searchable="searchable"
+    :attrs="{ placeholder: trans('type_search_here') }"
     class="mb-2"
   />
 </template>
