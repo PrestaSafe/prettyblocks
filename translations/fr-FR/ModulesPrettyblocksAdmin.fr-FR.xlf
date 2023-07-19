@@ -92,6 +92,11 @@
         <target>Paramètres du thème</target>
         <note>Line: </note>
       </trans-unit>
+      <trans-unit id="6ee6c7b6f69bd2af8e5fb2358243c0fe">
+        <source>Type your search here</source>
+        <target>Tapez votre recherche ici</target>
+        <note>Line: </note>
+      </trans-unit>
     </body>
   </file>
 </xliff>
