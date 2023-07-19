@@ -17,6 +17,11 @@
         <target>Mise à jour réussi</target>
         <note>Line: </note>
       </trans-unit>
+      <trans-unit id="7fe9d2bd8596cb53a4abddb2a985bc58">
+        <source>Title updated with success</source>
+        <target>Titre mis à jour avec succès</target>
+        <note>Line: </note>
+      </trans-unit>
       <trans-unit id="960302df11e7521d1913d5085967a263">
         <source>Image removed successfully</source>
         <target>Image supprimée avec succès</target>
@@ -25,6 +30,26 @@
       <trans-unit id="678bbe137642c4d293c5066e418ae644">
         <source>Image not found</source>
         <target>Image non trouvée</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="82ac5e42338e593b0c305955a954fb84">
+        <source>The uploaded file exceeds the upload_max_filesize directive.</source>
+        <target>La taille du fichier à dépasser la directive upload_max_filesize </target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="efce3e8ba92c6aa91a0bc927bb8354f2">
+        <source>The uploaded file exceeds the post_max_size directive.</source>
+        <target>La taille du fichier à dépasser la directive post_max_size </target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="4f12b222c9659d62afa795987259933f">
+        <source>The uploaded file was only partially uploaded.</source>
+        <target>Le fichier a été uploadé partiellement</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="461e58b88ee8a29eabae188219964702">
+        <source>Please provide a file.</source>
+        <target>Merci de fournir un fichier</target>
         <note>Line: </note>
       </trans-unit>
       <trans-unit id="08d819923251c8eaa86d518ee209c5e1">

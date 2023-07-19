@@ -269,29 +269,6 @@ export class toolbar {
 
   setBinging(i, t, e) {
     if (i.getAttribute("data-id-title") == t.id) {
-      let send = false;
-      i.addEventListener("blur", () => {
-        t.value = e.innerHTML;
-        this.change(this.pApply, t);
-        send = true;
-      });
-
-      let typingTimer;
-      let doneTypingInterval = 2000;
-
-      i.addEventListener("input", () => {
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(doneTyping, doneTypingInterval);
-      });
-
-      const that = this;
-      function doneTyping() {
-        if (!send) {
-          t.value = e.innerHTML;
-          that.change(that.pApply, t);
-        }
-      }
-
       i.addEventListener("keydown", (k) => {
         if (
           (k.ctrlKey && k.key == "s") ||
@@ -361,18 +338,6 @@ export class toolbar {
         };
 
         this.pApply = structuredClone(z);
-      });
-
-      e.addEventListener("mouseenter", (e) => {
-        inside = true;
-
-        if (!focus) {
-          this.toolbar.style.display = "flex";
-        }
-
-        const id = e.target.getAttribute("data-id-title");
-        const res = this.arr.filter((item) => item.id == id)[0];
-        this.refreshToolbar(res);
       });
 
       e.addEventListener("mouseleave", () => {
