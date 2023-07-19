@@ -408,8 +408,19 @@ class PrettyBlocksField
      */
     private function secureTitleEntry($array)
     {
-        // dump($array);
-        // die();
+        if(!is_array($array)) {
+            $secure = [];
+            $secure['tag'] = 'p';
+            $secure['classes'] = [];
+            $secure['value'] = $array;
+            $secure['focus'] = false;
+            $secure['inside'] = false;
+            $secure['bold'] = false;
+            $secure['italic'] = false;
+            $secure['underline'] = false;
+            $secure['size'] = 0;
+            $array = $secure;
+        }
         $element = [
             'tag' => ($array['tag']) ? pSQL($array['tag']) : 'h2',
             'classes' => ($array['classes']) ? array_map('pSQL', $array['classes']) : [],
@@ -430,7 +441,7 @@ class PrettyBlocksField
         $new_value = str_replace(["\r", "\n"], '', $value);
         $new_value = str_replace('\\n', '', $new_value);
 
-        $new_value = pSQL(\Tools::purifyHTML($new_value));
+        $new_value = \Tools::purifyHTML($new_value);
 
         return $new_value;
     }

@@ -54,17 +54,23 @@ class Title implements ComponentInterface
         $this->value = $value;
         if ($this->value_from_block) {
             // dump($this->block['settings_formatted'][$this->field]['value']);
-            $this->value = $this->block['settings_formatted'][$this->field]['value']['value'];
-            if ($this->tag !== null && $this->block['settings_formatted'][$this->field]['value']['tag']) {
-                $this->tag = $this->block['settings_formatted'][$this->field]['value']['tag'];
+            $block_value = $this->block['settings_formatted'][$this->field]['value'];
+            if(!is_array($block_value)) {
+                $this->value = $block_value;
+                $this->tag = 'p';
+            }else{
+                $this->value = $block_value['value'];
+            }
+            if ($this->tag !== null && is_array($block_value) && $block_value['tag']) {
+                $this->tag = $block_value['tag'];
             }
         }
         $this->attributes = [
-            'focus' => $this->block['settings_formatted'][$this->field]['value']['focus'] ?? false,
-            'bold' => $this->block['settings_formatted'][$this->field]['value']['bold'] ?? false,
-            'italic' => $this->block['settings_formatted'][$this->field]['value']['italic'] ?? false,
-            'underline' => $this->block['settings_formatted'][$this->field]['value']['underline'] ?? false,
-            'size' => $this->block['settings_formatted'][$this->field]['value']['size'] ?? 0,
+            'focus' => $block_value['focus'] ?? false,
+            'bold' => $block_value['bold'] ?? false,
+            'italic' => $block_value['italic'] ?? false,
+            'underline' => $block_value['underline'] ?? false,
+            'size' => $block_value['size'] ?? 0,
         ];
 
         return $this;

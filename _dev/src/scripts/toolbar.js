@@ -52,6 +52,8 @@ export class toolbar {
       <option value="h4">H4</option>
       <option value="h5">H5</option>
       <option value="h6">H6</option>
+      <option value="p">p</option>
+      <option value="span">span</option>
       `;
 
     this.select.selectedIndex = 1;
@@ -457,6 +459,8 @@ export class toolbar {
     if (tag == "h4") this.select.selectedIndex = 3;
     if (tag == "h5") this.select.selectedIndex = 4;
     if (tag == "h6") this.select.selectedIndex = 5;
+    if (tag == "p") this.select.selectedIndex = 6;
+    if (tag == "span") this.select.selectedIndex = 7;
 
     if (obj.bold) {
       this.B.style.color = "#6ae26a";

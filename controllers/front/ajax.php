@@ -348,7 +348,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $element = Tools::getValue('element');
         $block = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
         $block->getConfigFields();
-        $test = $block->fields['title']->setNewValue($element)->save();
+        $test = $block->fields[Tools::getValue('field')]->setNewValue($element)->save();
         exit(json_encode([
             'success' => $test,
             'message' => $this->translator->trans('Title updated with success', [], 'Modules.Prettyblocks.Admin'),
