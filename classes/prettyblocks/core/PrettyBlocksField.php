@@ -408,7 +408,7 @@ class PrettyBlocksField
      */
     private function secureTitleEntry($array)
     {
-        if(!is_array($array)) {
+        if (!is_array($array)) {
             $secure = [];
             $secure['tag'] = 'p';
             $secure['classes'] = [];

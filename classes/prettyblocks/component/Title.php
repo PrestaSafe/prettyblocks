@@ -55,10 +55,10 @@ class Title implements ComponentInterface
         if ($this->value_from_block) {
             // dump($this->block['settings_formatted'][$this->field]['value']);
             $block_value = $this->block['settings_formatted'][$this->field]['value'];
-            if(!is_array($block_value)) {
+            if (!is_array($block_value)) {
                 $this->value = $block_value;
                 $this->tag = 'p';
-            }else{
+            } else {
                 $this->value = $block_value['value'];
             }
             if ($this->tag !== null && is_array($block_value) && $block_value['tag']) {
