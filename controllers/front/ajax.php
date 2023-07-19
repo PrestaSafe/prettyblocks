@@ -223,7 +223,6 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         foreach ($items as $item) {
             $item = (object) $item;
             $sql = 'UPDATE `' . _DB_PREFIX_ . 'prettyblocks` SET position=' . $i . ' WHERE id_prettyblocks = ' . (int) $item->id_prettyblocks;
-            $position[$item->id_prettyblocks] = $position;
             Db::getInstance()->execute($sql);
             ++$i;
         }
@@ -261,7 +260,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
-        $stateRequest = Tools::getValue('state');
+        $stateRequest = htmlentities(Tools::getValue('state'), ENT_QUOTES);
 
         if ($state->updateConfig($stateRequest)) {
             exit(json_encode([
@@ -281,7 +280,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
 
-        $stateRequest = Tools::getValue('state');
+        $stateRequest = htmlentities(Tools::getValue('state'), ENT_QUOTES);
         $formattedState = json_decode($stateRequest, true);
 
         $state_decoded = json_decode($state->state, true);
