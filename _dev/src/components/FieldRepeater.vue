@@ -65,7 +65,7 @@ const removeTinyNotifications = () => {
     <div v-if="f.type == 'color'">
       {{ f.label }}
       <div class="flex mb-4 pt-4">
-        <ColorInput class="flex-auto rounded-full " v-model="f.value" format="hex string" />
+        <ColorInput class="flex-auto rounded-full " v-model="f.value" position="bottom right" format="hex string" />
         <Input class="flex-auto" placeholder="Add a color ex: #123456" v-model="f.value" name="bg_color" />
       </div>
     </div>
