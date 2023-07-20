@@ -270,7 +270,7 @@ async loadIframe () {
             // we inject css in iframe
             let cssLink = doc.createElement('link');
             cssLink.rel = 'stylesheet';
-            cssLink.href = '/modules/prettyblocks/build/iframe.css';
+            cssLink.href = base_url + 'modules/prettyblocks/build/iframe.css';
             cssLink.type = 'text/css';
             cssLink.media = 'all';
             doc.head.appendChild(cssLink);
