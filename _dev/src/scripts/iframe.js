@@ -267,6 +267,14 @@ async loadIframe () {
                 emitter.emit('scrollInIframe', currentBlock.id_prettyblocks)
             }
 
+            // we inject css in iframe
+            let cssLink = doc.createElement('link');
+            cssLink.rel = 'stylesheet';
+            cssLink.href = '/modules/prettyblocks/build/iframe.css';
+            cssLink.type = 'text/css';
+            cssLink.media = 'all';
+            doc.head.appendChild(cssLink);
+
             this.loadContext(e)
             
         }, false)

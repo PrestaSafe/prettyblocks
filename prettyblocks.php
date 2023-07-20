@@ -50,7 +50,6 @@ class PrettyBlocks extends Module implements WidgetInterface
         'displayLeftColumn',
         'displayRightColumn',
         'actionDispatcher',
-        'actionFrontControllerSetMedia',
         'actionFrontControllerSetVariables',
     ];
 
@@ -166,18 +165,6 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         return parent::uninstall()
             && $this->removeDb();
-    }
-
-    public function hookActionFrontControllerSetMedia()
-    {
-        $this->context->controller->registerStylesheet(
-            'prettyblocksutility',
-            'modules/' . $this->name . '/views/css/utility.css',
-            [
-                'media' => 'all',
-                'priority' => 100,
-            ]
-        );
     }
 
     public function hookActionFrontControllerSetVariables()
