@@ -47,7 +47,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             exit('Wrong token');
         }
         $this->ajax = $this->isAjax();
-    
+
         parent::init();
     }
 
@@ -155,7 +155,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         if ($block->delete()) {
             exit(json_encode([
                 'success' => true,
-                'message' =>  $this->translator->trans('Block removed with success', [], 'Modules.Prettyblocks.Admin'),
+                'message' => $this->translator->trans('Block removed with success', [], 'Modules.Prettyblocks.Admin'),
             ]));
         }
     }
