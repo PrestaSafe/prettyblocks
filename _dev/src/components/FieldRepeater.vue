@@ -77,8 +77,17 @@ const removeTinyNotifications = () => {
       :title="f.label" />
     <div class="clearfix" v-if="f.type == 'editor'">
       <div class="pb-4"> {{ f.label }} </div>
-      <Editor @init="removeTinyNotifications()" :init="{ height: 500 }" v-if="f.type == 'editor'" plugins="link code"
-        toolbar="code bold italic underline link styleselect" v-model="f.value" />
+      <Editor
+        v-model="f.value"
+        @init="removeTinyNotifications()"
+        :init="{
+          height: 500,
+          menubar: 'edit view format',
+          plugins: 'code fullscreen link lists',
+          toolbar1: 'blocks code',
+          toolbar2: 'bold italic underline bullist numlist link',
+        }"
+      />
     </div>
     <div v-if="f.type == 'select'">
       <Choices :choices="f.choices" v-model="f.value" :label="f.label" />
