@@ -641,10 +641,10 @@ class PrettyBlocksField
         // if value exists in DB and newValue is empty
         if (!is_null($this->value) && empty($this->newValue) && (!is_array($this->value) && isset($this->field['choices'][$this->value]))) {
             if ($this->allow_html) {
-                return pSQL(\Tools::purifyHTML($this->field['choices'][$this->value]));
+                return \Tools::purifyHTML($this->field['choices'][$this->value]);
             }
 
-            return pSQL($this->field['choices'][$this->value]);
+            return $this->field['choices'][$this->value];
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && $this->newValue == '') {
@@ -659,16 +659,16 @@ class PrettyBlocksField
                 reset($this->field['choices']);
                 $firstKey = key($this->field['choices']);
 
-                return pSQL($this->field['choices'][$firstKey]);
+                return $this->field['choices'][$firstKey];
             }
         }
         // if value doesn't exists in DB and new value is set and force default value is false
         if (is_array($this->field['choices']) && !is_array($this->newValue) && isset($this->field['choices'][$this->newValue])) {
             if ($this->allow_html) {
-                return pSQL(\Tools::purifyHTML($this->field['choices'][$this->newValue]));
+                return \Tools::purifyHTML($this->field['choices'][$this->newValue]);
             }
 
-            return pSQL($this->field['choices'][$this->newValue]);
+            return $this->field['choices'][$this->newValue];
         }
         // if no matches.
         return '';
