@@ -14,7 +14,7 @@ import Icon from './Icon.vue'
 import PanelThemeSettings from './PanelThemeSettings.vue'
 import { useStore } from '../store/currentBlock'
 import emitter from 'tiny-emitter/instance'
-import axios from 'axios'
+
 import Loader from './Loader.vue'
 import Modal from './Modal.vue'
 import Accordion from './Accordion.vue'

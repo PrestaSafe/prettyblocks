@@ -369,6 +369,7 @@ class PrettyBlocksModel extends ObjectModel
         // dump($stateRequest);
         $block = $this->mergeStateWithFields();
         $fields = [];
+        $stateRequest = json_decode($stateRequest, true);
         $fieldsRequest = array_filter($stateRequest, function ($field) {
             return isset($field['value']);
         });

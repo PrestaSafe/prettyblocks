@@ -46,8 +46,29 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             header('HTTP/1.1 401 Unauthorized');
             exit('Wrong token');
         }
-
+        $this->ajax = $this->isAjax();
+    
         parent::init();
+    }
+
+    /**
+     * Returns if the current request is an AJAX request.
+     *
+     * @return bool
+     */
+    private function isAjax()
+    {
+        // Usage of ajax parameter is deprecated
+        $isAjax = Tools::getValue('ajax') || Tools::isSubmit('ajax');
+
+        if (isset($_SERVER['HTTP_ACCEPT'])) {
+            $isAjax = $isAjax || preg_match(
+                '#\bapplication/json\b#',
+                $_SERVER['HTTP_ACCEPT']
+            );
+        }
+
+        return $isAjax;
     }
 
     /**
@@ -134,6 +155,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         if ($block->delete()) {
             exit(json_encode([
                 'success' => true,
+                'message' =>  $this->translator->trans('Block removed with success', [], 'Modules.Prettyblocks.Admin'),
             ]));
         }
     }
@@ -182,6 +204,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     public function displayAjaxupdateStatePosition()
     {
         $items = Tools::getValue('items');
+
         $item0 = $items[0];
         $id_block = (int) $item0['id_prettyblocks'];
         $id_lang = (int) Tools::getValue('ctx_id_lang');
@@ -200,7 +223,6 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $state->save();
         exit(json_encode([
             'state' => $items,
-            // 'errors' => $action
         ]));
     }
 
@@ -227,6 +249,10 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             Db::getInstance()->execute($sql);
             ++$i;
         }
+        exit(json_encode([
+            'success' => true,
+            'message' => $this->translator->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
+        ]));
     }
 
     public function displayAjaxupdateThemeSettings()

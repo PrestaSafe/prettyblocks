@@ -5,7 +5,7 @@ import Icon from './Icon.vue'
 import ButtonLight from './ButtonLight.vue';
 import emitter from 'tiny-emitter/instance'
 import { contextShop, useStore } from '../store/currentBlock'
-import axios from 'axios'
+import { HttpClient } from "../services/HttpClient";
 
 const props = defineProps({
   id: String, // unique id for each block
@@ -28,29 +28,33 @@ const removeSubState = () => {
     ctx_id_shop: context.id_shop,
     ajax_token: security_app.ajax_token
   }
-  axios.get(ajax_urls.state, { params }).then((response) => response.data)
-    .then((data) => {
-      if (props.element.need_reload) {
-        emitter.emit('reloadIframe', props.element.id_prettyblocks)
-      }
-      emitter.emit('stateUpdated', props.element.id_prettyblocks)
-      emitter.emit('initStates')
-      emitter.emit('displayState', props.element)
-      emitter.emit('forceSave', props.element.id_prettyblocks)
-    })
+  HttpClient.get(ajax_urls.state, params)
+  .then((data) => {
+    if (props.element.need_reload) {
+      emitter.emit('reloadIframe', props.element.id_prettyblocks)
+    }
+    emitter.emit('stateUpdated', props.element.id_prettyblocks)
+    emitter.emit('initStates')
+    emitter.emit('displayState', props.element)
+    emitter.emit('forceSave', props.element.id_prettyblocks)
+  })
+  .catch(error => console.error(error));
+
 }
 
 const removeState = async () => {
   if (confirm('Voulez vous supprimer l\'element ?')) {
-    const params = {
-      id_prettyblocks: props.element.id_prettyblocks,
-      action: 'removeState',
-      ajax_token: security_app.ajax_token
-    }
-    let response = await axios.get(ajax_urls.state, { params })
-    emitter.emit('initStates')
-    emitter.emit('reloadIframe', null)
+  const params = {
+    id_prettyblocks: props.element.id_prettyblocks,
+    action: 'removeState',
+    ajax: true,
+    ajax_token: security_app.ajax_token
   }
+  let data = await HttpClient.get(ajax_urls.state, params)
+  emitter.emit('initStates')
+  emitter.emit('reloadIframe', null)
+}
+
   // emitter.emit('reloadIframe', null)
 }
 

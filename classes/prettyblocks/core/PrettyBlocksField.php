@@ -423,7 +423,7 @@ class PrettyBlocksField
         }
         $element = [
             'tag' => ($array['tag']) ? pSQL($array['tag']) : 'h2',
-            'classes' => ($array['classes']) ? array_map('pSQL', $array['classes']) : [],
+            'classes' => (isset($array['classes'])) ? array_map('pSQL', $array['classes']) : [],
             'value' => ($array['value']) ? $this->_clearValue($array['value']) : '',
             'focus' => (bool) $array['focus'],
             'inside' => (bool) $array['inside'],

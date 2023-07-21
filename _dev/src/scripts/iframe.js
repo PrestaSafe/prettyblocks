@@ -1,5 +1,5 @@
 import { ref } from 'vue' 
-import axios from 'axios'
+import { HttpClient } from "../services/HttpClient";
 import emitter from 'tiny-emitter/instance'
 import {toolbar} from './toolbar';
 import { useStore, storedZones, contextShop } from '../store/currentBlock'
@@ -31,37 +31,39 @@ export default class Iframe {
      * When register on Element after Ajax
      */
     // async registerDrop (el) {
-    // let currentBlock = useStore()
-
-    //     axios.get(ajax_urls.block_url, {
-    //             params: {
-    //                 ajax: true,
-    //                 block: currentBlock.code,
-    //                 action: 'BlockRender',
-    //             }
-    //     })
-    //     .then((response) => {
-
-    //         let newNode = document.createElement('div')
-    //         newNode.innerHTML = response.data.html + '<div class="blocks  border-dotted text-center w-100 p-5 mt-5">Zone de drop</div>'
-    //         el.target.parentNode.replaceChild(newNode, el.target)
-    //         newNode.addEventListener('click', (el) => {
-    //             registerClickPopup(el)
-    //         })
-    //         newNode.addEventListener('drop', (el) => {
-    //             registerDrop(el)
-    //             registerDragEnter(el)
-    //             registerDragLeave(el)
-    //             setTimeout(() => {
-    //                 emitter.emit('triggerLoadedEvents', el)
-    //             }, 200)
-
-    //         })
-    //         setTimeout(() => {
-    //             emitter.emit('triggerLoadedEvents', el)
-    //         }, 200)
-    //     })
-    // }
+    //     let currentBlock = useStore()
+      
+    //     const params = {
+    //         ajax: true,
+    //         block: currentBlock.code,
+    //         action: 'BlockRender',
+    //     }
+      
+    //     try {
+    //       const data = await HttpClient.get(ajax_urls.block_url, params);
+      
+    //       let newNode = document.createElement('div')
+    //       newNode.innerHTML = data.html + '<div class="blocks  border-dotted text-center w-100 p-5 mt-5">Zone de drop</div>'
+    //       el.target.parentNode.replaceChild(newNode, el.target)
+    //       newNode.addEventListener('click', (el) => {
+    //           registerClickPopup(el)
+    //       })
+    //       newNode.addEventListener('drop', (el) => {
+    //           registerDrop(el)
+    //           registerDragEnter(el)
+    //           registerDragLeave(el)
+    //           setTimeout(() => {
+    //               emitter.emit('triggerLoadedEvents', el)
+    //           }, 200)
+    //       })
+    //       setTimeout(() => {
+    //           emitter.emit('triggerLoadedEvents', el)
+    //       }, 200)
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   }
+      
 
     /**
      * 
@@ -309,16 +311,13 @@ async  updateTitleComponent(newValue)
         ajax_token: security_app.ajax_token
     }
     
-    fetch(ajax_urls.api, {
-        method: 'POST',
-        headers: {
-            'accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then((response) =>  response.json() ).then((data) => { 
-        toaster.show(data.message)
-    })
+    try {
+        const response = await HttpClient.post(ajax_urls.api, data);
+        toaster.show(response.message);
+    } catch (error) {
+        console.error(error);
+    }
+    
 
 
 }
@@ -358,21 +357,25 @@ destroy() {
 async getBlockRender (id_prettyblocks) {
     let context = contextShop()
     let responseData = {}
-    await axios.get(ajax_urls.block_url, {
-            params: {
-                ajax: true,
-                id_prettyblocks: id_prettyblocks,
-                action: 'GetBlockRender',
-                ctx_id_lang: context.id_lang,
-                ctx_id_shop: context.id_shop,
-                ajax_token: security_app.ajax_token
-            }
-        })
-        .then((response) => {
-            responseData = response.data.html
-        })
-    return responseData
-}
+    const params = {
+        ajax: true,
+        id_prettyblocks: id_prettyblocks,
+        action: 'GetBlockRender',
+        ctx_id_lang: context.id_lang,
+        ctx_id_shop: context.id_shop,
+        ajax_token: security_app.ajax_token
+    }
+  
+    try {
+        const data = await HttpClient.get(ajax_urls.block_url, params);
+        responseData = data.html;
+    } catch (error) {
+        console.error(error);
+    }
+  
+    return responseData;
+  }
+  
 
    
 
