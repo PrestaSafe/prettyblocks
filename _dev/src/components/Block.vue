@@ -23,7 +23,7 @@ defineProps({
     type: String,
     default: 'PuzzleIcon'
   },
-  logo: {
+  icon_path: {
     type: String,
     default: ''
   }
@@ -63,8 +63,8 @@ const AddOnZOne = async (code) => {
 
 <template>
   <div class="flex items-center gap-x-2 p-4 bg-gray-100 hover:bg-gray-200 rounded cursor-pointer transition-colors" @click="AddOnZOne(code)">
-    <Icon v-if="logo == ''" :name="icon" class="h-10 w-10 shrink-0 text-indigo" />
-    <img v-else :src="logo" class="h-10 w-10 shrink-0 text-indigo" />
+    <Icon v-if="icon_path == ''" :name="icon" class="h-10 w-10 shrink-0 text-indigo" />
+    <img v-else :src="icon_path" class="h-10 w-10 shrink-0 text-indigo" />
     <div class="flex-1">
       <h3 class="text-lg font-bold">{{ name }}</h3>
       <p class="text-sm text-gray-600">{{ description }}</p>

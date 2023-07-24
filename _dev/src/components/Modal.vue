@@ -40,7 +40,7 @@ const getBlocksAvailable = () => {
       </div>
       <!-- Body -->
       <div class="overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
-        <Block v-for="block in blocks" :key="block.code" :logo="block.logo" :name="block.name" :icon="block.icon" :description="block.description" :code="block.code" />
+        <Block v-for="block in blocks" :key="block.code" :icon_path="block.icon_path" :name="block.name" :icon="block.icon" :description="block.description" :code="block.code" />
       </div>
       <!-- Footer -->
       <div class="flex items-center justify-end p-5 border-t border-solid border-slate-200">
