@@ -1,7 +1,7 @@
 <script setup>
 import { ref, defineComponent } from 'vue'
 import emitter from 'tiny-emitter/instance'
-import axios from 'axios'
+import { HttpClient } from "../services/HttpClient";
 import Block from './Block.vue'
 import { currentZone } from '../store/currentBlock'
 import { trans } from '../scripts/trans'
@@ -27,8 +27,11 @@ emitter.on('toggleModal', async (zone_name) => {
 })
 
 const getBlocksAvailable = () => {
-  axios.get(ajax_urls.blocks_available).then((response) => blocks.value = response.data.blocks)
+  HttpClient.get(ajax_urls.blocks_available)
+    .then((data) => blocks.value = data.blocks)
+    .catch(error => console.error(error));
 }
+
 </script>
 
 <template>

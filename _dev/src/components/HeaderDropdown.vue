@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, watch } from "vue"
-import axios from 'axios'
+import { HttpClient }  from '../services/HttpClient.js'
+
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/24/solid'
 import Input from './form/Input.vue';
@@ -40,11 +41,11 @@ async function fetchResults() {
   const params = {
     query: search.query,
     collection: (props.collection) ? props.collection : 'Category',
-    selector: (props.selector) ? props.selector : '{id} - {name}'
+    selector: (props.selector) ? props.selector : '{id} - {name}',
+    ajax: true,
   };
 
-  const response = await axios.get(props.apiUrl(search.query), { params })
-  const json = await response.data
+  const json = await HttpClient.get(props.apiUrl(search.query), params);
 
   search.results = json.results
 }

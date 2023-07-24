@@ -1,6 +1,6 @@
 import emitter from 'tiny-emitter/instance'
 import { contextShop, useStore } from '../store/currentBlock'
-import axios from 'axios'
+import { HttpClient } from "../services/HttpClient";
 import { ref } from 'vue'
 export default class Block {
     id_prettyblocks = 0;
@@ -36,8 +36,7 @@ export default class Block {
             ajax_token: security_app.ajax_token
 
         }
-        let response = await axios.get(ajax_urls.state, { params })
-        let data = await response.data
+        let data = await HttpClient.post(ajax_urls.state, params);
         this.states = data.state.repeater_db
         return data
     }
@@ -56,15 +55,14 @@ export default class Block {
         const params = {
             id_prettyblocks: this.id_prettyblocks,
             action: 'updateBlockConfig',
-            state: configState,
+            state: JSON.stringify(configState),
             subSelected: this.subSelected,
             ajax: true,
             ctx_id_lang: this.id_lang,
             ctx_id_shop: this.id_shop,
             ajax_token: security_app.ajax_token
         }
-        let response = await axios.post(ajax_urls.state,  params )
-        let data = await response.data
+        let data = await HttpClient.post(ajax_urls.state, params);
         return data
         
     }
@@ -89,7 +87,6 @@ export default class Block {
         let key_formatted = 0
         this.subSelected = this.getCurrentBlock().subSelected
         key_formatted = this.subSelected.split('-')[1]
-
         return key_formatted
     }
 
@@ -99,15 +96,15 @@ export default class Block {
         const params = {
             id_prettyblocks: this.id_prettyblocks,
             action: 'updateState',
-            state: state.value,
+            state: JSON.stringify(state.value),
             subSelected: this.getSubSelectedKey(),
             ajax: true, 
             ctx_id_lang: this.id_lang,
             ctx_id_shop: this.id_shop,
             ajax_token: security_app.ajax_token
         }
-        let response = await axios.get(ajax_urls.state, { params })
-        let data = await response.data
+        let data = await HttpClient.post(ajax_urls.state, params);
+
         return data
     }
 
@@ -149,8 +146,7 @@ export default class Block {
             ctx_id_shop: id_shop,
             ajax_token: security_app.ajax_token
         }
-        let response = await axios.get(ajax_urls.state, { params })
-        let data = await response.data
+        let data = await HttpClient.get(ajax_urls.state, params);
         let block = new Block(data)
         block.loadStates(data.repeater_db)
         return block

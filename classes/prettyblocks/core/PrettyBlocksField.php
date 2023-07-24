@@ -422,8 +422,8 @@ class PrettyBlocksField
             $array = $secure;
         }
         $element = [
-            'tag' => ($array['tag']) ? $array['tag'] : 'h2',
-            'classes' => ($array['classes']) ? array_map('pSQL', $array['classes']) : [],
+            'tag' => ($array['tag']) ? pSQL($array['tag']) : 'h2',
+            'classes' => (isset($array['classes'])) ? array_map('pSQL', $array['classes']) : [],
             'value' => ($array['value']) ? $this->_clearValue($array['value']) : '',
             'focus' => (bool) $array['focus'],
             'inside' => (bool) $array['inside'],

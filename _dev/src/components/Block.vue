@@ -1,15 +1,15 @@
 <script setup>
-import { defineProps, ref, defineComponent } from 'vue'
-import Icon from './Icon.vue'
-import { currentZone } from '../store/currentBlock'
-import Loader from './Loader.vue'
-import axios from 'axios'
-import emitter from 'tiny-emitter/instance'
+import { defineProps, ref, defineComponent } from "vue";
+import Icon from "./Icon.vue";
+import { currentZone } from "../store/currentBlock";
+import Loader from "./Loader.vue";
+import emitter from "tiny-emitter/instance";
 import { createToaster } from "@meforma/vue-toaster";
-import { contextShop } from '../store/currentBlock'
+import { contextShop } from "../store/currentBlock";
+import { HttpClient } from "../services/HttpClient.js";
 
 const toaster = createToaster({
-  position: 'top'
+  position: "top",
 });
 
 defineProps({
@@ -21,7 +21,7 @@ defineProps({
   },
   icon: {
     type: String,
-    default: 'PuzzleIcon'
+    default: "PuzzleIcon",
   },
   icon_path: {
     type: String,
@@ -31,34 +31,35 @@ defineProps({
 
 defineComponent({
   Icon,
-  Loader
-})
+  Loader,
+});
 
-let showLoader = ref(false)
+let showLoader = ref(false);
 
 const AddOnZOne = async (code) => {
-  let current_zone = currentZone()
-  showLoader.value = true
-  let context = contextShop()
+  let current_zone = currentZone();
+  showLoader.value = true;
+  let context = contextShop();
   const params = {
-    action: 'insertBlock',
+    action: "insertBlock",
     code: code,
+    ajax: true,
     zone_name: current_zone.name,
     ctx_id_lang: context.id_lang,
     ctx_id_shop: context.id_shop,
-    ajax_token: security_app.ajax_token
-  }
-  let url = ajax_urls.block_action_urls
-  let res = await axios.get(url, { params })
-  let data = await res.data
-  emitter.emit('toggleModal', current_zone.name)
-  emitter.emit('initStates')
-  toaster.show('Block inséré avec succès', {
-    position: "top"
-  })
+    ajax_token: security_app.ajax_token,
+  };
+  let url = ajax_urls.block_action_urls;
+let data = await HttpClient.get(url, params);
 
-  emitter.emit('reloadIframe', data.id_prettyblocks);
-}
+  emitter.emit("toggleModal", current_zone.name);
+  emitter.emit("initStates");
+  toaster.show("Block inséré avec succès", {
+    position: "top",
+  });
+
+  emitter.emit("reloadIframe", data.id_prettyblocks);
+};
 </script>
 
 <template>

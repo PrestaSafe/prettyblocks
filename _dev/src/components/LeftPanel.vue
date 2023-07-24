@@ -1,38 +1,37 @@
 <script setup>
-import { ref, onMounted, defineComponent } from 'vue'
-import SortableList from './SortableList.vue'
-import MenuGroup from './MenuGroup.vue'
-import MenuItem from './MenuItem.vue'
-import ButtonLight from './ButtonLight.vue'
-import axios from 'axios'
-import Block from '../scripts/block'
-import ZoneSelect from './form/ZoneSelect.vue';
+import { ref, onMounted, defineComponent } from "vue";
+import SortableList from "./SortableList.vue";
+import MenuGroup from "./MenuGroup.vue";
+import MenuItem from "./MenuItem.vue";
+import ButtonLight from "./ButtonLight.vue";
+import { HttpClient } from "../services/HttpClient";
+import Block from "../scripts/block";
+import ZoneSelect from "./form/ZoneSelect.vue";
 /* Demo data */
 // import { v4 as uuidv4 } from 'uuid'
-import emitter from 'tiny-emitter/instance'
-import { useStore, currentZone, contextShop } from '../store/currentBlock'
-import { trans } from '../scripts/trans'
+import emitter from "tiny-emitter/instance";
+import { useStore, currentZone, contextShop } from "../store/currentBlock";
+import { trans } from "../scripts/trans";
 
 defineComponent({
   SortableList,
   MenuGroup,
   MenuItem,
   ButtonLight,
-  ZoneSelect
-})
-const prettyblocks_version = ref(security_app.prettyblocks_version)
+  ZoneSelect,
+});
+const prettyblocks_version = ref(security_app.prettyblocks_version);
 const loadStateConfig = async (e) => {
-  let currentBlock = useStore()
+  let currentBlock = useStore();
   // set store cuurent block name
   await currentBlock.$patch({
     // code: e.id,
     need_reload: e.need_reload,
     id_prettyblocks: e.id_prettyblocks,
     // instance_id: e.instance_id
-  })
-  emitter.emit('displayBlockConfig', e);
-
-}
+  });
+  emitter.emit("displayBlockConfig", e);
+};
 // emitter.on('loadStateConfig', async (id_prettyblocks) => {
 //   let block = await Block.loadById(id_prettyblocks)
 //   console.log('block', block.id_prettyblocks)
@@ -44,81 +43,79 @@ const loadStateConfig = async (e) => {
 //     })
 // })
 
-let displayZoneName = ref()
+let displayZoneName = ref();
 const loadSubState = async (e) => {
-  let currentBlock = useStore()
+  let currentBlock = useStore();
   // set store cuurent block name
   await currentBlock.$patch({
     need_reload: e.need_reload,
     id_prettyblocks: e.id_prettyblocks,
-    subSelected: e.id
-  })
-  emitter.emit('displaySubState', e);
+    subSelected: e.id,
+  });
+  emitter.emit("displaySubState", e);
+};
 
-}
+let groups = ref([]);
 
-let groups = ref([])
-
-
-emitter.on('initStates', () => {
-  initStates()
-})
+emitter.on("initStates", () => {
+  initStates();
+});
 const initStates = async () => {
-
   let contextStore = contextShop();
   // Attendez que l'action asynchrone getContext soit terminée
   let context = await contextStore.getContext();
 
-  let current_zone = currentZone().name
-  displayZoneName.value = current_zone
+  let current_zone = currentZone().name;
+  displayZoneName.value = current_zone;
   const params = {
     ajax: true,
-    action: 'GetStates',
+    action: "GetStates",
     zone: current_zone,
     ctx_id_lang: context.id_lang,
     ctx_id_shop: context.id_shop,
-    ajax_token: security_app.ajax_token
-  }
+    ajax_token: security_app.ajax_token,
+  };
   // groups.value = []
-  axios.get(ajax_urls.state, { params }).then((response) => response.data)
+  HttpClient.get(ajax_urls.state, params)
     .then((data) => {
-
       groups.value = Object.entries(data.blocks).map(([key, value] = block) => {
         return value.formatted;
-      })
+      });
     })
-}
+    .catch((error) => console.error(error));
+};
 /**
  * Push an empty State (repeater)
  */
 const loadEmptyState = (e) => {
   let element = {
-    id_prettyblocks: e.id_prettyblocks
-  }
-  let context = contextShop()
-  loadSubState(element)
+    id_prettyblocks: e.id_prettyblocks,
+  };
+  let context = contextShop();
+  loadSubState(element);
   const params = {
     id_prettyblocks: e.id_prettyblocks,
-    action: 'getEmptyState',
+    action: "getEmptyState",
     ajax: true,
     ctx_id_lang: context.id_lang,
     ctx_id_shop: context.id_shop,
-    ajax_token: security_app.ajax_token
-  }
-  axios.get(ajax_urls.state, { params }).then((response) => response.data)
+    ajax_token: security_app.ajax_token,
+  };
+  HttpClient.get(ajax_urls.state, params)
     .then((data) => {
-      initStates()
+      initStates();
       if (e.need_reload) {
-        emitter.emit('reloadIframe', e.id_prettyblocks)
+        emitter.emit("reloadIframe", e.id_prettyblocks);
       }
-      emitter.emit('stateUpdated', e.id_prettyblocks)
+      emitter.emit("stateUpdated", e.id_prettyblocks);
     })
-}
+    .catch((error) => console.error(error));
+};
 
-let currentBlock = useStore()
+let currentBlock = useStore();
 const state = ref({
-  name: "displayHome"
-})
+  name: "displayHome",
+});
 </script>
 
 <template>
@@ -132,29 +129,54 @@ const state = ref({
         <SortableList :items="groups" group="menu-group">
           <template v-slot="{ element }">
             <!-- group of element (collapsable) -->
-            <MenuGroup @changeState="loadStateConfig" @pushEmptyState="loadEmptyState(element)" :id="element.id"
-              :id_prettyblocks="element.id_prettyblocks" :title="element.title" :icon="element.icon" :config="true"
-              :element="element" :is_parent="true">
-              <SortableList :items="element.children" :group="'menu-group-' + element.id_prettyblocks"
-                action="updateStatePosition">
+            <MenuGroup
+              @changeState="loadStateConfig"
+              @pushEmptyState="loadEmptyState(element)"
+              :id="element.id"
+              :id_prettyblocks="element.id_prettyblocks"
+              :title="element.title"
+              :icon="element.icon"
+              :config="true"
+              :element="element"
+              :is_parent="true"
+            >
+              <SortableList
+                :items="element.children"
+                :group="'menu-group-' + element.id_prettyblocks"
+                action="updateStatePosition"
+              >
                 <template v-slot="{ element }">
                   <!-- items of the group -->
-                  <MenuItem :id="element.id.toString()" :title="element.title" :icon="element.icon" :element="element"
-                    :is_child="true" @click="loadSubState(element)">
+                  <MenuItem
+                    :id="element.id.toString()"
+                    :title="element.title"
+                    :icon="element.icon"
+                    :element="element"
+                    :is_child="true"
+                    @click="loadSubState(element)"
+                  >
                   </MenuItem>
                 </template>
               </SortableList>
             </MenuGroup>
           </template>
         </SortableList>
-        <ButtonLight icon="ArrowDownOnSquareStackIcon" @click="emitter.emit('toggleModal', displayZoneName)"
-          class="bg-slate-200 p-2 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo">
-          {{ trans('add_new_element') }}
+        <ButtonLight
+          icon="ArrowDownOnSquareStackIcon"
+          @click="emitter.emit('toggleModal', displayZoneName)"
+          class="bg-slate-200 p-2 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo"
+        >
+          {{ trans("add_new_element") }}
         </ButtonLight>
       </div>
       <div class="p-2 text-sm text-center">
-        <a class="text-indigo" href="https://prettyblocks.io/" target="_blank">PrettyBlocks (v{{ prettyblocks_version }}) </a><br>
-        Made with ❤️ by <a class="text-indigo" href="https://www.prestasafe.com" target="_blank">PrestaSafe</a>
+        <a class="text-indigo" href="https://prettyblocks.io/" target="_blank"
+          >PrettyBlocks (v{{ prettyblocks_version }}) </a
+        ><br />
+        Made with ❤️ by
+        <a class="text-indigo" href="https://www.prestasafe.com" target="_blank"
+          >PrestaSafe</a
+        >
       </div>
     </div>
   </div>

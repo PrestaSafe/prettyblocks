@@ -1,6 +1,6 @@
 <script setup>
 import Accordion from './Accordion.vue'
-import axios from 'axios'
+import { HttpClient } from '../services/HttpClient'
 import FieldRepeater from './FieldRepeater.vue'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import emitter from 'tiny-emitter/instance'
@@ -30,13 +30,15 @@ const canSave = ref(false)
 const settings = ref(false)
 
 const getInputs = () => {
-  axios.get(ajax_urls.theme_settings)
-    .then((response) => response.data)
+  HttpClient.get(ajax_urls.theme_settings)
     .then((data) => {
+      console.log('data settings',data)
       canSave.value = true
       settings.value = data.settings
     })
+    .catch(error => console.error(error));
 }
+
 
 getInputs()
 
@@ -51,13 +53,15 @@ const saveThemeSettings = () => {
     stateRequest: settings.value,
     ajax_token: security_app.ajax_token
   }
-  axios.post(ajax_urls.state, params).then((response) => response.data)
-    .then((data) => {
-      if (data.message) {
-        toaster.show(data.message)
-        emitter.emit('reloadIframe')
-      }
-    })
+
+HttpClient.post(ajax_urls.state, params)
+  .then((data) => {
+    if (data.message) {
+      toaster.show(data.message)
+      emitter.emit('reloadIframe')
+    }
+  })
+  .catch(error => console.error(error));
 }
 </script>
 
