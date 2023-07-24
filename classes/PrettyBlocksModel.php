@@ -681,6 +681,7 @@ class PrettyBlocksModel extends ObjectModel
         $formatted['id_prettyblocks'] = $block['id_prettyblocks'] ?? '';
         $formatted['instance_id'] = $block['instance_id'] ?? Tools::passwdGen(8, 'NUMERIC');
         $formatted['icon'] = $block['icon'] ?? 'PhotographIcon';
+        $formatted['icon_path'] = $block['icon_path'] ?? '';
         $formatted['module'] = $block['code']; // todo register module name
         $formatted['title'] = $block['name'];
         // dump($block);
