@@ -422,7 +422,7 @@ class PrettyBlocksField
             $array = $secure;
         }
         $element = [
-            'tag' => ($array['tag']) ? pSQL($array['tag']) : 'h2',
+            'tag' => ($array['tag']) ? $array['tag'] : 'h2',
             'classes' => ($array['classes']) ? array_map('pSQL', $array['classes']) : [],
             'value' => ($array['value']) ? $this->_clearValue($array['value']) : '',
             'focus' => (bool) $array['focus'],
@@ -602,14 +602,14 @@ class PrettyBlocksField
         }
         // if value exists in DB and newValue is empty
         if (!is_null($this->value) && empty($this->newValue) && isset($this->field['choices'][$this->value])) {
-            return pSQL($this->value);
+            return $this->value;
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && is_null($this->newValue)) {
             if (is_array($this->field['choices'])
             && isset($this->field['default'], $this->field['choices'][$this->field['default']])
             ) {
-                return pSQL($this->field['default']);
+                return $this->field['default'];
             }
 
             // get default value
@@ -617,12 +617,12 @@ class PrettyBlocksField
                 reset($this->field['choices']);
                 $firstKey = key($this->field['choices']);
 
-                return pSQL($firstKey);
+                return $firstKey;
             }
         }
         // if value doesn't exists in DB and new value is set and force default value is false
         if (is_array($this->field['choices']) && isset($this->field['choices'][$this->newValue])) {
-            return pSQL($this->newValue);
+            return $this->newValue;
         }
         // if no matches.
         return '';
@@ -641,10 +641,10 @@ class PrettyBlocksField
         // if value exists in DB and newValue is empty
         if (!is_null($this->value) && empty($this->newValue) && (!is_array($this->value) && isset($this->field['choices'][$this->value]))) {
             if ($this->allow_html) {
-                return pSQL(\Tools::purifyHTML($this->field['choices'][$this->value]));
+                return \Tools::purifyHTML($this->field['choices'][$this->value]);
             }
 
-            return pSQL($this->field['choices'][$this->value]);
+            return $this->field['choices'][$this->value];
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && $this->newValue == '') {
@@ -659,16 +659,16 @@ class PrettyBlocksField
                 reset($this->field['choices']);
                 $firstKey = key($this->field['choices']);
 
-                return pSQL($this->field['choices'][$firstKey]);
+                return $this->field['choices'][$firstKey];
             }
         }
         // if value doesn't exists in DB and new value is set and force default value is false
         if (is_array($this->field['choices']) && !is_array($this->newValue) && isset($this->field['choices'][$this->newValue])) {
             if ($this->allow_html) {
-                return pSQL(\Tools::purifyHTML($this->field['choices'][$this->newValue]));
+                return \Tools::purifyHTML($this->field['choices'][$this->newValue]);
             }
 
-            return pSQL($this->field['choices'][$this->newValue]);
+            return $this->field['choices'][$this->newValue];
         }
         // if no matches.
         return '';
@@ -821,8 +821,8 @@ class PrettyBlocksField
         $secure['show'] = [
             'id' => (int) $array['show']['id'],
             'primary' => (int) $array['show']['primary'],
-            'name' => pSQL($array['show']['name']),
-            'formatted' => pSQL($array['show']['formatted']),
+            'name' => $array['show']['name'],
+            'formatted' => $array['show']['formatted'],
         ];
 
         return $secure;
@@ -864,7 +864,7 @@ class PrettyBlocksField
         } elseif ($this->force_default_value && isset($this->field['default']['url'])) {
             $url = $this->field['default']['url'];
         }
-        $secure['url'] = pSQL($url);
+        $secure['url'] = $url;
 
         return $secure;
     }
