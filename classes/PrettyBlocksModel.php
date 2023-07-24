@@ -360,7 +360,7 @@ class PrettyBlocksModel extends ObjectModel
     /**
      * update the model configuration
      *
-     * @param array $stateRequest
+     * @param string $stateRequest
      *
      * @return bool
      */
