@@ -57,7 +57,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '2.1.1';
+        $this->version = '3.0.0';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -98,17 +98,12 @@ class PrettyBlocks extends Module implements WidgetInterface
             `position` int(11) DEFAULT 0,
             `date_add` datetime DEFAULT NULL,
             `date_upd` datetime DEFAULT NULL,
+            `id_shop` int(11) DEFAULT NULL,
+            `id_lang` int(11) DEFAULT NULL,
+            `state` longtext,          
             PRIMARY KEY (`id_prettyblocks`)
           ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
-        $db[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prettyblocks_lang` (
-            `id_prettyblocks` int(11) unsigned NOT NULL,
-            `state` longtext NOT NULL,
-            `id_shop` int(11) NOT NULL,
-            `id_lang` int(11) NOT NULL,
-            PRIMARY KEY (`id_prettyblocks`,`id_shop`,`id_lang`),
-            KEY `id_lang` (`id_lang`)
-        ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
         $isOk = true;
         foreach ($db as $sql) {

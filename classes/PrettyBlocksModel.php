@@ -34,10 +34,10 @@ class PrettyBlocksModel extends ObjectModel
     public $zone_name;
     public $position;
     public $id_shop;
+    public $id_lang;
     public $date_add;
     public $date_upd;
 
-    public $id_lang;
     public $fields = [];
 
     /**
@@ -46,8 +46,6 @@ class PrettyBlocksModel extends ObjectModel
     public static $definition = [
         'table' => 'prettyblocks',
         'primary' => 'id_prettyblocks',
-        'multilang' => true,
-        'multilang_shop' => false,
         'fields' => [
             'config' => ['type' => self::TYPE_STRING, 'validate' => 'isJson'],
             'code' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
@@ -55,11 +53,12 @@ class PrettyBlocksModel extends ObjectModel
             'template' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
             // multilang
             'name' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
-            'id_shop' => ['type' => self::TYPE_INT, 'lang' => true,  'validate' => 'isInt'],
+            'id_shop' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+            'id_lang' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
 
             // multishop
             'instance_id' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
-            'state' => ['type' => self::TYPE_SQL, 'validate' => 'isJson',  'lang' => true],
+            'state' => ['type' => self::TYPE_SQL, 'validate' => 'isJson',  ],
             'zone_name' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
             'position' => ['type' => self::TYPE_INT,  'validate' => 'isInt'],
             'date_add' => ['type' => self::TYPE_DATE,   'validate' => 'isDate'],
@@ -126,6 +125,7 @@ class PrettyBlocksModel extends ObjectModel
         return true;
     }
 
+
     /**
      * Display blocks for one zone
      *
@@ -139,12 +139,14 @@ class PrettyBlocksModel extends ObjectModel
     public static function getInstanceByZone($zone_name, $context = 'back', $id_lang = null, $id_shop = null)
     {
         $contextPS = Context::getContext();
+
         $id_lang = (!is_null($id_lang)) ? (int) $id_lang : $contextPS->language->id;
         $id_shop = (!is_null($id_shop)) ? (int) $id_shop : $contextPS->shop->id;
         $psc = new PrestaShopCollection('PrettyBlocksModel', $id_lang);
 
         $psc->where('zone_name', '=', $zone_name);
-        $psc->sqlWhere('a1.id_shop = ' . (int) $id_shop);
+        $psc->where('id_shop', '=', (int) $id_shop);
+        $psc->where('id_lang', '=', (int) $id_lang);
 
         $psc->orderBy('position');
         $blocks = [];
