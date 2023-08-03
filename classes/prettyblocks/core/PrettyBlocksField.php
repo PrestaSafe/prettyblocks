@@ -712,7 +712,7 @@ class PrettyBlocksField
             return [];
         }
         // if value exists in DB and newValue is empty
-        if (!is_array($this->value) && !isset($this->newValue)) {
+        if (is_array($this->value) && !isset($this->newValue)) {
             return array_filter($this->value, function ($val) {
                 return in_array($val, array_keys($this->field['choices']));
             });
