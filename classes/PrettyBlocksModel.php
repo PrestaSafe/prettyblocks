@@ -1,5 +1,7 @@
 <?php
 
+use PrestaSafe\PrettyBlocks\Core\FieldCore;
+use Symfony\Component\Validator\Constraints\Valid;
 use PrestaSafe\PrettyBlocks\Core\PrettyBlocksField;
 use PrestaSafe\PrettyBlocks\Presenter\FieldPresenter;
 
@@ -38,7 +40,9 @@ class PrettyBlocksModel extends ObjectModel
     public $date_add;
     public $date_upd;
 
-    public $fields = [];
+    public $configFields = [];
+    public $stateFields = [];
+    public $count = 0;
 
     /**
      * @see ObjectModel::$definition
@@ -162,6 +166,52 @@ class PrettyBlocksModel extends ObjectModel
 
         return $blocks;
     }
+    
+    /**
+     * saveConfigField
+     *
+     * @param  mixed $name
+     * @param  mixed $new_value
+     * @return bool
+     */
+    public function saveConfigField($name, $new_value)
+    {
+        if(isset($this->configFields[$name])){
+            $newField = $this->configFields[$name]->setAttribute('new_value',$new_value)->compile();
+            $jsonConfig = json_decode($this->config, true);
+            if (!is_null($jsonConfig)) {
+                $json = [];
+            }
+            $json[$name] = $newField;
+            $this->config = json_encode($json, true);
+            return $this->save();
+        }
+        return false;
+    }
+
+    
+    /**
+     * saveStateField
+     *
+     * @param  mixed $index
+     * @param  mixed $name
+     * @param  mixed $new_value
+     * @return bool
+     */
+    public function saveStateField($index,$name,$new_value)
+    {
+        if(isset($this->stateFields[$index][$name])){
+            $newField = $this->stateFields[$index][$name]->setAttribute('new_value',$new_value)->compile();
+            $jsonConfig = json_decode($this->state, true);
+            if (is_null($jsonConfig)) {
+                $json = [];
+            }
+            $json[$index][$name] = $newField;
+            $this->state = json_encode($json, true);
+            return $this->save();
+        }
+        return false;
+    }
 
     /**
      * Mapped block repeater with states.
@@ -170,9 +220,12 @@ class PrettyBlocksModel extends ObjectModel
     {
         $context = Context::getContext();
         // $id_lang = ($id_lang !== null) ? (int)$id_lang : $context->language->id;
-        $state = json_decode($this->state, true);
+        $states = json_decode($this->state, true);
         $block = $this->loadBlock($this->code);
+
         $repeaterDefault = (isset($block['repeater']['groups'])) ? $block['repeater']['groups'] : [];
+        $block['states_json'] = $states;
+        $block['config_json'] = json_decode($this->config, true);
         $block['state_to_push'] = $this->_formatDefautStateFromBlock($repeaterDefault);
         $block['instance_id'] = $this->instance_id;
         $block['id_prettyblocks'] = $this->id;
@@ -180,19 +233,16 @@ class PrettyBlocksModel extends ObjectModel
         $block['id_lang'] = $this->id_lang;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
-        // $block['settings_formatted'] = $this->_formatGetConfigForApp($block, 'back');
         $block['settings_formatted'] = $this->_formatConfig($block, 'back');
 
-        $block['repeater_db'] = $this->_formatRepeaterDb($state, $repeaterDefault);
+        $block['repeater_db'] = $this->_formatRepeaterDb($states, $repeaterDefault);
 
         // format state for front
-        $block['states'] = $this->_formatStateForFront($state, $repeaterDefault, $block);
+        $block['states'] = $this->_formatStateForFront($states, $repeaterDefault, $block);
 
         $block['formatted'] = $this->formatBlock($block);
         $block['extra'] = [];
-
         $block['templateSelected'] = $this->_getTemplateSelected($block);
-        // dump('beforeRendering'.Tools::toCamelCase($this->code));
 
         $extraContent = Hook::exec('beforeRendering' . Tools::toCamelCase($this->code), [
             'block' => $block,
@@ -208,16 +258,17 @@ class PrettyBlocksModel extends ObjectModel
         $block['extra'] = $res;
         $block['templates'] = $this->_getBlockTemplate($block);
 
+
         return $block;
     }
 
     public function _formatConfig($block, $context = 'front')
     {
         $formatted = [];
-        $this->getConfigFields($block, $context);
+        $this->assignFields($block, $context);
 
-        foreach ($this->fields as $name => $field) {
-            $formatted[$name] = (new FieldPresenter())->present($field);
+        foreach ($this->configFields as $name => $field) {
+            $formatted[$name] = (new FieldCore($field))->compile();
         }
         // is settings_formatted section block
         $formatted['templates'] = $this->_getBlockTemplate($block);
@@ -232,7 +283,7 @@ class PrettyBlocksModel extends ObjectModel
      */
     public function setConfigFields($fields)
     {
-        $this->fields = $fields;
+        $this->configFields = $fields;
     }
 
     /**
@@ -244,28 +295,16 @@ class PrettyBlocksModel extends ObjectModel
      *
      * @return $this
      */
-    public function getConfigFields($block = false, $context = 'front', $force_values = false)
+    public function assignFields($block = false, $context = 'front', $force_values = false)
     {
+        $this->count++;
         if (!$block) {
             $block = $this->mergeStateWithFields();
         }
-
-        $fields = [];
-        if (!isset($block['config']['fields']) && empty($block['config']['fields'])) {
-            return $fields;
-        }
-
-        foreach ($block['config']['fields'] as $key => $field) {
-            $fieldMaker = (new PrettyBlocksField($block))
-                ->setKey($key);
-            if ($force_values) {
-                $fieldMaker->forceDefaultValue();
-            }
-            $fieldMaker->setContext($context)
-                ->get();
-            $fields[$key] = $fieldMaker;
-        }
-        $this->fields = $fields;
+        
+        $fieldCore = new PrettyBlocksField($block);
+        $this->configFields = $fieldCore->getConfigFields();
+        $this->stateFields = $fieldCore->getStatesFields();
 
         return $this;
     }
@@ -278,9 +317,10 @@ class PrettyBlocksModel extends ObjectModel
     public function generateJsonConfig($returnJson = true)
     {
         $output = [];
-        foreach ($this->fields as $key => $field) {
-            $output[$key] = $field->getValue();
+        foreach ($this->configFields as $key => $field) {
+            $output[$key] = $field->compile();
         }
+
         if ($returnJson) {
             return json_encode($output, true);
         }
@@ -320,43 +360,21 @@ class PrettyBlocksModel extends ObjectModel
      */
     private function _formatStateForFront($state, $repeatedFields, $block)
     {
-        $empty_state = [];
+        $empty_state = [];  
         foreach ($state as $s) {
             $formatted = [];
             if (empty($s)) {
                 return $formatted;
             }
-
+            $key = key($state);
             foreach ($s as $fieldName => $value) {
-                $formatted[$fieldName] = $this->_formatFieldStateFront($fieldName, $value, $repeatedFields);
+                $formatted[$fieldName] = (new FieldCore($value))->getFrontValue();
             }
-            $empty_state[] = $formatted;
+            $empty_state[$key] = $formatted;
+            next($state);
         }
 
         return $empty_state;
-    }
-
-    /**
-     * format field state for front
-     *
-     * @param fieldName|string
-     * @param array $value
-     * @param repeatedFields|array
-     */
-    private function _formatFieldStateFront($fieldName, $value, $repeatedFields)
-    {
-        $field = $repeatedFields[$fieldName];
-
-        if ($field['type'] == 'fileupload') {
-            return StateFormatter::formatFieldUpload($value);
-        }
-
-        if ($value['type'] == 'selector') {
-            return StateFormatter::formatFieldSelector($value);
-        }
-
-        // return text value for field type text or textarea
-        return StateFormatter::formatFieldDefault($value);
     }
 
     /**
@@ -368,35 +386,23 @@ class PrettyBlocksModel extends ObjectModel
      */
     public function updateConfig($stateRequest)
     {
-        // dump($stateRequest);
-        $block = $this->mergeStateWithFields();
         $fields = [];
         $stateRequest = json_decode($stateRequest, true);
         $fieldsRequest = array_filter($stateRequest, function ($field) {
-            return isset($field['value']);
+            return isset($field['type']);
         });
 
         foreach ($fieldsRequest as $key => $field) {
-            $obj = (new PrettyBlocksField($block))
-                ->setKey($key)
-                ->setModel($this)
-                ->setNewValue($field['value'])
-                ->get();
+            $obj = (new FieldCore($field))->setAttribute('new_value', $field['value']);
             $fields[$key] = $obj;
         }
         $this->setConfigFields($fields);
         $this->config = $this->generateJsonConfig();
-
-        // $config = $this->_formatGetConfigForApp($block);
-        // $this->_formatUpdateConfig($config, $stateRequest, $block);
         $template_name = pSQL($stateRequest['templateSelected']);
         $this->setCurrentTemplate($template_name);
         $this->setDefaultParams($stateRequest['default']);
 
         return $this->save();
-
-        // $this->_updateDefaultParams($block, $stateRequest);
-        // $this->_setConfigTemplate($block, $template_name);
     }
 
     /**
@@ -516,19 +522,6 @@ class PrettyBlocksModel extends ObjectModel
     }
 
     /**
-     * get config values
-     *
-     * @return array
-     */
-    public function getConfigValues()
-    {
-        $block = $this->mergeStateWithFields();
-        $fieldMaker = new PrettyBlocksField($block);
-
-        return $fieldMaker->getFormattedConfig();
-    }
-
-    /**
      * get blocks templates by using hook actionExtendBlockTemplate{BlockCode}
      *
      * @return array
@@ -560,18 +553,16 @@ class PrettyBlocksModel extends ObjectModel
         return $block['templates'] + $res;
     }
 
+    
     /**
-     * get default params
-     *
-     * @param array
-     *
-     * @return array
+     * _getDefaultParams
+     * return default template if not exist
+     * prettyblocks:views/templates/blocks/welcome.tpl
+     * @param  mixed $block
+     * @return void
      */
     private function _getDefaultParams($block)
     {
-        $id_prettyblocks = (int) $block['id_prettyblocks'];
-        $key = Tools::strtoupper($id_prettyblocks . '_default_params');
-        // welcome = prettyblocks:views/templates/blocks/welcome.tpl
         $options = [
             'container' => true,
             'load_ajax' => false,
@@ -585,18 +576,25 @@ class PrettyBlocksModel extends ObjectModel
         return $defaultParams;
     }
 
+       
     /**
-     * Format config for front office
+     * _formatGetConfig
+     * get field with front value only
+     * @param  mixed $block
+     * @param  mixed $context
+     * @return array
      */
     private function _formatGetConfig($block, $context = 'front')
     {
         $formatted = [];
         $fields = $this->_formatConfig($block, $context);
+
+        // get only fields with type
         $fields = array_filter($fields, function ($field) {
-            return isset($field['formatted_value']);
+            return isset($field['type']);
         });
         foreach ($fields as $name => $field) {
-            $formatted[$name] = $field['formatted_value'] ?? $field['value'];
+            $formatted[$name] = (new FieldCore($field))->getFrontValue();
         }
         $formatted['templates'] = $this->_getBlockTemplate($block);
         $formatted['templateSelected'] = $this->_getTemplateSelected($block);
@@ -611,6 +609,7 @@ class PrettyBlocksModel extends ObjectModel
     private function _formatRepeaterDb($state, $repeaterDefault)
     {
         $res = [];
+
         foreach ($state as $s) {
             if (!$s || $state === null) {
                 return $res;
@@ -797,8 +796,10 @@ class PrettyBlocksModel extends ObjectModel
      */
     private function setDefaultConfigValues($block)
     {
-        $this->getConfigFields($block, 'back', true);
+        $this->assignFields($block, 'back', true);
+
         $json = $this->generateJsonConfig();
+
         $this->config = $json;
         $this->save();
     }

@@ -26,20 +26,6 @@ class FieldPresenter implements PresenterInterface
 {
     public function present($field)
     {
-        $present = [
-            'tab' => $field->getFieldData('tab'),
-            'type' => $field->getFieldData('type'),
-            'default' => $field->getFieldData('default'),
-            'label' => $field->getFieldData('label'),
-            'force_default_value' => $field->getFieldData('force_default_value'),
-            'path' => $field->getFieldData('path'),
-            'collection' => $field->getFieldData('collection'),
-            'selector' => $field->getFieldData('selector'),
-            'choices' => $field->getFieldData('choices', []),
-            'value' => $field->getValue(),
-            'formatted_value' => $field->getFormattedValue(),
-        ];
-
-        return $present;
+        return $field->compile();
     }
 }
