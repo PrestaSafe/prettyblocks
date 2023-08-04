@@ -125,11 +125,12 @@ class PrettyBlocksMigrate
 
         return true;
     }
-    
+
     /**
      * migrateSettings
      * migrate settings from config to database
-     * @return bool 
+     *
+     * @return bool
      */
     public static function migrateSettings()
     {
@@ -146,81 +147,79 @@ class PrettyBlocksMigrate
         $settings_value = [];
         if ($configLines) {
             foreach ($configLines as $configLine) {
-                    $setting = str_replace('_SETTINGS','',$configLine['name']);
-                    $setting = strtolower($setting);
-                    $settings_value[$setting] = $configLine['value'];
-                }
+                $setting = str_replace('_SETTINGS', '', $configLine['name']);
+                $setting = strtolower($setting);
+                $settings_value[$setting] = $configLine['value'];
             }
+        }
 
         // get settings fields:
 
         $settings_on_hooks = \HelperBuilder::hookToArray('ActionRegisterThemeSettings');
         $res = [];
 
-        foreach($settings_on_hooks as $key => $field) {
+        foreach ($settings_on_hooks as $key => $field) {
             $fieldCore = (new FieldCore($field));
-            if(isset($settings_value[$key])) {
+            if (isset($settings_value[$key])) {
                 $fieldCore->setAttribute('value', $settings_value[$key]);
             }
             $res[$key] = $fieldCore->compile();
-            
         }
-        
+
         $theme_name = Context::getContext()->shop->theme_name;
         $can_delete_settings = false;
-        foreach(Shop::getShops() as $shop)
-        {
-            $id_shop = (int)$shop['id_shop'];
+        foreach (Shop::getShops() as $shop) {
+            $id_shop = (int) $shop['id_shop'];
             $settingModel = new PrestaShopCollection('PrettyBlocksSettingsModel');
             $settingModel->where('theme_name', '=', $theme_name);
-            $settingModel->where('id_shop', '=',  $id_shop);
-    
+            $settingModel->where('id_shop', '=', $id_shop);
+
             $model = $settingModel->getFirst();
-            if(!$model) {
+            if (!$model) {
                 $model = new PrettyBlocksSettingsModel();
             }
             $model->theme_name = $theme_name;
             $model->settings = json_encode($res, true);
-            $model->id_shop =  $id_shop;
-            if($model->save()){
+            $model->id_shop = $id_shop;
+            if ($model->save()) {
                 $can_delete_settings = true;
             }
         }
-        if($can_delete_settings) {
-           foreach($configLines as $configLine) {
-               Configuration::deleteByName($configLine['name']);
-           }
+        if ($can_delete_settings) {
+            foreach ($configLines as $configLine) {
+                Configuration::deleteByName($configLine['name']);
+            }
         }
 
         return true;
     }
 
-        
     /**
      * getConfigurationSettings
      *
-     * @param  mixed $with_tabs
-     * @param  mixed $context
+     * @param mixed $with_tabs
+     * @param mixed $context
+     *
      * @return array
      */
     public static function getConfigurationSettings($with_tabs = true, $context = 'front')
     {
         $theme_settings = Hook::exec('ActionRegisterThemeSettings', [], null, true);
-            $res = [];
-            $no_tabs = [];
-            foreach ($theme_settings as $settings) {
-                foreach ($settings as $name => $params) {
-                    $tab = $params['tab'] ?? 'general';
-                    $params = self::_setThemeFieldValue($name, $params, $context);
-                    $res[$tab][$name] = $params;
-                    $no_tabs[$name] = $params['value'] ?? false;
-                }
+        $res = [];
+        $no_tabs = [];
+        foreach ($theme_settings as $settings) {
+            foreach ($settings as $name => $params) {
+                $tab = $params['tab'] ?? 'general';
+                $params = self::_setThemeFieldValue($name, $params, $context);
+                $res[$tab][$name] = $params;
+                $no_tabs[$name] = $params['value'] ?? false;
             }
-            if (!$with_tabs) {
-                return $no_tabs;
-            }
-    
-            return $res;
+        }
+        if (!$with_tabs) {
+            return $no_tabs;
+        }
+
+        return $res;
     }
 
     private static function _setThemeFieldValue($name, $params, $context)

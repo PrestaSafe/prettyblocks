@@ -1,7 +1,6 @@
 <?php
 
 use PrestaSafe\PrettyBlocks\Core\FieldCore;
-use PrestaSafe\PrettyBlocks\Core\PrettyBlocksField;
 
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
@@ -29,7 +28,7 @@ class PrettyBlocksSettingsModel extends ObjectModel
     public $id_shop;
     public $date_add;
     public $date_upd;
-     /**
+    /**
      * @see ObjectModel::$definition
      */
     public static $definition = [
@@ -42,17 +41,17 @@ class PrettyBlocksSettingsModel extends ObjectModel
         ],
     ];
 
-
     public static function getSettings($theme_name, $id_shop = null)
     {
-        if($id_shop === null) {
+        if ($id_shop === null) {
             $id_shop = Context::getContext()->shop->id;
         }
-        $json = Db::getInstance()->getValue('SELECT settings FROM ' . _DB_PREFIX_ . 'prettyblocks_settings WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int)$id_shop);
+        $json = Db::getInstance()->getValue('SELECT settings FROM ' . _DB_PREFIX_ . 'prettyblocks_settings WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop);
         $json = json_decode($json, true);
-        foreach($json as $key => $value) {
+        foreach ($json as $key => $value) {
             $json[$key] = (new FieldCore($value))->compile();
         }
+
         return $json;
-    }   
+    }
 }

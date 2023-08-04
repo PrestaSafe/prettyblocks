@@ -104,13 +104,12 @@ class PrettyBlocks extends Module implements WidgetInterface
             PRIMARY KEY (`id_prettyblocks`)
           ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
-        
-
         $isOk = true;
         foreach ($db as $sql) {
             $isOk &= Db::getInstance()->execute($sql);
         }
         $isOk &= $this->makeSettingsTable();
+
         return $isOk;
     }
 
@@ -123,6 +122,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             `settings` longtext,
             PRIMARY KEY (`id_prettyblocks_settings`)
           ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
+
         return Db::getInstance()->execute($sql);
     }
 
