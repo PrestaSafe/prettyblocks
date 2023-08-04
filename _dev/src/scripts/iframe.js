@@ -183,7 +183,11 @@ async loadIframe () {
                 html.then((data) => {
                     let domBlock = body.querySelector('[data-id-prettyblocks="' + currentBlock.id_prettyblocks + '"]')
                     domBlock.innerHTML = data
+
+                    const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
+                    this.loadToolBar(tb)
                 })
+
             })
 
             // when iframe loaded, get blocks
