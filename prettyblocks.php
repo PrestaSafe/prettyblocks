@@ -104,12 +104,26 @@ class PrettyBlocks extends Module implements WidgetInterface
             PRIMARY KEY (`id_prettyblocks`)
           ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
+        
+
         $isOk = true;
         foreach ($db as $sql) {
             $isOk &= Db::getInstance()->execute($sql);
         }
-
+        $isOk &= $this->makeSettingsTable();
         return $isOk;
+    }
+
+    public function makeSettingsTable()
+    {
+        $sql = 'CREATE TABLE `' . _DB_PREFIX_ . 'prettyblocks_settings` (
+            `id_prettyblocks_settings` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `theme_name` varchar(255) DEFAULT NULL,
+            `id_shop` int(11) DEFAULT NULL,
+            `settings` longtext,
+            PRIMARY KEY (`id_prettyblocks_settings`)
+          ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
+        return Db::getInstance()->execute($sql);
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use PrestaSafe\PrettyBlocks\Core\FieldCore;
 use PrestaSafe\PrettyBlocks\Core\PrettyBlocksField;
 
 class PrettyBlocksMigrate
@@ -123,6 +124,165 @@ class PrettyBlocksMigrate
         \Db::getInstance()->execute($sql);
 
         return true;
+    }
+    
+    /**
+     * migrateSettings
+     * migrate settings from config to database
+     * @return bool 
+     */
+    public static function migrateSettings()
+    {
+        $key = '%\_SETTINGS';
+
+        $sql = '
+            SELECT name, value
+            FROM ' . _DB_PREFIX_ . 'configuration
+            WHERE name LIKE "' . pSQL($key) . '"
+            AND name != "PS_REWRITING_SETTINGS"
+        ';
+        // get settings value from config values
+        $configLines = Db::getInstance()->executeS($sql);
+        $settings_value = [];
+        if ($configLines) {
+            foreach ($configLines as $configLine) {
+                    $setting = str_replace('_SETTINGS','',$configLine['name']);
+                    $setting = strtolower($setting);
+                    $settings_value[$setting] = $configLine['value'];
+                }
+            }
+
+        // get settings fields:
+
+        $settings_on_hooks = \HelperBuilder::hookToArray('ActionRegisterThemeSettings');
+        $res = [];
+
+        foreach($settings_on_hooks as $key => $field) {
+            $fieldCore = (new FieldCore($field));
+            if(isset($settings_value[$key])) {
+                $fieldCore->setAttribute('value', $settings_value[$key]);
+            }
+            $res[$key] = $fieldCore->compile();
+            
+        }
+        
+        $theme_name = Context::getContext()->shop->theme_name;
+        $can_delete_settings = false;
+        foreach(Shop::getShops() as $shop)
+        {
+            $id_shop = (int)$shop['id_shop'];
+            $settingModel = new PrestaShopCollection('PrettyBlocksSettingsModel');
+            $settingModel->where('theme_name', '=', $theme_name);
+            $settingModel->where('id_shop', '=',  $id_shop);
+    
+            $model = $settingModel->getFirst();
+            if(!$model) {
+                $model = new PrettyBlocksSettingsModel();
+            }
+            $model->theme_name = $theme_name;
+            $model->settings = json_encode($res, true);
+            $model->id_shop =  $id_shop;
+            if($model->save()){
+                $can_delete_settings = true;
+            }
+        }
+        if($can_delete_settings) {
+           foreach($configLines as $configLine) {
+               Configuration::deleteByName($configLine['name']);
+           }
+        }
+
+        return true;
+    }
+
+        
+    /**
+     * getConfigurationSettings
+     *
+     * @param  mixed $with_tabs
+     * @param  mixed $context
+     * @return array
+     */
+    public static function getConfigurationSettings($with_tabs = true, $context = 'front')
+    {
+        $theme_settings = Hook::exec('ActionRegisterThemeSettings', [], null, true);
+            $res = [];
+            $no_tabs = [];
+            foreach ($theme_settings as $settings) {
+                foreach ($settings as $name => $params) {
+                    $tab = $params['tab'] ?? 'general';
+                    $params = self::_setThemeFieldValue($name, $params, $context);
+                    $res[$tab][$name] = $params;
+                    $no_tabs[$name] = $params['value'] ?? false;
+                }
+            }
+            if (!$with_tabs) {
+                return $no_tabs;
+            }
+    
+            return $res;
+    }
+
+    private static function _setThemeFieldValue($name, $params, $context)
+    {
+        $params['value'] = self::_formatSettingsField($name, $params['type'], $params, $context, false);
+
+        return $params;
+    }
+
+    /**
+     * Format a field for settings
+     *
+     * @param string $name
+     * @param string $type
+     * @param array $params
+     * @param string $context (back of front)
+     * @param bool|array $block
+     *
+     * @return any
+     */
+    private static function _formatSettingsField($name, $type, $params, $context, $block = false)
+    {
+        $class = new FieldFormatter();
+        $class::setSuffix('_settings');
+
+        switch ($type) {
+            case 'editor':
+                return $class::formatFieldText($name, $params, $block, $context);
+                break;
+            case 'text':
+                return $class::formatFieldText($name, $params, $block, $context);
+                break;
+            case 'textarea':
+                return $class::formatFieldText($name, $params, $block, $context);
+                break;
+            case 'color':
+                return $class::formatFieldText($name, $params, $block, $context);
+                break;
+            case 'radio':
+                return $class::formatFieldBoxes($name, $params, $block, $context);
+                break;
+            case 'checkbox':
+                return $class::formatFieldBoxes($name, $params, $block, $context);
+                break;
+            case 'fileupload':
+                return $class::formatFieldUpload($name, $params, $block, $context);
+                break;
+            case 'upload':
+                return $class::formatFieldUpload($name, $params, $block, $context);
+                break;
+            case 'selector':
+                return $class::formatFieldSelector($name, $params, $block, $context);
+                break;
+            case 'select':
+                return $class::formatFieldSelect($name, $params, $block, $context);
+                break;
+            case 'radio_group':
+                return $class::formatFieldRadioGroup($name, $params, $block, $context);
+                break;
+            default:
+                return '';
+        }
     }
 
     /**
