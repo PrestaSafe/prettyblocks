@@ -24,9 +24,8 @@ class PrettyBlocksMigrate
 
     public static function migrateConfig()
     {
-        if(!self::columnExists('prettyblocks', 'template')
-            && !self::columnExists('prettyblocks', 'default_params'))
-        {
+        if (!self::columnExists('prettyblocks', 'template')
+            && !self::columnExists('prettyblocks', 'default_params')) {
             self::addTemplateField();
         }
         $langs = \Language::getLanguages();
@@ -71,42 +70,41 @@ class PrettyBlocksMigrate
         return $res;
     }
 
-    public static function columnExists($tableName, $columnName) {
+    public static function columnExists($tableName, $columnName)
+    {
         $tableName = _DB_PREFIX_ . $tableName;
         $sql = "SHOW COLUMNS FROM `$tableName` LIKE '$columnName'";
         $result = Db::getInstance()->executeS($sql);
-    
+
         // Retourne true si le tableau de résultat n'est pas vide, sinon false.
         return !empty($result);
     }
 
-    /** 
-     * Migrate lang table 
+    /**
+     * Migrate lang table
      * for version 3.0.0
      */
     public static function migrateLangTable()
     {
-        if(!self::columnExists('prettyblocks', 'id_shop') 
-            && !self::columnExists('prettyblocks', 'id_lang') 
-            && !self::columnExists('prettyblocks', 'state')){
-            $sql = "
-                ALTER TABLE "._DB_PREFIX_."prettyblocks
+        if (!self::columnExists('prettyblocks', 'id_shop')
+            && !self::columnExists('prettyblocks', 'id_lang')
+            && !self::columnExists('prettyblocks', 'state')) {
+            $sql = '
+                ALTER TABLE ' . _DB_PREFIX_ . 'prettyblocks
                 ADD COLUMN id_shop int(11) DEFAULT NULL,
                 ADD COLUMN id_lang int(11) DEFAULT NULL,
                 ADD COLUMN state longtext DEFAULT NULL;
-            ";
+            ';
             \Db::getInstance()->execute($sql);
         }
 
-
-        $blocks_lang = \Db::getInstance()->executeS("SELECT * FROM "._DB_PREFIX_."prettyblocks_lang");
-        foreach($blocks_lang as $block)
-        {
+        $blocks_lang = \Db::getInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'prettyblocks_lang');
+        foreach ($blocks_lang as $block) {
             $existingBlock = new PrettyBlocksModel($block['id_prettyblocks']);
             $newBlocks = new PrettyBlocksModel();
             $newBlocks->instance_id = $existingBlock->instance_id;
-            $newBlocks->id_shop = (int)$block['id_shop'];
-            $newBlocks->id_lang = (int)$block['id_lang'];
+            $newBlocks->id_shop = (int) $block['id_shop'];
+            $newBlocks->id_lang = (int) $block['id_lang'];
             $newBlocks->state = $block['state'];
             $newBlocks->code = $existingBlock->code;
             $newBlocks->zone_name = $existingBlock->zone_name;
@@ -119,12 +117,9 @@ class PrettyBlocksMigrate
             $newBlocks->save();
 
             $existingBlock->delete();
-
         }
-        
-        
-        
-        $sql = "DROP TABLE IF EXISTS "._DB_PREFIX_."prettyblocks_lang";
+
+        $sql = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'prettyblocks_lang';
         \Db::getInstance()->execute($sql);
 
         return true;

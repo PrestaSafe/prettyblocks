@@ -35,7 +35,7 @@ class PrettyBlocksStatesField extends PrettyBlocksField
     public $label = '';
     public $type = '';
 
-     /**
+    /**
      * Set all essential Data
      *
      * @return $this
@@ -63,7 +63,6 @@ class PrettyBlocksStatesField extends PrettyBlocksField
             $this->force_default_value = true;
         }
 
-
         $this->setValues();
 
         return $this;
@@ -71,7 +70,6 @@ class PrettyBlocksStatesField extends PrettyBlocksField
 
     private function _setFieldState()
     {
-
         if (isset($this->block['repeater_db'][$this->index][$this->key])) {
             $this->field = $this->block['repeater_db'][$this->index][$this->key];
         }
@@ -79,7 +77,7 @@ class PrettyBlocksStatesField extends PrettyBlocksField
         return $this;
     }
 
-      /**
+    /**
      * @param string $key
      *
      * @return $this
@@ -87,9 +85,9 @@ class PrettyBlocksStatesField extends PrettyBlocksField
     public function setIndex($index)
     {
         $this->index = $index;
+
         return $this;
     }
-
 
     public function setKey($key)
     {
@@ -100,10 +98,8 @@ class PrettyBlocksStatesField extends PrettyBlocksField
         return $this;
     }
 
-
     public function setValues()
     {
-        
         //  bug
         $values = $this->getFormattedConfig();
         // dump($this->field);
@@ -114,26 +110,25 @@ class PrettyBlocksStatesField extends PrettyBlocksField
             $this->field['value'] = $this->formattedValue;
             $this->value = $this->field;
         }
+
         return $this;
     }
 
     public function getFormattedConfig()
     {
         $value = [];
-     
+
         $jsonConfig = $this->model->state;
         if (!is_null($jsonConfig) && !\Validate::isJson($jsonConfig)) {
             return $value;
         }
         $json = json_decode($jsonConfig, true);
+
         return $json;
     }
 
-
-
     public function save()
     {
-
         $json = $this->_setFormattedValue();
         $json = json_encode($json, true);
         $this->model->state = $json;
@@ -141,26 +136,22 @@ class PrettyBlocksStatesField extends PrettyBlocksField
             $this->_assignValues($this->newValue);
         }
 
-
         return $this;
     }
 
     /**
-    * set formatted value
-    *
-    * @return array
-    */
-   public function _setFormattedValue()
-   {
+     * set formatted value
+     *
+     * @return array
+     */
+    public function _setFormattedValue()
+    {
+        $data = $this->getFormattedConfig();
+        $data[$this->index][$this->key] = $this->format();
 
-       $data = $this->getFormattedConfig();
-       $data[$this->index][$this->key] = $this->format();
+        $this->formattedValue = $this->formatForFront();
+        $this->field['value'] = $this->formattedValue;
 
-       $this->formattedValue = $this->formatForFront();
-       $this->field['value'] = $this->formattedValue;
-
-       return $data;
-   }
-
-
-}   
+        return $data;
+    }
+}

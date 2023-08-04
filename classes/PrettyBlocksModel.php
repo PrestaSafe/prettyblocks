@@ -1,9 +1,7 @@
 <?php
 
 use PrestaSafe\PrettyBlocks\Core\FieldCore;
-use Symfony\Component\Validator\Constraints\Valid;
 use PrestaSafe\PrettyBlocks\Core\PrettyBlocksField;
-use PrestaSafe\PrettyBlocks\Presenter\FieldPresenter;
 
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
@@ -62,7 +60,7 @@ class PrettyBlocksModel extends ObjectModel
 
             // multishop
             'instance_id' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
-            'state' => ['type' => self::TYPE_SQL, 'validate' => 'isJson',  ],
+            'state' => ['type' => self::TYPE_SQL, 'validate' => 'isJson'],
             'zone_name' => ['type' => self::TYPE_STRING,  'validate' => 'isCleanHtml'],
             'position' => ['type' => self::TYPE_INT,  'validate' => 'isInt'],
             'date_add' => ['type' => self::TYPE_DATE,   'validate' => 'isDate'],
@@ -129,7 +127,6 @@ class PrettyBlocksModel extends ObjectModel
         return true;
     }
 
-
     /**
      * Display blocks for one zone
      *
@@ -166,51 +163,56 @@ class PrettyBlocksModel extends ObjectModel
 
         return $blocks;
     }
-    
+
     /**
      * saveConfigField
      *
-     * @param  mixed $name
-     * @param  mixed $new_value
+     * @param mixed $name
+     * @param mixed $new_value
+     *
      * @return bool
      */
     public function saveConfigField($name, $new_value)
     {
-        if(isset($this->configFields[$name])){
-            $newField = $this->configFields[$name]->setAttribute('new_value',$new_value)->compile();
+        if (isset($this->configFields[$name])) {
+            $newField = $this->configFields[$name]->setAttribute('new_value', $new_value)->compile();
             $jsonConfig = json_decode($this->config, true);
             if (!is_null($jsonConfig)) {
                 $json = [];
             }
             $json[$name] = $newField;
             $this->config = json_encode($json, true);
+
             return $this->save();
         }
+
         return false;
     }
 
-    
     /**
      * saveStateField
      *
-     * @param  mixed $index
-     * @param  mixed $name
-     * @param  mixed $new_value
+     * @param mixed $index
+     * @param mixed $name
+     * @param mixed $new_value
+     *
      * @return bool
      */
-    public function saveStateField($index,$name,$new_value)
+    public function saveStateField($index, $name, $new_value)
     {
         // get state in json, replace it if exist and save model.
-        if(isset($this->stateFields[$index][$name])){
-            $newField = $this->stateFields[$index][$name]->setAttribute('new_value',$new_value)->compile();
+        if (isset($this->stateFields[$index][$name])) {
+            $newField = $this->stateFields[$index][$name]->setAttribute('new_value', $new_value)->compile();
             $jsonConfig = json_decode($this->state, true);
             if (is_null($jsonConfig)) {
                 $jsonConfig = [];
             }
             $jsonConfig[$index][$name] = $newField;
             $this->state = json_encode($jsonConfig, true);
+
             return $this->save();
         }
+
         return false;
     }
 
@@ -259,7 +261,6 @@ class PrettyBlocksModel extends ObjectModel
         $block['extra'] = $res;
         $block['templates'] = $this->_getBlockTemplate($block);
 
-
         return $block;
     }
 
@@ -298,11 +299,11 @@ class PrettyBlocksModel extends ObjectModel
      */
     public function assignFields($block = false, $context = 'front', $force_values = false)
     {
-        $this->count++;
+        ++$this->count;
         if (!$block) {
             $block = $this->mergeStateWithFields();
         }
-        
+
         $fieldCore = new PrettyBlocksField($block);
         $this->configFields = $fieldCore->getConfigFields();
         $this->stateFields = $fieldCore->getStatesFields();
@@ -361,7 +362,7 @@ class PrettyBlocksModel extends ObjectModel
      */
     private function _formatStateForFront($state, $repeatedFields, $block)
     {
-        $empty_state = [];  
+        $empty_state = [];
         foreach ($state as $s) {
             $formatted = [];
             if (empty($s)) {
@@ -554,12 +555,13 @@ class PrettyBlocksModel extends ObjectModel
         return $block['templates'] + $res;
     }
 
-    
     /**
      * _getDefaultParams
      * return default template if not exist
      * prettyblocks:views/templates/blocks/welcome.tpl
-     * @param  mixed $block
+     *
+     * @param mixed $block
+     *
      * @return void
      */
     private function _getDefaultParams($block)
@@ -577,12 +579,13 @@ class PrettyBlocksModel extends ObjectModel
         return $defaultParams;
     }
 
-       
     /**
      * _formatGetConfig
      * get field with front value only
-     * @param  mixed $block
-     * @param  mixed $context
+     *
+     * @param mixed $block
+     * @param mixed $context
+     *
      * @return array
      */
     private function _formatGetConfig($block, $context = 'front')

@@ -104,7 +104,6 @@ class PrettyBlocks extends Module implements WidgetInterface
             PRIMARY KEY (`id_prettyblocks`)
           ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
 
-
         $isOk = true;
         foreach ($db as $sql) {
             $isOk &= Db::getInstance()->execute($sql);
@@ -249,12 +248,11 @@ class PrettyBlocks extends Module implements WidgetInterface
         $block = $params['block'];
         $classes = $params['classes'] ?? [];
 
-
         $title = new Title($tag, $classes, $block, $field);
-        if(isset($params['index']))
-        {
-            $title->setIndex((int)$params['index']);
+        if (isset($params['index'])) {
+            $title->setIndex((int) $params['index']);
         }
+
         return $title->setValueFromBlock(true)
                 ->setValue($value)->render();
     }

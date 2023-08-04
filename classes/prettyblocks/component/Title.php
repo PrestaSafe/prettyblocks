@@ -34,7 +34,7 @@ class Title implements ComponentInterface
     private $attributes = [];
     private $attributesRendered = [];
     // if in state
-    private $index = null;
+    private $index;
 
     public function __construct($tag = null, $classes = [], $block, $field)
     {
@@ -62,10 +62,9 @@ class Title implements ComponentInterface
     {
         $this->value = $value;
         if ($this->value_from_block) {
-            if(!is_null($this->index))
-            {
+            if (!is_null($this->index)) {
                 $block_value = $this->block['states'][$this->index][$this->field]['value'];
-            }else{
+            } else {
                 $block_value = $this->block['settings_formatted'][$this->field]['value'];
             }
             if (!is_array($block_value)) {
@@ -101,8 +100,7 @@ class Title implements ComponentInterface
         $smarty->assign('field', $this->field);
         $smarty->assign('attributes', $this->attributes);
         $smarty->assign('attributesHTML', $this->renderAttributes());
-        if(!is_null($this->index))
-        {
+        if (!is_null($this->index)) {
             $smarty->assign('index', $this->index);
         }
 

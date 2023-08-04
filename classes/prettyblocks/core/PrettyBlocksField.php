@@ -21,8 +21,6 @@
 
 namespace PrestaSafe\PrettyBlocks\Core;
 
-use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
-
 class PrettyBlocksField
 {
     public $block;
@@ -32,8 +30,6 @@ class PrettyBlocksField
     public $settings = [];
     public $id_lang = 0;
     public $id_shop = 0;
-    
-
 
     /**
      * Constructor
@@ -52,11 +48,13 @@ class PrettyBlocksField
      * Set id_lang
      *
      * @param int $id_lang
+     *
      * @return self
      */
     public function setIdLang($id_lang)
     {
         $this->id_lang = $id_lang;
+
         return $this;
     }
 
@@ -64,11 +62,13 @@ class PrettyBlocksField
      * Set id_shop
      *
      * @param int $id_shop
+     *
      * @return self
      */
     public function setIdShop($id_shop)
     {
         $this->id_shop = $id_shop;
+
         return $this;
     }
 
@@ -77,9 +77,10 @@ class PrettyBlocksField
         $this->setData();
         $this->setConfigFields();
         $this->setStatesFields();
+
         return $this;
     }
-        
+
     /**
      * setConfigFields
      *
@@ -87,8 +88,7 @@ class PrettyBlocksField
      */
     public function setConfigFields()
     {
-        if(!isset($this->block['config']['fields']))
-        {
+        if (!isset($this->block['config']['fields'])) {
             return [];
         }
 
@@ -98,14 +98,14 @@ class PrettyBlocksField
         foreach ($this->block['config']['fields'] as $key => $field) {
             $field['id_lang'] = $this->id_lang;
             $field['id_shop'] = $this->id_shop;
-            if(isset($configDaved[$key]['value']))
-            {
+            if (isset($configDaved[$key]['value'])) {
                 // merged value db if exist
                 $field['value'] = $configDaved[$key]['value'];
             }
             $fields[$key] = (new FieldCore($field));
         }
         $this->config = $fields;
+
         return $this;
     }
 
@@ -116,24 +116,22 @@ class PrettyBlocksField
 
     public function setStatesFields()
     {
-        if(!isset($this->block['states_json']))
-        {
+        if (!isset($this->block['states_json'])) {
             return [];
         }
 
         $fields = [];
         foreach ($this->block['states_json'] as $index => $data) {
             $stateFields = [];
-            foreach($data as $key => $value)
-            {
+            foreach ($data as $key => $value) {
                 $value['id_lang'] = $this->id_lang;
                 $value['id_shop'] = $this->id_shop;
                 $stateFields[$key] = (new FieldCore($value));
             }
             $fields[$index] = $stateFields;
-
         }
         $this->states = $fields;
+
         return $this;
     }
 
@@ -152,9 +150,9 @@ class PrettyBlocksField
     {
         return $this;
     }
+
     public function setContext()
     {
         return $this;
     }
-
 }

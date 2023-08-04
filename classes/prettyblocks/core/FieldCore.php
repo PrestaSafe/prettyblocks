@@ -20,6 +20,7 @@
  */
 
 namespace PrestaSafe\PrettyBlocks\Core;
+
 class FieldCore
 {
     public $type;
@@ -27,19 +28,20 @@ class FieldCore
     public $path;
     public $collection;
     public $selector;
-    public $default; 
+    public $default;
     public $choices;
     public $force_default_value = true;
     public $value;
-    public $new_value = null;
+    public $new_value;
     public $allow_html = false;
     public $id_lang = 0;
     public $id_shop = 0;
-        
+
     /**
      * __construct
      *
-     * @param  mixed $data
+     * @param mixed $data
+     *
      * @return void
      */
     public function __construct($data = [])
@@ -50,47 +52,52 @@ class FieldCore
     /**
      * setAttributeS
      *
-     * @param  mixed $data
+     * @param mixed $data
+     *
      * @return void
      */
     public function setAttributeS($data)
     {
-        foreach($data as $key => $value){
+        foreach ($data as $key => $value) {
             $this->setAttribute($key, $value);
         }
+
         return $this;
     }
-    
+
     /**
      * setAttribute
      *
-     * @param  mixed $attribute
-     * @param  mixed $value
+     * @param mixed $attribute
+     * @param mixed $value
+     *
      * @return void
      */
     public function setAttribute($attribute, $value)
     {
-        if(property_exists($this, $attribute)){
+        if (property_exists($this, $attribute)) {
             $this->{$attribute} = $value;
         }
+
         return $this;
     }
-    
+
     /**
      * getAttribute
      *
-     * @param  mixed $attribute
+     * @param mixed $attribute
+     *
      * @return any
      */
     public function getAttribute($attribute)
     {
-        if(property_exists($this, $attribute)){
+        if (property_exists($this, $attribute)) {
             return $this->{$attribute};
         }
+
         return null;
     }
-    
-        
+
     /**
      * compile
      *
@@ -99,35 +106,36 @@ class FieldCore
     public function compile()
     {
         $data = [];
-        if($this->type){
+        if ($this->type) {
             $data['type'] = $this->type;
         }
-        if($this->label){
+        if ($this->label) {
             $data['label'] = $this->label;
         }
-        if($this->path){
+        if ($this->path) {
             $data['path'] = $this->path;
         }
-        if($this->collection){
+        if ($this->collection) {
             $data['collection'] = $this->collection;
         }
-        if($this->selector){
+        if ($this->selector) {
             $data['selector'] = $this->selector;
         }
-        if($this->default){
+        if ($this->default) {
             $data['default'] = $this->default;
         }
-        if($this->choices){
+        if ($this->choices) {
             $data['choices'] = $this->choices;
         }
-        if($this->force_default_value){
+        if ($this->force_default_value) {
             $data['force_default_value'] = $this->force_default_value;
         }
-        
+
         $data['value'] = $this->format();
+
         return $data;
     }
-    
+
     /**
      * toArray
      *
@@ -137,7 +145,7 @@ class FieldCore
     {
         return $this->compile();
     }
-    
+
     /**
      * getFrontValue
      *
@@ -158,8 +166,6 @@ class FieldCore
         return $this->getValue();
     }
 
-
-
     /*
         |
         |--------------------------------------------------------------------------
@@ -168,7 +174,6 @@ class FieldCore
         |
     */
 
-    
     /**
      * format
      *
@@ -185,7 +190,6 @@ class FieldCore
         return false;
     }
 
-        
     /**
      * formatForFront
      *
@@ -197,7 +201,7 @@ class FieldCore
         if (method_exists($this, $method)) {
             return $this->{$method}();
         }
-        
+
         return $this->format();
     }
 
@@ -208,7 +212,7 @@ class FieldCore
         |--------------------------------------------------------------------------
         |
     */
-    
+
     /**
      * formatFieldTitle
      *
@@ -264,16 +268,16 @@ class FieldCore
 
         return $element;
     }
-    
+
     /**
      * _clearValue
      *
-     * @param  mixed $value
+     * @param mixed $value
+     *
      * @return void
      */
     public function _clearValue($value)
     {
-
         $new_value = str_replace(["\r", "\n"], '', $value);
         $new_value = str_replace('\\n', '', $new_value);
 
@@ -673,8 +677,7 @@ class FieldCore
      */
     public function secureTextEntry($string)
     {
-        if(is_array($string) && isset($string['value']))
-        {
+        if (is_array($string) && isset($string['value'])) {
             $string = $string['value'];
         }
         if ($this->allow_html) {
@@ -708,5 +711,4 @@ class FieldCore
 
         return $secure;
     }
-
 }
