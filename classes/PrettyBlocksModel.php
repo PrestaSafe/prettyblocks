@@ -200,14 +200,15 @@ class PrettyBlocksModel extends ObjectModel
      */
     public function saveStateField($index,$name,$new_value)
     {
+        // get state in json, replace it if exist and save model.
         if(isset($this->stateFields[$index][$name])){
             $newField = $this->stateFields[$index][$name]->setAttribute('new_value',$new_value)->compile();
             $jsonConfig = json_decode($this->state, true);
             if (is_null($jsonConfig)) {
-                $json = [];
+                $jsonConfig = [];
             }
-            $json[$index][$name] = $newField;
-            $this->state = json_encode($json, true);
+            $jsonConfig[$index][$name] = $newField;
+            $this->state = json_encode($jsonConfig, true);
             return $this->save();
         }
         return false;

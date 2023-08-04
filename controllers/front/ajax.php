@@ -382,7 +382,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         {
             // save state
             $index = (int)Tools::getValue('index');
-            dump(Tools::getAllValues());
+
             if($model->saveStateField((int)$index, pSQL(Tools::getValue('field')), $element))
             {
                 $success = true;
