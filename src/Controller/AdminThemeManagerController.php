@@ -204,6 +204,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
         $translator = \Context::getContext()->getTranslator();
         $shops = $this->getShops();
+        // url to load at startup : provided url or shop home page
+        $startup_url = \Tools::getValue('startup_url', $shop_url);
 
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
@@ -227,6 +229,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'blocks_available' => $blockAvailableUrls,
                 'block_action_urls' => $blockUrl,
                 'theme_settings' => $settingsUrls,
+                'startup_url' => $startup_url,
             ],
             'trans_app' => [
                 'current_shop' => $translator->trans('Shop in modification', [], 'Modules.Prettyblocks.Admin'),

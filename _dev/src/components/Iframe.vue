@@ -6,7 +6,7 @@ import Button from './Button.vue'
 import Iframe from '../scripts/iframe'
 import { contextShop } from '../store/currentBlock'
 
-let iframe = new Iframe(ajax_urls.current_domain, 1, 1)
+let iframe = new Iframe(ajax_urls.startup_url, 1, 1)
 defineProps({
   src: String
 })
