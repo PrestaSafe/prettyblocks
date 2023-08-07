@@ -24,6 +24,7 @@ class PrettyBlocksSettingsModel extends ObjectModel
 {
     public $id_prettyblocks_settings;
     public $theme_name;
+    public $profile;
     public $settings;
     public $id_shop;
     public $date_add;
@@ -36,6 +37,7 @@ class PrettyBlocksSettingsModel extends ObjectModel
         'primary' => 'id_prettyblocks_settings',
         'fields' => [
             'theme_name' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
+            'profile' => ['type' => self::TYPE_STRING,   'validate' => 'isCleanHtml'],
             'id_shop' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
             'settings' => ['type' => self::TYPE_SQL, 'validate' => 'isJson'],
         ],
@@ -54,4 +56,19 @@ class PrettyBlocksSettingsModel extends ObjectModel
 
         return $json;
     }
+
+    public static function getProfileByTheme($theme_name, $id_shop)
+    {
+        $collection = new PrestaShopCollection('PrettyBlocksSettingsModel');
+        $collection->where('theme_name', '=', $theme_name);
+        $collection->where('id_shop', '=', $id_shop);
+        return $collection->getFirst();
+    }
+
+    // public static function generateFirstProfile()
+    // {
+    //     $theme_name = Context::getContext()->shop->theme_name;
+    //     $id_shop = Context::getContext()->shop->id;
+   
+    // }
 }

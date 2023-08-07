@@ -477,49 +477,22 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function updateThemeSettings($stateRequest)
     {
-        $formatted = [];
+        // dump($stateRequest);
+        // die();
+        $context = Context::getContext();
+        $profile = PrettyBlocksSettingsModel::getProfileByTheme($context->shop->theme_name, $context->shop->id);
+        $res = [];
         foreach ($stateRequest as $tabs) {
             foreach ($tabs as $name => $field) {
                 if (!isset($field['type'])) {
                     continue;
                 }
-                switch ($field['type']) {
-                    case 'text':
-                        FieldUpdator::updateFieldText($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'textarea':
-                        FieldUpdator::updateFieldText($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'color':
-                        FieldUpdator::updateFieldText($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'checkbox':
-                        FieldUpdator::updateFieldBoxes($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'radio':
-                        FieldUpdator::updateFieldBoxes($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'fileupload':
-                        FieldUpdator::updateFieldUpload($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'upload':
-                        FieldUpdator::updateFieldUpload($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'selector':
-                        FieldUpdator::updateFieldSelector($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'editor':
-                        FieldUpdator::updateFieldEditor($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'select':
-                        FieldUpdator::updateFieldSelect($name, $field['value'], $block = false, '_settings');
-                        break;
-                    case 'radio_group':
-                        FieldUpdator::updateFieldRadioGroup($name, $field['value'], $block = false, '_settings');
-                        break;
-                }
+                $fieldCore = (new FieldCore($field));
+                $res[$name] = $fieldCore->compile();
             }
         }
+        $profile->settings = json_encode($res, true);
+        $profile->save();
         self::_compileSass();
     }
 
@@ -832,16 +805,20 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function getThemeSettings($with_tabs = true, $context = 'front')
     {
-        $theme_settings = Hook::exec('ActionRegisterThemeSettings', [], null, true);
+        $theme_settings = \HelperBuilder::hookToArray('ActionRegisterThemeSettings');
+        $context = Context::getContext();
+        $settingsDB = PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $context->shop->id);
         $res = [];
         $no_tabs = [];
-        foreach ($theme_settings as $settings) {
-            foreach ($settings as $name => $params) {
-                $tab = $params['tab'] ?? 'general';
-                $params = self::_setThemeFieldValue($name, $params, $context);
-                $res[$tab][$name] = $params;
-                $no_tabs[$name] = $params['value'] ?? false;
-            }
+        foreach ($theme_settings as $key => $settings) {
+                $tab = $settings['tab'] ?? 'general';
+                $fieldCore = (new FieldCore($settings));
+                if(isset($settingsDB[$key]['value'])){
+                    $fieldCore->setAttribute('value', $settingsDB[$key]['value']);
+                }
+                $res[$tab][$key] = $fieldCore->compile();
+                $no_tabs[$key] = $fieldCore->getValue() ?? false;
+
         }
         if (!$with_tabs) {
             return $no_tabs;
@@ -850,74 +827,5 @@ class PrettyBlocksModel extends ObjectModel
         return $res;
     }
 
-    /**
-     * Set Theme Settings
-     *
-     * @param string $name
-     * @param array $params
-     * @param string $context (back of front)
-     *
-     * @return array
-     */
-    private static function _setThemeFieldValue($name, $params, $context)
-    {
-        $params['value'] = self::_formatSettingsField($name, $params['type'], $params, $context, false);
 
-        return $params;
-    }
-
-    /**
-     * Format a field for settings
-     *
-     * @param string $name
-     * @param string $type
-     * @param array $params
-     * @param string $context (back of front)
-     * @param bool|array $block
-     *
-     * @return any
-     */
-    private static function _formatSettingsField($name, $type, $params, $context, $block = false)
-    {
-        $class = new FieldFormatter();
-        $class::setSuffix('_settings');
-
-        switch ($type) {
-            case 'editor':
-                return $class::formatFieldText($name, $params, $block, $context);
-                break;
-            case 'text':
-                return $class::formatFieldText($name, $params, $block, $context);
-                break;
-            case 'textarea':
-                return $class::formatFieldText($name, $params, $block, $context);
-                break;
-            case 'color':
-                return $class::formatFieldText($name, $params, $block, $context);
-                break;
-            case 'radio':
-                return $class::formatFieldBoxes($name, $params, $block, $context);
-                break;
-            case 'checkbox':
-                return $class::formatFieldBoxes($name, $params, $block, $context);
-                break;
-            case 'fileupload':
-                return $class::formatFieldUpload($name, $params, $block, $context);
-                break;
-            case 'upload':
-                return $class::formatFieldUpload($name, $params, $block, $context);
-                break;
-            case 'selector':
-                return $class::formatFieldSelector($name, $params, $block, $context);
-                break;
-            case 'select':
-                return $class::formatFieldSelect($name, $params, $block, $context);
-                break;
-            case 'radio_group':
-                return $class::formatFieldRadioGroup($name, $params, $block, $context);
-                break;
-            default:
-                return '';
-        }
-    }
 }

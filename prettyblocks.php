@@ -118,6 +118,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $sql = 'CREATE TABLE `' . _DB_PREFIX_ . 'prettyblocks_settings` (
             `id_prettyblocks_settings` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `theme_name` varchar(255) DEFAULT NULL,
+            `profile` varchar(255) DEFAULT NULL,
             `id_shop` int(11) DEFAULT NULL,
             `settings` longtext,
             PRIMARY KEY (`id_prettyblocks_settings`)
