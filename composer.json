@@ -40,6 +40,9 @@
     "lint": [
       "php-cs-fixer fix --no-interaction --dry-run --diff"
     ],
+    "fix": [
+      "php-cs-fixer fix --dry-run --diff"
+    ],
     "autoindex": [
       "vendor/bin/autoindex prestashop:add:index ./"
     ]
