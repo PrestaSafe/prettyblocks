@@ -811,14 +811,13 @@ class PrettyBlocksModel extends ObjectModel
         $res = [];
         $no_tabs = [];
         foreach ($theme_settings as $key => $settings) {
-                $tab = $settings['tab'] ?? 'general';
-                $fieldCore = (new FieldCore($settings));
-                if(isset($settingsDB[$key]['value'])){
-                    $fieldCore->setAttribute('value', $settingsDB[$key]['value']);
-                }
-                $res[$tab][$key] = $fieldCore->compile();
-                $no_tabs[$key] = $fieldCore->getValue() ?? false;
-
+            $tab = $settings['tab'] ?? 'general';
+            $fieldCore = (new FieldCore($settings));
+            if (isset($settingsDB[$key]['value'])) {
+                $fieldCore->setAttribute('value', $settingsDB[$key]['value']);
+            }
+            $res[$tab][$key] = $fieldCore->compile();
+            $no_tabs[$key] = $fieldCore->getValue() ?? false;
         }
         if (!$with_tabs) {
             return $no_tabs;
@@ -826,6 +825,4 @@ class PrettyBlocksModel extends ObjectModel
 
         return $res;
     }
-
-
 }

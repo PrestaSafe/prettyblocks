@@ -62,6 +62,7 @@ class PrettyBlocksSettingsModel extends ObjectModel
         $collection = new PrestaShopCollection('PrettyBlocksSettingsModel');
         $collection->where('theme_name', '=', $theme_name);
         $collection->where('id_shop', '=', $id_shop);
+
         return $collection->getFirst();
     }
 
@@ -69,6 +70,6 @@ class PrettyBlocksSettingsModel extends ObjectModel
     // {
     //     $theme_name = Context::getContext()->shop->theme_name;
     //     $id_shop = Context::getContext()->shop->id;
-   
+
     // }
 }

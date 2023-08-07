@@ -181,7 +181,7 @@ class PrettyBlocksMigrate
             $model->theme_name = $theme_name;
             $model->settings = json_encode($res, true);
             $model->id_shop = $id_shop;
-            $model->profile = 'Theme '.$theme_name;
+            $model->profile = 'Theme ' . $theme_name;
             if ($model->save()) {
                 $can_delete_settings = true;
             }
