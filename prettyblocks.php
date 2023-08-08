@@ -78,6 +78,11 @@ class PrettyBlocks extends Module implements WidgetInterface
         return true;
     }
 
+    public function upgrade_3_0_0()
+    {
+        return \PrettyBlocksMigrate::migrateLangTable() && \PrettyBlocksMigrate::migrateSettings();
+    }
+
     /**
      * create tables on install.
      *

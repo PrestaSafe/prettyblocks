@@ -31,5 +31,5 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_3_0_0($module)
 {
-    return \PrettyBlocksMigrate::migrateLangTable() && \PrettyBlocksMigrate::migrateSettings();
+    return $module->upgrade_3_0_0();
 }
