@@ -41,7 +41,7 @@
       "php-cs-fixer fix --no-interaction --dry-run --diff"
     ],
     "fix": [
-      "php-cs-fixer fix --dry-run --diff"
+      "php-cs-fixer fix --diff"
     ],
     "autoindex": [
       "vendor/bin/autoindex prestashop:add:index ./"

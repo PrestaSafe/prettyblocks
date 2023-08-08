@@ -480,7 +480,7 @@ class PrettyBlocksModel extends ObjectModel
         // dump($stateRequest);
         // die();
         $context = Context::getContext();
-        $profile = PrettyBlocksSettingsModel::getProfileByTheme($context->shop->theme_name, $context->shop->id);
+        $profile = \PrettyBlocksSettingsModel::getProfileByTheme($context->shop->theme_name, $context->shop->id);
         $res = [];
         foreach ($stateRequest as $tabs) {
             foreach ($tabs as $name => $field) {
@@ -807,7 +807,7 @@ class PrettyBlocksModel extends ObjectModel
     {
         $theme_settings = \HelperBuilder::hookToArray('ActionRegisterThemeSettings');
         $context = Context::getContext();
-        $settingsDB = PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $context->shop->id);
+        $settingsDB = \PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $context->shop->id);
         $res = [];
         $no_tabs = [];
         foreach ($theme_settings as $key => $settings) {

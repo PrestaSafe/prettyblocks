@@ -77,6 +77,15 @@ class PrettyBlocksMigrate
         $sql = "SHOW COLUMNS FROM `$tableName` LIKE '$columnName'";
         $result = Db::getInstance()->executeS($sql);
 
+        return !empty($result);
+    }
+
+    public static function tableExists($tableName)
+    {
+        $tableName = _DB_PREFIX_ . $tableName;
+        $sql = "SHOW TABLES LIKE '$tableName'";
+        $result = Db::getInstance()->executeS($sql);
+
         // Retourne true si le tableau de résultat n'est pas vide, sinon false.
         return !empty($result);
     }
@@ -87,6 +96,9 @@ class PrettyBlocksMigrate
      */
     public static function migrateLangTable()
     {
+        if (!self::tableExists('prettyblocks_lang')) {
+            return true;
+        }
         if (!self::columnExists('prettyblocks', 'id_shop')
             && !self::columnExists('prettyblocks', 'id_lang')
             && !self::columnExists('prettyblocks', 'state')) {
@@ -176,7 +188,7 @@ class PrettyBlocksMigrate
 
             $model = $settingModel->getFirst();
             if (!$model) {
-                $model = new PrettyBlocksSettingsModel();
+                $model = new \PrettyBlocksSettingsModel();
             }
             $model->theme_name = $theme_name;
             $model->settings = json_encode($res, true);
