@@ -180,9 +180,16 @@ class PrettyBlocksMigrate
 
         $theme_name = Context::getContext()->shop->theme_name;
         $can_delete_settings = false;
+        if(!self::tableExists('prettyblocks_settings'))
+        {
+            $prettyblocks = \Module::getInstanceByName('prettyblocks');
+            $prettyblocks->makeSettingsTable();
+        }
+
+
         foreach (Shop::getShops() as $shop) {
             $id_shop = (int) $shop['id_shop'];
-            $settingModel = new PrestaShopCollection('PrettyBlocksSettingsModel');
+            $settingModel = new \PrestaShopCollection('\PrettyBlocksSettingsModel');
             $settingModel->where('theme_name', '=', $theme_name);
             $settingModel->where('id_shop', '=', $id_shop);
 
