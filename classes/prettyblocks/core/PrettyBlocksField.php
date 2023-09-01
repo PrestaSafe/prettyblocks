@@ -699,7 +699,13 @@ class PrettyBlocksField
      */
     private function formatFieldMultiselectForFront()
     {
-        return $this->formatFieldMultiselect();
+        if (is_array($this->value)) {
+            return $this->value;
+        }
+        // if value doesn't exists in DB and new value is not set return default value
+        if ($this->force_default_value && isset($this->field['default'])) {
+            return $this->field['default'];
+        }
     }
 
     /**
