@@ -543,7 +543,14 @@ class FieldCore
      */
     public function formatFieldMultiselectForFront()
     {
-        return $this->formatFieldMultiselect();
+        // update of perfs by Jeff
+        if (is_array($this->value)) {
+            return $this->value;
+        }
+        // if value doesn't exists in DB and new value is not set return default value
+        if ($this->force_default_value && isset($this->default)) {
+            return $this->default;
+        }
     }
 
     /**
