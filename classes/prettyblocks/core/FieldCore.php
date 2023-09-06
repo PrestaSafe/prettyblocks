@@ -21,6 +21,8 @@
 
 namespace PrestaSafe\PrettyBlocks\Core;
 
+use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
+
 class FieldCore
 {
     public $type;
@@ -464,6 +466,7 @@ class FieldCore
         if (is_array($this->choices) && isset($this->choices[$this->new_value])) {
             return $this->new_value;
         }
+
         // if no matches.
         return '';
     }
@@ -510,6 +513,7 @@ class FieldCore
 
             return $this->choices[$this->new_value];
         }
+
         // if no matches.
         return '';
     }
@@ -567,6 +571,7 @@ class FieldCore
                 return in_array($val, array_keys($this->choices));
             });
         }
+
         // if no matches.
         return [];
     }
@@ -597,6 +602,7 @@ class FieldCore
 
             return $this->_getCollection($idCollection, $this->collection);
         }
+
         // if no matches.
         return false;
     }
@@ -621,6 +627,7 @@ class FieldCore
         if (is_array($this->new_value) && isset($this->new_value['show']['id'])) {
             return $this->secureCollectionEntry($this->new_value);
         }
+
         // if no matches.
         return false;
     }

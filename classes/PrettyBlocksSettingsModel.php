@@ -49,6 +49,9 @@ class PrettyBlocksSettingsModel extends ObjectModel
             $id_shop = Context::getContext()->shop->id;
         }
         $json = Db::getInstance()->getValue('SELECT settings FROM ' . _DB_PREFIX_ . 'prettyblocks_settings WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop);
+        if (!$json) {
+            return [];
+        }
         $json = json_decode($json, true);
         foreach ($json as $key => $value) {
             $json[$key] = (new FieldCore($value))->compile();

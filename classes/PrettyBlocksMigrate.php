@@ -180,28 +180,34 @@ class PrettyBlocksMigrate
 
         $theme_name = Context::getContext()->shop->theme_name;
         $can_delete_settings = false;
-        if(!self::tableExists('prettyblocks_settings'))
-        {
+        if (!self::tableExists('prettyblocks_settings')) {
             $prettyblocks = \Module::getInstanceByName('prettyblocks');
             $prettyblocks->makeSettingsTable();
         }
 
-
         foreach (Shop::getShops() as $shop) {
             $id_shop = (int) $shop['id_shop'];
-            $settingModel = new \PrestaShopCollection('\PrettyBlocksSettingsModel');
-            $settingModel->where('theme_name', '=', $theme_name);
-            $settingModel->where('id_shop', '=', $id_shop);
 
-            $model = $settingModel->getFirst();
-            if (!$model) {
-                $model = new \PrettyBlocksSettingsModel();
+            // get settings from database
+            $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'pretty_blocks_settings WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop;
+            $row = Db::getInstance()->getRow($sql);
+
+            if ($row) {
+                // if settings exists, update
+                $sql = 'UPDATE ' . _DB_PREFIX_ . 'pretty_blocks_settings SET settings = "' . pSQL(json_encode($res, true)) . '", profile = "Theme ' . pSQL($theme_name) . '" WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop;
+                $result = Db::getInstance()->execute($sql);
+            } else {
+                // if settings not exists, create
+                $data = [
+                    'theme_name' => pSQL($theme_name),
+                    'settings' => pSQL(json_encode($res, true)),
+                    'id_shop' => (int) $id_shop,
+                    'profile' => 'Theme ' . pSQL($theme_name),
+                ];
+                $result = Db::getInstance()->insert('pretty_blocks_settings', $data);
             }
-            $model->theme_name = $theme_name;
-            $model->settings = json_encode($res, true);
-            $model->id_shop = $id_shop;
-            $model->profile = 'Theme ' . $theme_name;
-            if ($model->save()) {
+
+            if ($result) {
                 $can_delete_settings = true;
             }
         }
