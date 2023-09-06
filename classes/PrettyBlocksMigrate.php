@@ -180,21 +180,21 @@ class PrettyBlocksMigrate
 
         $theme_name = Context::getContext()->shop->theme_name;
         $can_delete_settings = false;
-        if (!self::tableExists('prettyblocks_settings')) {
-            $prettyblocks = \Module::getInstanceByName('prettyblocks');
-            $prettyblocks->makeSettingsTable();
-        }
+        // if (!self::tableExists('prettyblocks_settings')) {
+        //     $prettyblocks = \Module::getInstanceByName('prettyblocks');
+        //     $prettyblocks->makeSettingsTable();
+        // }
 
         foreach (Shop::getShops() as $shop) {
             $id_shop = (int) $shop['id_shop'];
 
             // get settings from database
-            $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'pretty_blocks_settings WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop;
+            $sql = 'SELECT * FROM ' . _DB_PREFIX_ . 'prettyblocks_settings WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop;
             $row = Db::getInstance()->getRow($sql);
 
             if ($row) {
                 // if settings exists, update
-                $sql = 'UPDATE ' . _DB_PREFIX_ . 'pretty_blocks_settings SET settings = "' . pSQL(json_encode($res, true)) . '", profile = "Theme ' . pSQL($theme_name) . '" WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop;
+                $sql = 'UPDATE ' . _DB_PREFIX_ . 'prettyblocks_settings SET settings = "' . pSQL(json_encode($res, true)) . '", profile = "Theme ' . pSQL($theme_name) . '" WHERE theme_name = "' . pSQL($theme_name) . '" AND id_shop = ' . (int) $id_shop;
                 $result = Db::getInstance()->execute($sql);
             } else {
                 // if settings not exists, create
@@ -204,7 +204,7 @@ class PrettyBlocksMigrate
                     'id_shop' => (int) $id_shop,
                     'profile' => 'Theme ' . pSQL($theme_name),
                 ];
-                $result = Db::getInstance()->insert('pretty_blocks_settings', $data);
+                $result = Db::getInstance()->insert('prettyblocks_settings', $data);
             }
 
             if ($result) {

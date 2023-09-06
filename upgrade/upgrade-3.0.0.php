@@ -31,5 +31,11 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_3_0_0($module)
 {
-    return $module->upgrade_3_0_0();
+    if (!\PrettyBlocksMigrate::tableExists('prettyblocks_settings')) {
+        $module->makeSettingsTable();
+    }
+    \PrettyBlocksMigrate::migrateLangTable();
+    \PrettyBlocksMigrate::migrateSettings();
+
+    return true;
 }

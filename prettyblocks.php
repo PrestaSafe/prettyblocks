@@ -78,11 +78,6 @@ class PrettyBlocks extends Module implements WidgetInterface
         return true;
     }
 
-    public function upgrade_3_0_0()
-    {
-        return \PrettyBlocksMigrate::migrateLangTable() && \PrettyBlocksMigrate::migrateSettings();
-    }
-
     /**
      * create tables on install.
      *
@@ -142,6 +137,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $db = [];
         $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks`';
         $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks_lang`';
+        $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks_settings`';
 
         $isOk = true;
         foreach ($db as $sql) {
