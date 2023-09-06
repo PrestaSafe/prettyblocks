@@ -372,11 +372,23 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $id_prettyblocks = (int) Tools::getValue('id_prettyblocks');
         $element = Tools::getValue('element');
-        $block = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
-        $block->getConfigFields();
-        $test = $block->fields[Tools::getValue('field')]->setNewValue($element)->save();
+
+        $model = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
+        $model->mergeStateWithFields();
+        if (Tools::getIsset('index')) {
+            // save state
+            $index = (int) Tools::getValue('index');
+
+            if ($model->saveStateField((int) $index, pSQL(Tools::getValue('field')), $element)) {
+                $success = true;
+            }
+        } else {
+            if ($model->saveConfigField(pSQL(Tools::getValue('field')), $element)) {
+                $success = true;
+            }
+        }
         exit(json_encode([
-            'success' => $test,
+            'success' => $success,
             'message' => $this->translator->trans('Title updated with success', [], 'Modules.Prettyblocks.Admin'),
             'errors' => 'No action found',
         ]));

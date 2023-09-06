@@ -183,7 +183,11 @@ async loadIframe () {
                 html.then((data) => {
                     let domBlock = body.querySelector('[data-id-prettyblocks="' + currentBlock.id_prettyblocks + '"]')
                     domBlock.innerHTML = data
+
+                    const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
+                    this.loadToolBar(tb)
                 })
+
             })
 
             // when iframe loaded, get blocks
@@ -297,6 +301,12 @@ async  updateTitleComponent(newValue)
 {
     let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
     let field = newValue.html.getAttribute('data-field')
+    let index = null
+    if(newValue.html.hasAttribute('data-index'))
+    {
+        index = newValue.html.getAttribute('data-index')
+    }
+    
     let element = await Block.loadById(id_block)
     // emitter.emit('displayBlockConfig', element)
     let context = contextShop()
@@ -307,6 +317,7 @@ async  updateTitleComponent(newValue)
         ctx_id_shop: context.id_shop,
         field: field,
         ajax: true,
+        index: index,
         action: 'updateTitleComponent',
         ajax_token: security_app.ajax_token
     }

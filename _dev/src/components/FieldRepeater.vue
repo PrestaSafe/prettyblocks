@@ -92,6 +92,7 @@ const removeTinyNotifications = () => {
     <div v-if="f.type == 'select'">
       <Choices :choices="f.choices" v-model="f.value" :label="f.label" />
     </div>
+    
     <div v-if="f.type == 'multiselect'">
       <MultiSelect v-model="f.value" :label="f.label" :options="f.choices" searchable="true" mode="tags"></MultiSelect>
     </div>

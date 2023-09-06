@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -18,18 +17,25 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
-namespace PrestaSafe\PrettyBlocks\Interfaces;
-
-interface FieldInterface
+/**
+ * @param prettyblocks $module
+ *
+ * @return bool|string
+ *
+ * @throws PrestaShopDatabaseException
+ * @throws PrestaShopException
+ */
+function upgrade_module_3_0_0($module)
 {
-    public function format();
+    if (!\PrettyBlocksMigrate::tableExists('prettyblocks_settings')) {
+        $module->makeSettingsTable();
+    }
+    \PrettyBlocksMigrate::migrateLangTable();
+    \PrettyBlocksMigrate::migrateSettings();
 
-    public function setConfig();
-
-    public function save();
-
-    public function value();
-
-    public function getContext();
+    return true;
 }

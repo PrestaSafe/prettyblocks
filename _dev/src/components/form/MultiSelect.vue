@@ -6,7 +6,10 @@ import { trans } from '../../scripts/trans'
 const props = defineProps({
   label: String,
   mode: String,
-  modelValue: Array,
+  modelValue: {
+    type: Array,
+    default: []
+  },
   options: Array,
   searchable: Boolean,
 })
@@ -14,8 +17,11 @@ const props = defineProps({
 defineComponent({
   VueFormMultiselect,
 })
-
-let currentOptions = ref(props.modelValue)
+let currentOptions = ref([])
+if(Array.isArray(props.modelValue))
+{
+  currentOptions = ref(props.modelValue)
+}
 const emit = defineEmits(['update:modelValue'])
 
 function onChange(e) {

@@ -10,7 +10,7 @@
 /* hn editor */
 
   
-  button {
+  #toolbar button {
     border-radius: 8px;
     border: 1px solid transparent;
     padding: 0.6em 1.2em;
@@ -21,11 +21,11 @@
     cursor: pointer;
     transition: border-color 0.25s;
   }
-  button:hover {
+  #toolbar button:hover {
     border-color: #646cff;
   }
-  button:focus,
-  button:focus-visible {
+  #toolbar button:focus,
+  #toolbar button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
   }
   
@@ -34,10 +34,10 @@
       color: #213547;
       background-color: #ffffff;
     }
-    a:hover {
+    #toolbar a:hover {
       color: #747bff;
     }
-    button {
+    #toolbar button {
       background-color: #f9f9f9;
     }
   }

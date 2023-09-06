@@ -86,8 +86,8 @@ class HelperBuilder
                 if (!is_array($formField)) {
                     continue;
                 }
-                foreach ($formField as $array) {
-                    $res[] = $array;
+                foreach ($formField as $key => $array) {
+                    $res[$key] = $array;
                 }
             }
         }
