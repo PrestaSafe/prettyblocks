@@ -638,9 +638,11 @@ class PrettyBlocksModel extends ObjectModel
                 $data[0] = $data;
             }
             foreach ($data as $block) {
-                $blocks[$block['code']] = $block;
-                // formatted for LeftPanel.vue
-                $blocks[$block['code']]['formatted'] = self::formatBlock($block);
+                if (!empty($block['code'])) {
+                    $blocks[$block['code']] = $block;
+                    // formatted for LeftPanel.vue
+                    $blocks[$block['code']]['formatted'] = self::formatBlock($block);
+                }
             }
         }
 
@@ -662,7 +664,7 @@ class PrettyBlocksModel extends ObjectModel
         $formatted['icon'] = $block['icon'] ?? 'PhotographIcon';
         $formatted['icon_path'] = $block['icon_path'] ?? '';
         $formatted['module'] = $block['code']; // todo register module name
-        $formatted['title'] = $block['name'];
+        $formatted['title'] = $block['name'] ?? '';
         // dump($block);
 
         // if nameFrom params is present
