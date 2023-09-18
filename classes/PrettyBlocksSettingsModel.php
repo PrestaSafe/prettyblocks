@@ -66,13 +66,26 @@ class PrettyBlocksSettingsModel extends ObjectModel
         $collection->where('theme_name', '=', $theme_name);
         $collection->where('id_shop', '=', $id_shop);
 
+        if (!$collection->getFirst()) {
+            return self::generateFirstProfile($theme_name, $id_shop);
+        }
+
         return $collection->getFirst();
     }
 
-    // public static function generateFirstProfile()
-    // {
-    //     $theme_name = Context::getContext()->shop->theme_name;
-    //     $id_shop = Context::getContext()->shop->id;
+    public static function generateFirstProfile($theme_name = null, $id_shop = null)
+    {
+        if ($theme_name === null) {
+            $theme_name = Context::getContext()->shop->theme_name;
+        }
+        if ($id_shop === null) {
+            $id_shop = Context::getContext()->shop->id;
+        }
+        $prettyBlocksSettingsModel = new PrettyBlocksSettingsModel();
+        $prettyBlocksSettingsModel->theme_name = $theme_name;
+        $prettyBlocksSettingsModel->id_shop = $id_shop;
+        $prettyBlocksSettingsModel->save();
 
-    // }
+        return $prettyBlocksSettingsModel;
+    }
 }

@@ -49,6 +49,14 @@ class FieldCore
     public function __construct($data = [])
     {
         $this->setAttributeS($data);
+
+        if ($this->id_lang == 0) {
+            $this->id_lang = \Context::getContext()->language->id;
+        }
+
+        if ($this->id_shop == 0) {
+            $this->id_shop = \Context::getContext()->shop->id;
+        }
     }
 
     /**
