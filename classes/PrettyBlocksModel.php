@@ -450,9 +450,9 @@ class PrettyBlocksModel extends ObjectModel
      *
      * @return void
      */
-    private static function _compileSass()
+    private static function _compileSass($params = null)
     {
-        $sass_hook = HelperBuilder::hookToArray('ActionQueueSassCompile');
+        $sass_hook = HelperBuilder::hookToArray('ActionQueueSassCompile', $params);
         foreach ($sass_hook as $options) {
             $compiler = new PrettyBlocksCompiler();
             if (isset($options['import_path'])) {
@@ -461,11 +461,28 @@ class PrettyBlocksModel extends ObjectModel
             if (isset($options['entries'])) {
                 $compiler->setEntries($options['entries']);
             }
+            if (isset($options['files_to_extract'])) {
+                $compiler->setFilesToExtract($options['files_to_extract']);
+            }
             if (isset($options['out'])) {
                 $compiler->setOuput($options['out']);
             }
             $compiler->compileAndWrite();
         }
+    }
+
+    /**
+     * get shop by id
+     * @param int $id
+     * @return array
+     */
+    public static function getShopById($id)
+    {
+        return Db::getInstance()->getRow(
+            'SELECT `id_shop`, `theme_name`
+            FROM `' . _DB_PREFIX_  . 'shop`
+            WHERE `id_shop` = ' . (int) $id
+        );
     }
 
     /**
@@ -477,10 +494,13 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function updateThemeSettings($stateRequest)
     {
-        // dump($stateRequest);
-        // die();
-        $context = Context::getContext();
-        $profile = \PrettyBlocksSettingsModel::getProfileByTheme($context->shop->theme_name, $context->shop->id);
+        $context = \Context::getContext();
+        
+        $id_shop  = (isset($stateRequest['context']['id_shop'])) ? (int)$stateRequest['context']['id_shop'] : $context->shop->id;
+        $id_lang = (isset($stateRequest['context']['id_lang'])) ? (int)$stateRequest['context']['id_shop'] : $context->language->id;
+        $shop = self::getShopById($id_shop);
+
+        $profile = \PrettyBlocksSettingsModel::getProfileByTheme($shop['theme_name'], $id_shop);
         $res = [];
         foreach ($stateRequest as $tabs) {
             foreach ($tabs as $name => $field) {
@@ -491,9 +511,17 @@ class PrettyBlocksModel extends ObjectModel
                 $res[$name] = $fieldCore->compile();
             }
         }
+        if($profile->theme_name !== $shop['theme_name']){
+            $profile->theme_name = pSQL($shop['theme_name']);
+        }
         $profile->settings = json_encode($res, true);
         $profile->save();
-        self::_compileSass();
+        self::_compileSass([
+            'id_shop' => $id_shop,
+            'id_lang' => $id_lang,  
+            'theme_name' => $shop['theme_name'],
+            'profile' => $profile
+        ]);
     }
 
     /**
@@ -805,11 +833,12 @@ class PrettyBlocksModel extends ObjectModel
      *
      * @return array
      */
-    public static function getThemeSettings($with_tabs = true, $context = 'front')
+    public static function getThemeSettings($with_tabs = true, $context = 'front', $id_shop = null)
     {
+        $context = \Context::getContext();
+        $id_shop = ($id_shop !== null) ? (int) $id_shop : $context->shop->id;
         $theme_settings = \HelperBuilder::hookToArray('ActionRegisterThemeSettings');
-        $context = Context::getContext();
-        $settingsDB = \PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $context->shop->id);
+        $settingsDB = \PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $id_shop);
         $res = [];
         $no_tabs = [];
         foreach ($theme_settings as $key => $settings) {

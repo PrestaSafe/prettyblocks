@@ -6,6 +6,8 @@ import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import emitter from 'tiny-emitter/instance'
 import { createToaster } from "@meforma/vue-toaster";
 
+import { contextShop } from "../store/currentBlock";
+
 const toaster = createToaster({
   position: 'top',
 });
@@ -30,13 +32,23 @@ const canSave = ref(false)
 const settings = ref(false)
 
 const getInputs = () => {
-  HttpClient.get(ajax_urls.theme_settings)
-    .then((data) => {
-      console.log('data settings',data)
-      canSave.value = true
-      settings.value = data.settings
-    })
-    .catch(error => console.error(error));
+  emitter.on('initStates', async () => {
+   
+    let contextStore = contextShop();
+    let context = await contextStore.getContext();
+    const params = {
+      ajax: true,
+      ctx_id_lang: context.id_lang,
+      ctx_id_shop: context.id_shop,
+    };
+    HttpClient.get(ajax_urls.theme_settings, params)
+      .then((data) => {
+        canSave.value = true
+        settings.value = data.settings
+      })
+      .catch(error => console.error(error));
+  })
+
 }
 
 
@@ -46,16 +58,23 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const saveThemeSettings = () => {
+const saveThemeSettings = async () => {
+  let contextStore = contextShop();
+  let context = await contextStore.getContext();
+  console.log('save context', context)
+  console.log('urls', ajax_urls.state)
   const params = {
     action: 'updateThemeSettings',
     ajax: true,
+    ctx_id_shop: context.id_shop,
+    ctx_id_lang: context.id_lang,
     stateRequest: settings.value,
     ajax_token: security_app.ajax_token
   }
 
 HttpClient.post(ajax_urls.state, params)
   .then((data) => {
+    console.log('data', data)
     if (data.message) {
       toaster.show(data.message)
       emitter.emit('reloadIframe')

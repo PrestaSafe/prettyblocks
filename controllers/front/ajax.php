@@ -258,6 +258,10 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     public function displayAjaxupdateThemeSettings()
     {
         $stateRequest = Tools::getValue('stateRequest');
+        $stateRequest['context'] = [
+            'id_lang' => (int) Tools::getValue('ctx_id_lang'),
+            'id_shop' => (int) Tools::getValue('ctx_id_shop'),
+        ];
         PrettyBlocksModel::updateThemeSettings($stateRequest);
         exit(json_encode([
             'success' => true,

@@ -27,11 +27,14 @@ class PrettyBlocksCompiler
     private $_sass = '';
     private $_compiled = '';
     private $outTarget = 'css';
+    public $compiler = null;
+    private $filesToExtract = [];
 
     public function __construct($entries = [], $out = '')
     {
         $this->entries = $entries;
         $this->out = $out;
+        $this->compiler = new Compiler();
     }
 
     /**
@@ -47,6 +50,25 @@ class PrettyBlocksCompiler
         foreach ($entries as $entry) {
             if (!in_array($entry, $this->entries)) {
                 $this->entries[] = $entry;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set files to extract
+     * @param $entries
+     * @return PrettyBlockCompiler
+     */
+    public function setFilesToExtract($entries)
+    {
+        if (!is_array($entries)) {
+            $entries = [$entries];
+        }
+        foreach ($entries as $entry) {
+            if (!in_array($entry, $this->filesToExtract)) {
+                $this->filesToExtract[] = $entry;
             }
         }
 
@@ -128,10 +150,12 @@ class PrettyBlocksCompiler
             return false;
         }
 
-        $scss = new Compiler();
+        $scss = $this->compiler;
+        // set import path
         if (count($this->import_path) > 0) {
             $scss->setImportPaths($this->import_path);
         }
+        // add entries
         foreach ($this->entries as $entry) {
             $path = HelperBuilder::pathFormattedFromString($entry);
             $path = rtrim($path, '/');
@@ -140,6 +164,10 @@ class PrettyBlocksCompiler
             }
         }
         $this->filterVars();
+        
+        // add files to extract
+        $this->_sass .= $this->filterFile($this->filesToExtract);
+        
         $compile = $scss->compileString($this->_sass)->getCss();
         if ($compile !== '' && $this->outTarget == 'css') {
             // compile sass to css
@@ -161,18 +189,51 @@ class PrettyBlocksCompiler
     {
         if ($this->_sass != '') {
             $to_filter = $this->_sass;
-            $re = '/.*(\$SETTINGS_.\S*);*\b/';
-            preg_match_all($re, $this->_sass, $vars);
-            $content = str_replace('$SETTINGS_', '', $vars[1]);
-            foreach ($content as $var) {
-                $to_filter = str_replace('$SETTINGS_' . $var, TplSettings::getSettings($var, $var), $to_filter);
-            }
+            $to_filter = $this->filterContent($to_filter);
             $this->_sass = $to_filter;
         }
 
         return $this;
     }
 
+    /**
+     * Filter file and replace vars
+     * @param $files 
+     * $files = [
+     *    '$/modules/your_module/views/css/vars.scss'
+     * ];
+     * @return string
+     */
+    public function filterFile($files)
+    {
+        if (!is_array($files)) {
+            $files = [$files];
+        }
+        $to_filter = '';
+        foreach($files as $file) {
+            $path = HelperBuilder::pathFormattedFromString($file);
+            $path = rtrim($path, '/');
+            if (is_file($path)) {
+                $to_filter .= Tools::file_get_contents($path);
+            }
+        }
+       return $this->filterContent($to_filter);
+    }
+    /**
+     * Filter content and replace vars
+     * @param $scss
+     * @return string
+     */
+    public function filterContent($scss)
+    {
+        $re = '/.*(\$SETTINGS_.\S*);*\b/';
+        preg_match_all($re, $scss, $vars);
+        $content = str_replace('$SETTINGS_', '', $vars[1]);
+        foreach ($content as $var) {
+            $scss = str_replace('$SETTINGS_' . $var, TplSettings::getSettings($var, $var), $scss);
+        }
+        return $scss;
+    }
     /**
      * Write sass file if is compiled
      *
