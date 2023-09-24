@@ -4,6 +4,7 @@ import Icon from "../Icon.vue";
 import Button from "./../Button.vue";
 import Dropzone from "dropzone";
 import { HttpClient } from "../../services/HttpClient";
+import mime from 'mime-to-extensions'
 // import 'dropzone/dist/basic.css'
 // import 'dropzone/dist/dropzone.css'
 
@@ -27,6 +28,14 @@ const props = defineProps({
     type: String,
     default: "$/modules/prettyblocks/views/images",
   },
+  fileMime: {
+    type: String,
+    default: null,
+  },
+  fileExtension: {
+    type: String,
+    default: null,
+  },
   default: {
     type: String,
     default: {
@@ -44,6 +53,19 @@ const updateValue = (event) => {
   emit("update:modelValue", event);
   emit("saveParent");
 };
+  // File MIME or Extension
+  let fileMime;
+  let fileExtensionToString;
+  if ((props.fileMime && props.fileExtension) || props.fileMime) {
+    fileMime = props.fileMime;
+    let splitFileMime = fileMime.split(',');
+    let fileExtension = [];
+    splitFileMime.forEach( m => fileExtension.push(mime.extension(m)));
+    fileExtensionToString = fileExtension.join(", ");
+  } else {
+    fileMime = props.fileExtension;
+    fileExtensionToString = props.fileExtension;
+  }
 
 onMounted(() => {
   Dropzone.autoDiscover = false;
@@ -54,6 +76,7 @@ onMounted(() => {
     paramName: "file",
     maxFiles: 1,
     uploadMultiple: false,
+    acceptedFiles: fileMime,
     sending: function (file, xhr, formData) {
       formData.append("path", props.path);
     },
@@ -108,6 +131,7 @@ const removeImg = () => {
             </div>
           </template>
           <div v-if="!props.modelValue.url">Upload a file</div>
+          <small>{{ fileExtensionToString ? '(' + fileExtensionToString + ')' : '' }}</small>
         </div>
       </div>
     </form>

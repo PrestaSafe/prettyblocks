@@ -70,7 +70,7 @@ const removeTinyNotifications = () => {
       </div>
     </div>
     <FileUpload class="my-4" :default="f.default" :path="(f.path) ? f.path : '$/modules/prettyblocks/views/images'"
-      @saveParent="updateUpload" v-if="f.type == 'fileupload'" v-model="f.value" :id="uuidv4()" :title="f.label" />
+      @saveParent="updateUpload" v-if="f.type == 'fileupload'" v-model="f.value" :id="uuidv4()" :title="f.label" :fileMime="f.fileMime" :fileExtension="f.fileExtension"/>
     <Textarea class="my-4" v-if="f.type == 'textarea'" v-model="f.value" :title="f.label" :name="uuidv4()"
       placeholder="Entrez du texte" />
     <Checkbox class="my-4" v-if="f.type == 'checkbox' || f.type == 'radio'" :name="uuidv4()" v-model="f.value"
