@@ -209,7 +209,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->context->controller->registerJavascript(
             'prettyblocks',
-            'modules/' . $this->name . '/views/js/prettyblocks.js',
+            'modules/' . $this->name . '/views/js/build.js',
             [
                 'position' => 'bottom',
                 'priority' => 150,

@@ -165,7 +165,14 @@ async loadIframe () {
             let id_prettyblocks = event.data.data
             emitter.emit('loadStateConfig', id_prettyblocks)
         }
-        window.removeEventListener("message", eventHandler, false);
+
+        if(event.data.type == 'updateTitleComponent')
+        {
+            console.log('updateTitleComponent', JSON.parse(event.data.data.value))
+            let params = event.data.data.params
+            this.updateTitleComponent(JSON.parse(event.data.data.value), params.id_prettyblocks, params.field, params.index)
+        }
+        // window.removeEventListener("message", eventHandler, false);
     }
 
     window.addEventListener("message", eventHandler, false);
@@ -205,8 +212,8 @@ async loadIframe () {
                 // update module in iFrame !
                 html.then((data) => {
                     this.sendPrettyBlocksEvents('updateHTMLBlock', {id_prettyblocks: id_prettyblocks, html: data})
-                    const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
-                    this.loadToolBar(tb)
+                    // const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
+                    // this.loadToolBar(tb)
                 })
 
             })
@@ -247,8 +254,8 @@ async loadIframe () {
 
             })
 
-            const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
-            this.loadToolBar(tb)
+            // const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
+            // this.loadToolBar(tb)
 
             // check if block is already selected
             let currentBlock = useStore()
@@ -273,23 +280,29 @@ async loadIframe () {
 
 loadToolBar(tb)
 {
-    tb.on('change', async (oldValue, newValue) => {
-        this.updateTitleComponent(oldValue)
-    })
+    // tb.on('change', async (oldValue, newValue) => {
+    //     this.updateTitleComponent(oldValue)
+    // })
 }
 /**
  * Updpate title component in Config field using Toolbar
  * @param {*} newValue 
  */
-async  updateTitleComponent(newValue)
-{
-    let id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
-    let field = newValue.html.getAttribute('data-field')
-    let index = null
-    if(newValue.html.hasAttribute('data-index'))
-    {
-        index = newValue.html.getAttribute('data-index')
+async  updateTitleComponent(newValue, id_block = null, field = null, index = null)
+{   
+    if(!id_block){
+        id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
     }
+    if(!field){
+        field = newValue.html.getAttribute('data-field')
+    }
+    if(!index){
+        index = null
+    }
+    // if(newValue.html.hasAttribute('data-index'))
+    // {
+    //     index = newValue.html.getAttribute('data-index')
+    // }
     
     let element = await Block.loadById(id_block)
     // emitter.emit('displayBlockConfig', element)

@@ -396,6 +396,7 @@ export class toolbar {
   }
 
   refreshToolbar(obj) {
+    console.log('refreshToolbar', obj)
     const id = obj.id;
     const e = this.document.querySelector('[data-id-title="' + id + '"]');
     const tag = e.tagName.toLowerCase()
