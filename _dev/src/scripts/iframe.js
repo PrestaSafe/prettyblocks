@@ -18,6 +18,7 @@ export default class Iframe {
     preventDefaults = (e) => {
         e.preventDefault()
     }
+    
     constructor(current_url, id_lang, id_shop)
     {
         this.current_url.value = current_url
@@ -138,16 +139,53 @@ async getZones(document) {
     return zones
 }
 
+sendPrettyBlocksEvents(eventType, data = []) { 
+    let message = { type: eventType, data: data };
+    let iframe = document.getElementById('website-iframe')
+    iframe.contentWindow.postMessage(message, "*");
+}
+
 async loadIframe () {
     // iframe
+    
+    // Définir l'eventHandler
+    let eventHandler = (event) => {
+        if(event.data.type == 'zones')
+        {
+            let zones = event.data.data
+            let piniazones = storedZones()
+            piniazones.$patch({
+                zones: zones
+            })
+            emitter.emit('loadZones', zones)
+            console.log('zonesLOADED', zones)
+        }
+        if(event.data.type == 'loadStateConfig')
+        {
+            let id_prettyblocks = event.data.data
+            emitter.emit('loadStateConfig', id_prettyblocks)
+        }
+        window.removeEventListener("message", eventHandler, false);
+    }
+
+    window.addEventListener("message", eventHandler, false);
+   
+
     this.loader.value = true
     let iframe = await document.getElementById('website-iframe')
 
     if (iframe) {
         await iframe.addEventListener('load', (e) => {
+
+            
+            this.sendPrettyBlocksEvents('initIframe')
+            this.sendPrettyBlocksEvents('getZones')
+            // let message = { type: "getZones", data: [] };
+            // iframe.contentWindow.postMessage(message, "*");
             let doc = e.target.contentWindow.document
             let jQuery = e.target.contentWindow.$
             let iwindow = e.target.contentWindow
+            let body = doc.body
             emitter.off('triggerLoadedEvents')
             emitter.on('triggerLoadedEvents', (dom) => {
                 // trigger for init theme
@@ -156,34 +194,17 @@ async loadIframe () {
             })
 
 
-            let body = doc.body
-            this.events.forEach((eventName) => {
-                doc.body.addEventListener(eventName, this.preventDefaults)
-            })
-            // getZones
-            this.getZones(doc).then((zones) => {
-                // emitter.off('loadZones')
-                emitter.emit('loadZones', zones)
-            })
-
-            // detect new url
-            iwindow.addEventListener('beforeunload', function(e) {
-                // this.currentUrl.value = e.target.URL
-
-                // currentUrl.value = iwindow.location.href
-                // iframe.src = iwindow.location.href
-            });
-  
-
+            // this.events.forEach((eventName) => {
+            //     doc.body.addEventListener(eventName, this.preventDefaults)
+            // })
+           
             emitter.off('stateUpdated')
             emitter.on('stateUpdated', (id_prettyblocks) => {
                 let currentBlock = useStore()
                 let html = this.getBlockRender(id_prettyblocks)
                 // update module in iFrame !
                 html.then((data) => {
-                    let domBlock = body.querySelector('[data-id-prettyblocks="' + currentBlock.id_prettyblocks + '"]')
-                    domBlock.innerHTML = data
-
+                    this.sendPrettyBlocksEvents('updateHTMLBlock', {id_prettyblocks: id_prettyblocks, html: data})
                     const tb = new toolbar( body.querySelectorAll('.ptb-title'), doc, iwindow);
                     this.loadToolBar(tb)
                 })
@@ -193,56 +214,19 @@ async loadIframe () {
             // when iframe loaded, get blocks
             emitter.off('scrollInIframe')
             emitter.on('scrollInIframe', (id_prettyblocks) => {
-                let el = doc.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
-                if(doc.body.contains(el))
-                {
-                    el.scrollIntoView({
-                        alignToTop: false,
-                        behavior: 'smooth',
-                        block: 'center'
-                    })
-                    let tr = doc.querySelectorAll('[data-block]')
-                    tr.forEach(bl => {
-                        bl.classList.remove('border-dotted')
-                    })
-                    el.classList.add('border-dotted')
-                }
+                this.sendPrettyBlocksEvents('scrollInIframe', id_prettyblocks)
             })
 
             // hover blocks 
-            body.querySelectorAll('div[data-block]').forEach((div) => {
-                div.addEventListener('click', (el) => {
-                    this.registerClick(el.target)
-                })
-                // div.addEventListener('mouseover', (el) => {
-                //     let block = el.target.closest('[data-block]')
-                //     if(!block.classList.contains('border-dotted'))
-                //     {
-                //         block.classList.add('border-dotted')
-                //     }
-                // })
-
-                //  div.addEventListener('mouseleave', (el) => {
-                //     let block = el.target.closest('[data-block]')
-                //     if(block.classList.contains('border-dotted'))
-                //     {
-                //         block.classList.remove('border-dotted')
-                //     }
-                // })
-            })
+            // body.querySelectorAll('div[data-block]').forEach((div) => {
+            //     div.addEventListener('click', (el) => {
+            //         this.registerClick(el.target)
+            //     })
+            // })
             emitter.off('focusOnZone')
             emitter.on('focusOnZone', (zone_name) => {
-                body.querySelectorAll('.border-dotted').forEach((div) => {
-                    div.classList.remove('border-dotted')
-                })
-                let el = body.querySelector('[data-prettyblocks-zone="'+zone_name+'"]')
-                el.classList.add('border-dotted')
-                 el.scrollIntoView({
-                    alignToTop: true,
-                    behavior: 'smooth',
-                    block: 'center'
-                })
-
+                this.sendPrettyBlocksEvents('focusOnZone', zone_name)
+               
                 emitter.emit('initStates')
 
             })

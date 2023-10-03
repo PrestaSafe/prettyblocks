@@ -49,6 +49,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         'displayFooter',
         'displayLeftColumn',
         'displayRightColumn',
+        'displayHeader',
         'actionDispatcher',
         'actionFrontControllerSetVariables',
     ];
@@ -202,6 +203,18 @@ class PrettyBlocks extends Module implements WidgetInterface
             'hookName' => $hookName,
             'configuration' => $configuration,
         ];
+    }
+
+    public function hookdisplayHeader($params)
+    {
+        $this->context->controller->registerJavascript(
+            'prettyblocks',
+            'modules/' . $this->name . '/views/js/prettyblocks.js',
+            [
+                'position' => 'bottom',
+                'priority' => 150,
+            ]
+        );
     }
 
     /**
