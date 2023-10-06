@@ -36,6 +36,7 @@ function upgrade_module_3_0_0($module)
     }
     \PrettyBlocksMigrate::migrateLangTable();
     \PrettyBlocksMigrate::migrateSettings();
+    $module->registerHook('displayHeader');
 
     return true;
 }

@@ -36,6 +36,8 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     public function init()
     {
+       
+        $this->setHeadersForDomains();
         if (empty($_POST)) {
             $_POST = json_decode(Tools::file_get_contents('php://input'), true);
             if (!is_array($_POST)) {
@@ -49,6 +51,24 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $this->ajax = $this->isAjax();
 
         parent::init();
+    }
+
+    public function setHeadersForDomains()
+    {
+        $shops = Shop::getShops(true, null, true);
+        $shop_domains = [];
+        foreach ($shops as $shop_id) {
+            $shop = new Shop($shop_id);
+            $shop_domains[] = $shop->domain;
+        }
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+        $url = $protocol . "://" . $host;
+        $host = $_SERVER['HTTP_HOST'];
+
+        if (!in_array($host, $allowedDomains)) {
+            header("Access-Control-Allow-Origin: " . $protocol . "://" . $host); 
+        }
+       
     }
 
     /**

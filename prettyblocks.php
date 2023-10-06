@@ -215,6 +215,14 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'priority' => 150,
             ]
         );
+        $this->context->controller->registerStylesheet(
+            'prettyblocks',
+            'modules/' . $this->name . '/build/iframe.css',
+            [
+                'media' => 'all',
+                'priority' => 200,
+            ]
+        );
     }
 
     /**

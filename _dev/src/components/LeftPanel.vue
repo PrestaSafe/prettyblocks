@@ -62,10 +62,12 @@ emitter.on("initStates", () => {
 });
 const initStates = async () => {
   let contextStore = contextShop();
+  console.log('contextStore', await contextStore.getContext())
   // Attendez que l'action asynchrone getContext soit terminée
   let context = await contextStore.getContext();
 
   let current_zone = currentZone().name;
+  console.log('currentZone', current_zone)
   displayZoneName.value = current_zone;
   const params = {
     ajax: true,

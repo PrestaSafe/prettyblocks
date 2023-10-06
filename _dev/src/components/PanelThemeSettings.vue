@@ -20,8 +20,12 @@ defineComponent({
 onUnmounted(() => {
   settings.value = false
   canSave.value = false
+ 
 })
-
+onMounted(()=> {
+   getSettings()
+  console.log('mounted PanelSettings')
+})
 emitter.on('globalSave', () => {
   if (canSave.value) {
     saveThemeSettings()
@@ -33,8 +37,13 @@ const settings = ref(false)
 
 const getInputs = () => {
   emitter.on('initStates', async () => {
-   
-    let contextStore = contextShop();
+   getSettings()
+  })
+
+}
+
+const getSettings = async () => {
+   let contextStore = contextShop();
     let context = await contextStore.getContext();
     const params = {
       ajax: true,
@@ -45,10 +54,9 @@ const getInputs = () => {
       .then((data) => {
         canSave.value = true
         settings.value = data.settings
+        console.log('data settings', data.settings)
       })
       .catch(error => console.error(error));
-  })
-
 }
 
 

@@ -13,6 +13,7 @@ defineComponent({
 let items = ref([]);
 
 emitter.on('loadZones', (zonesState) => {
+  console.log('emit zoneLoaded', zonesState)
   items.value = zonesState
   if (zonesState.indexOf(currentZone().name) == -1) {
     currentZone().$patch({
