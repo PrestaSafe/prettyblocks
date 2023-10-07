@@ -4,6 +4,11 @@
     border-radius: 8px;
     border-width: 4px;
     position: relative;
+  }
+  
+[data-prettyblocks-zone].border-dotted{
+    
+    border-color: rgb(225, 212, 68);
 }
 
 

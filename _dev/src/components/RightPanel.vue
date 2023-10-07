@@ -64,6 +64,7 @@ const blockLoaded = ref(false)
 
 emitter.on('displayBlockConfig', (element) => {
   loadBlockConfig(element)
+
 })
 
 emitter.on('displaySubState', async (element) => {

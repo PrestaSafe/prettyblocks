@@ -10,7 +10,7 @@ import ZoneSelect from "./form/ZoneSelect.vue";
 /* Demo data */
 // import { v4 as uuidv4 } from 'uuid'
 import emitter from "tiny-emitter/instance";
-import { useStore, currentZone, contextShop } from "../store/currentBlock";
+import { useStore, currentZone, contextShop, storedBlocks } from "../store/currentBlock";
 import { trans } from "../scripts/trans";
 
 defineComponent({
@@ -30,6 +30,7 @@ const loadStateConfig = async (e) => {
     id_prettyblocks: e.id_prettyblocks,
     // instance_id: e.instance_id
   });
+
   emitter.emit("displayBlockConfig", e);
 };
 // emitter.on('loadStateConfig', async (id_prettyblocks) => {
@@ -62,12 +63,9 @@ emitter.on("initStates", () => {
 });
 const initStates = async () => {
   let contextStore = contextShop();
-  console.log('contextStore', await contextStore.getContext())
-  // Attendez que l'action asynchrone getContext soit terminée
   let context = await contextStore.getContext();
-
   let current_zone = currentZone().name;
-  console.log('currentZone', current_zone)
+  let piniaStored = storedBlocks();
   displayZoneName.value = current_zone;
   const params = {
     ajax: true,
@@ -82,6 +80,10 @@ const initStates = async () => {
     .then((data) => {
       groups.value = Object.entries(data.blocks).map(([key, value] = block) => {
         return value.formatted;
+      });
+
+      piniaStored.$patch({
+        blocks: data.blocks,
       });
     })
     .catch((error) => console.error(error));

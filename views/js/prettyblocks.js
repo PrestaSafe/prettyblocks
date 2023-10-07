@@ -22,7 +22,7 @@ let eventHandler = (event) => {
 
             div.addEventListener('click', (el) => {
                 let id_prettyblocks = el.target.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
-                selectBlock(id_prettyblocks)
+                selectBlock(id_prettyblocks, event)
                 event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
             })
         })
@@ -54,7 +54,7 @@ let eventHandler = (event) => {
     }
 
     if (event.data.type == 'scrollInIframe') {
-        return selectBlock(event.data.data)
+        return focusBlock(event.data.data)
     }
     if (event.data.type == 'getZones') {
         let els = document.querySelectorAll('[data-zone-name]')
@@ -72,8 +72,23 @@ let eventHandler = (event) => {
 
     
 }
-const selectBlock = (id_prettyblocks) => {
-    
+/**
+ * Select block in pretty block interface
+ * @param {*} id_prettyblocks 
+ * @param {*} event 
+ * @returns 
+ */
+const selectBlock = (id_prettyblocks, event) => {
+        let el = focusBlock(id_prettyblocks)
+        let zone_name = el.closest('[data-prettyblocks-zone]').getAttribute('data-prettyblocks-zone')
+        let params = {
+            id_prettyblocks: id_prettyblocks,
+            zone_name: zone_name
+        }
+        return event.source.postMessage({ type: 'focusBlock', data: params }, '*');
+
+}
+const focusBlock = (id_prettyblocks) => {
     let doc = document
     let el = doc.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
     if (doc.body.contains(el)) {
@@ -86,8 +101,9 @@ const selectBlock = (id_prettyblocks) => {
         tr.forEach(bl => {
             bl.classList.remove('border-dotted')
         })
-        el.classList.add('border-dotted')
     }
+    el.classList.add('border-dotted')
+    return el
 }
 const loadToolBar = (event) => {
     const tb = new toolbar( document.querySelectorAll('.ptb-title'), document, window);
@@ -104,7 +120,7 @@ const loadToolBar = (event) => {
 
 document.addEventListener('DOMContentLoaded', (event) => {
     if (!window.hasEventListener) {
-        console.log('subscribe')
+        // console.log('subscribe')
         window.addEventListener("message", eventHandler, false)
         window.hasEventListener = true;
     }

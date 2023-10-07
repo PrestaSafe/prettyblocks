@@ -6,7 +6,10 @@
     position: relative;
 }
 
-
+[data-prettyblocks-zone].border-dotted{
+    
+  border-color: rgb(225, 212, 68);
+}
 /* hn editor */
 
   

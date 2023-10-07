@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { HttpClient } from "../services/HttpClient";
 import emitter from 'tiny-emitter/instance'
 import { toolbar } from './toolbar';
-import { useStore, storedZones, contextShop } from '../store/currentBlock'
+import { useStore, storedZones, contextShop, storedBlocks } from '../store/currentBlock'
 import Block from './block'
 
 import { createToaster } from "@meforma/vue-toaster";
@@ -48,10 +48,23 @@ export default class Iframe {
             }
 
             if (event.data.type == 'updateTitleComponent') {
-                console.log('updateTitleComponent', JSON.parse(event.data.data.value))
+                // console.log('updateTitleComponent', JSON.parse(event.data.data.value))
                 let params = event.data.data.params
                 this.updateTitleComponent(JSON.parse(event.data.data.value), params.id_prettyblocks, params.field, params.index)
 
+            }
+
+            if(event.data.type == 'focusBlock')
+            {
+                let id_prettyblocks = event.data.data.id_prettyblocks
+                let zone_name = event.data.data.zone_name
+                let piniaBlocks =  await storedBlocks().blocks
+                
+                let element = await piniaBlocks.find(b => {
+                    return b.id_prettyblocks == id_prettyblocks
+                });
+                emitter.emit('displayBlockConfig', element)
+                emitter.emit('selectZone', zone_name)
             }
 
             if (event.data.type == 'setContext') {

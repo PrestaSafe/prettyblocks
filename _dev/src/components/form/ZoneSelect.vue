@@ -13,7 +13,7 @@ defineComponent({
 let items = ref([]);
 
 emitter.on('loadZones', (zonesState) => {
-  console.log('emit zoneLoaded', zonesState)
+
   items.value = zonesState
   if (zonesState.indexOf(currentZone().name) == -1) {
     currentZone().$patch({
@@ -23,6 +23,11 @@ emitter.on('loadZones', (zonesState) => {
     props.modelValue.name = zonesState[0]
     onInput(zonesState[0])
   }
+})
+
+emitter.on('selectZone' , (zone) => {
+  props.modelValue.name = zone
+  onInput(zone)
 })
 
 const props = defineProps({

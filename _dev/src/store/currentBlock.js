@@ -61,3 +61,16 @@ export const storedZones = defineStore('storedZones', {
 
 
 })
+
+export const storedBlocks = defineStore('storedBlocks', {
+  state: () => {
+    return {
+      blocks: [],
+    }
+  },
+  getters: {
+   all(state){  return state.blocks }
+  }
+
+
+})

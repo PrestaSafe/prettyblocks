@@ -24,7 +24,7 @@ onUnmounted(() => {
 })
 onMounted(()=> {
    getSettings()
-  console.log('mounted PanelSettings')
+  // console.log('mounted PanelSettings')
 })
 emitter.on('globalSave', () => {
   if (canSave.value) {
@@ -54,7 +54,7 @@ const getSettings = async () => {
       .then((data) => {
         canSave.value = true
         settings.value = data.settings
-        console.log('data settings', data.settings)
+        // console.log('data settings', data.settings)
       })
       .catch(error => console.error(error));
 }
@@ -69,8 +69,8 @@ function capitalizeFirstLetter(string) {
 const saveThemeSettings = async () => {
   let contextStore = contextShop();
   let context = await contextStore.getContext();
-  console.log('save context', context)
-  console.log('urls', ajax_urls.state)
+  // console.log('save context', context)
+  // console.log('urls', ajax_urls.state)
   const params = {
     action: 'updateThemeSettings',
     ajax: true,
@@ -82,7 +82,7 @@ const saveThemeSettings = async () => {
 
 HttpClient.post(ajax_urls.state, params)
   .then((data) => {
-    console.log('data', data)
+    // console.log('data', data)
     if (data.message) {
       toaster.show(data.message)
       emitter.emit('reloadIframe')
