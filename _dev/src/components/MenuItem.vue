@@ -52,7 +52,7 @@ const removeState = async () => {
   }
   let data = await HttpClient.get(ajax_urls.state, params)
   emitter.emit('initStates')
-  emitter.emit('reloadIframe', null)x
+  emitter.emit('reloadIframe', null)
 }
 
   // emitter.emit('reloadIframe', null)
@@ -60,13 +60,18 @@ const removeState = async () => {
 
 // when we select a element in list
 function select(instance) {
-  // set store current block name
-  store.$patch({
-    id_prettyblocks: parseInt(props.id.split('-')[0]),
-    subSelected: props.id
-  })
-  //  emitter.emit('displayState', props.element.id_prettyblocks)
+  setSelectedElement(props.id)
 }
+
+function setSelectedElement(notFormattedId) {
+  let id = notFormattedId
+  store.$patch({
+    id_prettyblocks: parseInt(id.split('-')[0]),
+    subSelected: id
+  })
+}
+
+emitter.on('setSelectedElement', (notFormattedId) => setSelectedElement(notFormattedId))
 
 const isSelected = computed(() => props.id == store.subSelected)
 
@@ -78,7 +83,6 @@ const disabled = ref(false)
   <div
     :class="['menu-item flex items-center px-2 py-1 mb-1 rounded-md hover:bg-gray-100 border-2 border-transparent cursor-pointer', { 'selected': isSelected }]"
     @click="select">
-
     <!-- this slot is used to add extra action on the left, for example the collapse icon -->
     <slot></slot>
     <!-- icon and name of item -->

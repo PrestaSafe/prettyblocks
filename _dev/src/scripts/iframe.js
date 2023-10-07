@@ -63,8 +63,10 @@ export default class Iframe {
                 let element = await piniaBlocks.find(b => {
                     return b.id_prettyblocks == id_prettyblocks
                 });
-                emitter.emit('displayBlockConfig', element)
                 emitter.emit('selectZone', zone_name)
+
+                emitter.emit('displayBlockConfig', element)
+                emitter.emit('setSelectedElement', element.formatted.id)
             }
 
             if (event.data.type == 'setContext') {
