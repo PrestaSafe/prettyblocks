@@ -52,7 +52,7 @@ const removeState = async () => {
   }
   let data = await HttpClient.get(ajax_urls.state, params)
   emitter.emit('initStates')
-  emitter.emit('reloadIframe', null)
+  emitter.emit('reloadIframe', null)x
 }
 
   // emitter.emit('reloadIframe', null)
@@ -78,6 +78,7 @@ const disabled = ref(false)
   <div
     :class="['menu-item flex items-center px-2 py-1 mb-1 rounded-md hover:bg-gray-100 border-2 border-transparent cursor-pointer', { 'selected': isSelected }]"
     @click="select">
+
     <!-- this slot is used to add extra action on the left, for example the collapse icon -->
     <slot></slot>
     <!-- icon and name of item -->
@@ -113,4 +114,5 @@ const disabled = ref(false)
 .menu-item:hover>.menu-item-actions {
   @apply w-auto;
 }
+
 </style>
