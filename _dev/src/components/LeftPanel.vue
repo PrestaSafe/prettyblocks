@@ -169,10 +169,10 @@ const pasteZone = async () => {
       ajax: true,
     };
     HttpClient.post(ajax_urls.state, params).then((response) => {
-      console.log('response', response)
+
             if (response.success) {
               toaster.show(response.message)
-              emitter.emit('initStates')
+              emitter.emit('reloadIframe')
               // clear clipboard if zone is pasted
              navigator.clipboard.writeText('').then(function() {
                 checkClipboardContent()
@@ -221,7 +221,7 @@ const deleteAllBlocks = async () => {
 
           if (response.success) {
             toaster.show(response.message)
-            emitter.emit('initStates')
+            emitter.emit('reloadIframe')
           }
     })
     .catch(error => console.error(error));

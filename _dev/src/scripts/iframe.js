@@ -39,8 +39,10 @@ export default class Iframe {
                     zones: zones
                 })
                 emitter.emit('loadZones', zones)
-
-
+            }
+            if(event.data.type == 'iframeInit')
+            {
+                this.loader.value = false
             }
             if (event.data.type == 'loadStateConfig') {
                 let id_prettyblocks = event.data.data
@@ -122,7 +124,14 @@ export default class Iframe {
      * For set URL in input
      */
     setUrl(url) {
+        this.loader.value = true
         this.current_url.value = url
+    }
+    setIdLang(id_lang) {
+        this.id_lang.value = id_lang
+    }
+    setIdShop(id_shop) {
+        this.id_shop.value = id_shop
     }
 
     async reloadIframe() {
@@ -130,7 +139,7 @@ export default class Iframe {
         let iframe = document.getElementById('website-iframe')
         iframe.src = this.current_url.value
         // this.loadIframe()
-        this.loader.value = false
+        // this.loader.value = false
     }
 
     /**

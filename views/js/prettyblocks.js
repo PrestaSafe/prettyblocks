@@ -29,6 +29,7 @@ let eventHandler = (event) => {
                 event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
             })
         })
+        event.source.postMessage({ type: 'iframeInit', data: null }, '*');
         return loadToolBar(event)
         
     }
