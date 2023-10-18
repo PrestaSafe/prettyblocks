@@ -31,6 +31,7 @@ class TplSettings
 
     public static function getVars()
     {
+       
         $cache_id = 'PrettyBlocks::getVars';
         if (!Cache::isStored($cache_id)) {
             // $smarty_vars = Context::getContext()->smarty->getTemplateVars();

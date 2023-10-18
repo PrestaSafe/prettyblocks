@@ -4,12 +4,14 @@
     border-radius: 8px;
     border-width: 4px;
     position: relative;
-}
-
+  }
+  
 [data-prettyblocks-zone].border-dotted{
     
-  border-color: rgb(225, 212, 68);
+    border-color: rgb(225, 212, 68);
 }
+
+
 /* hn editor */
 
   
@@ -104,3 +106,24 @@
     border-radius: 4px;
   }
   
+[data-prettyblocks-zone].ondrag{
+  background-color: #646cff;
+  border: 1px solid #646cff;
+  padding: 20px;
+  
+}
+
+  [data-block]:active {
+    background-color: grey;
+    height: 20px;
+    position: relative;
+  }
+  
+  [data-block]:active::after {
+    content: attr(data-id-prettyblocks);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+  }

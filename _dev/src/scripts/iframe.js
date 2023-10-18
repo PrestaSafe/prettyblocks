@@ -1,9 +1,10 @@
 import { ref } from 'vue'
 import { HttpClient } from "../services/HttpClient";
 import emitter from 'tiny-emitter/instance'
-import { toolbar } from './toolbar';
+
 import { useStore, storedZones, contextShop, storedBlocks } from '../store/currentBlock'
 import Block from './block'
+
 
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({
@@ -53,7 +54,27 @@ export default class Iframe {
                 this.updateTitleComponent(JSON.parse(event.data.data.value), params.id_prettyblocks, params.field, params.index)
 
             }
+            if(event.data.type == 'moveBlockToZone')
+            {
+                let id_prettyblocks = event.data.params.id_prettyblocks
+                let zone_name = event.data.params.zone_name
+                let context = contextShop()
+                HttpClient.post(ajax_urls.api, {
+                    action: 'moveBlockToZone',
+                    id_prettyblocks: id_prettyblocks,
+                    zone_name: zone_name,
+                    ajax: true,
+                    ajax_token: security_app.ajax_token,
+                    ctx_id_lang: context.id_lang,
+                    ctx_id_shop: context.id_shop,
+                }).then((response) => {
+                    if (response.success) {
+                        toaster.show(response.message);
+                        emitter.emit('initStates')
+                    }
+                })
 
+            }
             if(event.data.type == 'focusBlock')
             {
                 let id_prettyblocks = event.data.data.id_prettyblocks

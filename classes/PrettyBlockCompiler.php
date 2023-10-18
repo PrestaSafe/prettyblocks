@@ -29,12 +29,26 @@ class PrettyBlocksCompiler
     private $outTarget = 'css';
     public $compiler = null;
     private $filesToExtract = [];
+    private $theme_name = '';
+    private $id_shop = null;
 
     public function __construct($entries = [], $out = '')
     {
         $this->entries = $entries;
         $this->out = $out;
         $this->compiler = new Compiler();
+    }
+
+    public function setThemeName($theme_name)
+    {
+        $this->theme_name = $theme_name;
+        return $this;
+    }
+
+    public function setIdShop($id_shop)
+    {
+        $this->id_shop = $id_shop;
+        return $this;
     }
 
     /**
@@ -226,13 +240,31 @@ class PrettyBlocksCompiler
      */
     public function filterContent($scss)
     {
+
         $re = '/.*(\$SETTINGS_.\S*);*\b/';
         preg_match_all($re, $scss, $vars);
         $content = str_replace('$SETTINGS_', '', $vars[1]);
         foreach ($content as $var) {
-            $scss = str_replace('$SETTINGS_' . $var, TplSettings::getSettings($var, $var), $scss);
+            $scss = str_replace('$SETTINGS_' . $var, $this->getSettingsValue($var,$var), $scss);
         }
         return $scss;
+    }
+
+    private function getSettingsValue($settings, $defaultValue)
+    {
+        $value = $defaultValue;
+        $settings = $this->getThemeSettings();
+        if (isset($settings[$defaultValue])) {
+            $value = $settings[$defaultValue];
+        }
+        return $value;
+    }
+
+
+    private function getThemeSettings()
+    {
+        $psContext = Context::getContext();
+        return PrettyBlocksModel::getThemeSettings(false, 'front', $this->id_shop);
     }
     /**
      * Write sass file if is compiled
