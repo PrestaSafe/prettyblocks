@@ -3,35 +3,44 @@ window.hasEventListener = false;
 const unsubscribe = () => {
     window.removeEventListener("message", eventHandler, false);
 }
+
+const getContext = () => {
+     
+    return{
+        id_lang: prestashop.language.id,
+        id_shop: prestashop.modules.prettyblocks.id_shop,
+        shop_name: prestashop.modules.prettyblocks.shop_name,
+        current_url: prestashop.modules.prettyblocks.shop_current_url,
+        href: window.location.href
+    }
+}
 let eventHandler = (event) => {
     if(event.data.type == 'getContext')
     {
-        let context = {
-            id_lang: prestashop.language.id,
-            id_shop: prestashop.modules.prettyblocks.id_shop,
-            shop_name: prestashop.modules.prettyblocks.shop_name,
-            current_url: prestashop.modules.prettyblocks.shop_current_url,
-            href: window.location.href
-        }
+        let context = getContext()
         return event.source.postMessage({ type: 'setContext', 
             data: { data: context } }, '*'); 
     }
     if (event.data.type == 'initIframe') {
         moveBlockToZone(event)
-        
-        
         // register block click
-        document.querySelectorAll('div[data-block]').forEach((div) => {
+        // document.querySelectorAll('div[data-block]').forEach((div) => {
 
-            div.addEventListener('click', (el) => {
-                let id_prettyblocks = el.target.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
-                selectBlock(id_prettyblocks, event)
-                event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
-            })
-        })
+        //     div.addEventListener('click', (el) => {
+        //         let id_prettyblocks = el.target.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
+        //         selectBlock(id_prettyblocks, event)
+        //         event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
+        //     })
+        // })
         event.source.postMessage({ type: 'iframeInit', data: null }, '*');
         return loadToolBar(event)
         
+    }
+    if(event.data.type == 'selectBlock')
+    {
+        console.log('selectBlock iframe', event.data.data)
+        let id_prettyblocks = event.data.data.id_prettyblocks
+        return selectBlock(id_prettyblocks,event)
     }
     // focus on zone in iframe
     if (event.data.type == 'focusOnZone') {
@@ -82,6 +91,7 @@ let eventHandler = (event) => {
  * @param {*} id_prettyblocks 
  * @param {*} event 
  * @returns 
+ * @todo fix hover element
  */
 const selectBlock = (id_prettyblocks, event) => {
         let el = focusBlock(id_prettyblocks)
@@ -96,8 +106,7 @@ const selectBlock = (id_prettyblocks, event) => {
 const focusBlock = (id_prettyblocks) => {
     let doc = document
     let el = doc.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
-    console.log('el BLOCK ', el)
-    if (doc.body.contains(el)) {
+    if (doc.body.contains(el) && !el.classList.contains('border-dotted')) {
         el.scrollIntoView({
             alignToTop: false,
             behavior: 'smooth',
@@ -107,10 +116,10 @@ const focusBlock = (id_prettyblocks) => {
         tr.forEach(bl => {
             bl.classList.remove('border-dotted')
         })
-        console.log('el block ', el)
         el.classList.add('border-dotted')
-        return el
+
     }
+    return el
 }
 const loadToolBar = (event) => {
     const tb = new toolbar( document.querySelectorAll('.ptb-title'), document, window);
@@ -175,9 +184,33 @@ const moveBlockToZone = (event) => {
 
 document.addEventListener('DOMContentLoaded', (event) => {
     if (!window.hasEventListener) {
-        // console.log('subscribe')
         window.addEventListener("message", eventHandler, false)
         window.hasEventListener = true;
     }
+    // Sélectionnez tous les liens de la page
+    const links = document.querySelectorAll('a');
+  
+    links.forEach(link => {
+      link.addEventListener('click', function(e) {
+        // Empêchez la navigation
+        e.preventDefault();
+  
+        // Récupérez l'URL du lien
+        const url = e.currentTarget.href;
+        let context = getContext()
+        let params = {
+            context: context,
+            url: url,
+        }
+
+        window.parent.postMessage({ type: 'setNewUrl', params: params }, '*');
+        
+        // À ce stade, vous pouvez faire ce que vous voulez avec l'URL récupérée
+      });
+    });
 });
+
+  
+
+
 unsubscribe();

@@ -49,9 +49,15 @@ export default class Iframe {
                 emitter.emit('loadStateConfig', id_prettyblocks)
 
             }
+            // test 
+            if(event.data.type == 'setNewUrl')
+            {  
+                let context = event.data.params.context
+                let custom_url = event.data.params.url
+                emitter.emit('changeUrl', context, custom_url)
+            }
 
             if (event.data.type == 'updateTitleComponent') {
-                // console.log('updateTitleComponent', JSON.parse(event.data.data.value))
                 let params = event.data.data.params
                 this.updateTitleComponent(JSON.parse(event.data.data.value), params.id_prettyblocks, params.field, params.index)
 
@@ -202,9 +208,6 @@ export default class Iframe {
 
     async loadIframe() {
         // iframe
-
-
-
         this.loader.value = true
         let iframe = await document.getElementById('website-iframe')
 

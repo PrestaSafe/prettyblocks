@@ -207,22 +207,26 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function hookdisplayHeader($params)
     {
-        $this->context->controller->registerJavascript(
-            'prettyblocks',
-            'modules/' . $this->name . '/views/js/build.js',
-            [
-                'position' => 'bottom',
-                'priority' => 150,
-            ]
-        );
-        $this->context->controller->registerStylesheet(
-            'prettyblocks',
-            'modules/' . $this->name . '/build/iframe.css',
-            [
-                'media' => 'all',
-                'priority' => 200,
-            ]
-        );
+        if($_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') {
+
+            $this->context->controller->registerJavascript(
+                'prettyblocks',
+                'modules/' . $this->name . '/views/js/build.js',
+                [
+                    'position' => 'bottom',
+                    'priority' => 150,
+                ]
+            );
+            $this->context->controller->registerStylesheet(
+                'prettyblocks',
+                'modules/' . $this->name . '/build/iframe.css',
+                [
+                    'media' => 'all',
+                    'priority' => 200,
+                ]
+            );
+            // todo register css and js on iframe only from Hook
+        }
     }
 
     /**

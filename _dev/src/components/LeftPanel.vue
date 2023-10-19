@@ -155,12 +155,8 @@ const copyZone = async () => {
  */
 const pasteZone = async () => {
   let current_zone = currentZone().name;
-  console.log('clipboardData', navigator.clipboard.readText())
   const clipboardData = await navigator.clipboard.readText();
-  console.log('clipboardData', clipboardData)
   const data = JSON.parse(clipboardData);
-  console.log('data', data)
-  console.log('has zone', data.hasOwnProperty('zone'))
   if (data.hasOwnProperty('zone')) {
     let params = {
       ...data,

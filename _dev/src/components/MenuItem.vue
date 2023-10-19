@@ -77,12 +77,20 @@ const isSelected = computed(() => props.id == store.subSelected)
 
 // when we click on the eye icon to disable element
 const disabled = ref(false)
+
+const highLightBlock = () => {
+  // on hover item, select it in iframe
+  // setTimeout(() => {
+  //   emitter.emit('highLightBlock', parseInt(props.id.split('-')[1]))
+    
+  // }, 500);
+}
 </script>
 
 <template>
   <div
     :class="['menu-item flex items-center px-2 py-1 mb-1 rounded-md hover:bg-gray-100 border-2 border-transparent cursor-pointer', { 'selected': isSelected }]"
-    @click="select">
+    @click="select" @mouseover="highLightBlock">
     <!-- this slot is used to add extra action on the left, for example the collapse icon -->
     <slot></slot>
     <!-- icon and name of item -->

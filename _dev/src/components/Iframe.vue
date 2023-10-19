@@ -47,9 +47,21 @@ emitter.on('reloadIframe', async (id_prettyblocks) => {
   iframe.reloadIframe()
 })
 
-emitter.on('changeUrl', (shop) => {
-  console.log('changeUrl', shop)
-  iframe.setUrl(shop.current_url)
+emitter.on('highLightBlock', (id_prettyblocks) => {
+  iframe.sendPrettyBlocksEvents('selectBlock', { id_prettyblocks: id_prettyblocks })
+})
+
+/**
+ * Change url with loader in iframe.
+ */
+emitter.on('changeUrl', (shop, custom_url = null) => {  
+  if(custom_url == null)
+  {
+    iframe.setUrl(shop.current_url)
+  }else{
+    iframe.setUrl(custom_url)
+  }
+
   iframe.setIdLang(shop.id_lang)
   iframe.setIdShop(shop.id_shop)
   iframe.constructEvent()
@@ -69,7 +81,7 @@ let showLoader = computed(() => {
 <template>
   <!-- animate-pulse classe to put -->
   <section class="w-full h-full">
-    <button @click="reloadIframe()"> reload iframe </button> {{ showLoader }}
+    <!-- <button @click="reloadIframe()"> reload iframe </button> {{ showLoader }} -->
     <!-- {{ classes }} -->
 
     <iframe id="website-iframe" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
