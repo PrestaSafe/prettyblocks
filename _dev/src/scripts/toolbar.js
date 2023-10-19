@@ -235,7 +235,7 @@ export class toolbar {
       this.U.addEventListener("click", () => {
         if (this.tEdited == t.id) {
           let underline = !t.underline;
-          console.log('underline', underline)
+          // console.log('underline', underline)
           this.setAttributeValue(e,"underline", underline);
           t.underline = underline;
           const z = {
@@ -306,9 +306,9 @@ export class toolbar {
     if (attrObject && attrObject.hasOwnProperty(attributeName)) {
         attrObject[attributeName] = newValue;
     } else {
-        console.log("L'attribut " + attributeName + " n'existe pas dans l'objet.");
+        // console.log("L'attribut " + attributeName + " n'existe pas dans l'objet.");
     }
-    console.log('OK', attrObject)
+    // console.log('OK', attrObject)
     element.setAttribute('data-attributes', JSON.stringify(attrObject || {}));
     
   }
@@ -396,6 +396,7 @@ export class toolbar {
   }
 
   refreshToolbar(obj) {
+    // console.log('refreshToolbar', obj)
     const id = obj.id;
     const e = this.document.querySelector('[data-id-title="' + id + '"]');
     const tag = e.tagName.toLowerCase()

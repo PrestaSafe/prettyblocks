@@ -1,7 +1,6 @@
 <?php
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
- *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
@@ -17,26 +16,12 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
-if (!defined('_PS_VERSION_')) {
-    exit;
-}
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
-/**
- * @param prettyblocks $module
- *
- * @return bool|string
- *
- * @throws PrestaShopDatabaseException
- * @throws PrestaShopException
- */
-function upgrade_module_3_0_0($module)
-{
-    if (!\PrettyBlocksMigrate::tableExists('prettyblocks_settings')) {
-        $module->makeSettingsTable();
-    }
-    \PrettyBlocksMigrate::migrateLangTable();
-    \PrettyBlocksMigrate::migrateSettings();
-    $module->registerHook('displayHeader');
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
 
-    return true;
-}
+header('Location: ../');
+exit;

@@ -435,9 +435,10 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return (new JsonResponse())->setData(['blocks' => $blocks]);
     }
 
-    public function getSettingsAction()
+    public function getSettingsAction(Request $request)
     {
-        $res = \PrettyBlocksModel::getThemeSettings(true, 'back');
+        $id_shop = (int) $request->get('ctx_id_shop');
+        $res = \PrettyBlocksModel::getThemeSettings(true, 'back', $id_shop);
 
         return (new JsonResponse())->setData([
             'settings' => $res,

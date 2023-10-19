@@ -60,24 +60,37 @@ const removeState = async () => {
 
 // when we select a element in list
 function select(instance) {
-  // set store current block name
-  store.$patch({
-    id_prettyblocks: parseInt(props.id.split('-')[0]),
-    subSelected: props.id
-  })
-  //  emitter.emit('displayState', props.element.id_prettyblocks)
+  setSelectedElement(props.id)
 }
+
+function setSelectedElement(notFormattedId) {
+  let id = notFormattedId
+  store.$patch({
+    id_prettyblocks: parseInt(id.split('-')[0]),
+    subSelected: id
+  })
+}
+
+emitter.on('setSelectedElement', (notFormattedId) => setSelectedElement(notFormattedId))
 
 const isSelected = computed(() => props.id == store.subSelected)
 
 // when we click on the eye icon to disable element
 const disabled = ref(false)
+
+const highLightBlock = () => {
+  // on hover item, select it in iframe
+  // setTimeout(() => {
+  //   emitter.emit('highLightBlock', parseInt(props.id.split('-')[1]))
+    
+  // }, 500);
+}
 </script>
 
 <template>
   <div
     :class="['menu-item flex items-center px-2 py-1 mb-1 rounded-md hover:bg-gray-100 border-2 border-transparent cursor-pointer', { 'selected': isSelected }]"
-    @click="select">
+    @click="select" @mouseover="highLightBlock">
     <!-- this slot is used to add extra action on the left, for example the collapse icon -->
     <slot></slot>
     <!-- icon and name of item -->
@@ -113,4 +126,5 @@ const disabled = ref(false)
 .menu-item:hover>.menu-item-actions {
   @apply w-auto;
 }
+
 </style>

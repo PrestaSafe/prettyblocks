@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, defineProps, ref, defineComponent } from 'vue'
+import { onMounted, onUnmounted, defineProps, ref, defineComponent, computed, watch } from 'vue'
 import emitter from 'tiny-emitter/instance'
 import Loader from './Loader.vue'
 import Button from './Button.vue'
@@ -47,27 +47,48 @@ emitter.on('reloadIframe', async (id_prettyblocks) => {
   iframe.reloadIframe()
 })
 
-emitter.on('changeUrl', (shop) => {
-  iframe.destroy()
-  iframe = new Iframe(shop.current_url, shop.id_lang, shop.id_shop)
+emitter.on('highLightBlock', (id_prettyblocks) => {
+  iframe.sendPrettyBlocksEvents('selectBlock', { id_prettyblocks: id_prettyblocks })
+})
+
+/**
+ * Change url with loader in iframe.
+ */
+emitter.on('changeUrl', (shop, custom_url = null) => {  
+  if(custom_url == null)
+  {
+    iframe.setUrl(shop.current_url)
+  }else{
+    iframe.setUrl(custom_url)
+  }
+
+  iframe.setIdLang(shop.id_lang)
+  iframe.setIdShop(shop.id_shop)
+  iframe.constructEvent()
   iframe.reloadIframe()
 })
 
+
+
+let showLoader = computed(() => {
+  return iframe.loader.value
+})
+
+ watch(iframe.loader);
 
 </script>
 
 <template>
   <!-- animate-pulse classe to put -->
   <section class="w-full h-full">
-    <!-- <button @click="reloadIframe()"> reload iframe </button> -->
-    <!-- {{ iframe.loader }} -->
-    <Loader :visible="iframe.loader.value" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      Chargement en cours</Loader>
+    <!-- <button @click="reloadIframe()"> reload iframe </button> {{ showLoader }} -->
     <!-- {{ classes }} -->
 
     <iframe id="website-iframe" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-      :class="[height, width]" class="border-none h-full mx-auto rounded" :src="iframe.current_url.value"
+      :class="[height, width, showLoader ? 'opacity-50' : '']" class="border-none h-full mx-auto rounded" :src="iframe.current_url.value"
       frameborder="0"></iframe>
+    <Loader :visible="showLoader" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      Chargement en cours</Loader>
   </section>
 </template>
 
