@@ -36,7 +36,6 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     public function init()
     {
-       
         $this->setHeadersForDomains();
         if (empty($_POST)) {
             $_POST = json_decode(Tools::file_get_contents('php://input'), true);
@@ -61,14 +60,13 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             $shop = new Shop($shop_id);
             $shop_domains[] = $shop->domain;
         }
-        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'];
-        $url = $protocol . "://" . $host;
+        $url = $protocol . '://' . $host;
 
         if (!in_array($host, $shop_domains)) {
-            header("Access-Control-Allow-Origin: " . $protocol . "://" . $host); 
+            header('Access-Control-Allow-Origin: ' . $protocol . '://' . $host);
         }
-       
     }
 
     /**
@@ -106,33 +104,32 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             'errors' => $errors,
             'message' => $this->translator->trans('Block moved with success', [], 'Modules.Prettyblocks.Admin'),
         ]));
-        
-
     }
+
     /**
      * delete a block from a zone
+     *
      * @return json
      */
     public function displayAjaxDeleteAllBlocks()
     {
-
         $zone_name = pSQL(Tools::getValue('zone'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $success = \PrettyBlocksModel::deleteBlocksFromZone($zone_name, $id_lang, $id_shop);
-        $message  = $this->translator->trans('An error has occured during this process', [], 'Modules.Prettyblocks.Admin');
-        if($success)
-        {
-            $message  = $this->translator->trans('Blocks deleted with success', [], 'Modules.Prettyblocks.Admin');
+        $message = $this->translator->trans('An error has occured during this process', [], 'Modules.Prettyblocks.Admin');
+        if ($success) {
+            $message = $this->translator->trans('Blocks deleted with success', [], 'Modules.Prettyblocks.Admin');
         }
         exit(json_encode([
             'success' => $success,
-            'message' => $message
+            'message' => $message,
         ]));
     }
 
     /**
      * dupplicate zone content to anoter zone
+     *
      * @return json
      */
     public function displayAjaxCopyZone()
@@ -142,14 +139,13 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $zone_name = pSQL(Tools::getValue('zone'));
         $zone_name_to_paste = pSQL(Tools::getValue('zone_name_to_paste'));
         $success = \PrettyBlocksModel::copyZone($zone_name, $zone_name_to_paste, $id_lang, $id_shop);
-        $message  = $this->translator->trans('An error has occured during this process', [], 'Modules.Prettyblocks.Admin');
-        if($success)
-        {
-            $message  = $this->translator->trans('Zone dupplicated with success', [], 'Modules.Prettyblocks.Admin');
+        $message = $this->translator->trans('An error has occured during this process', [], 'Modules.Prettyblocks.Admin');
+        if ($success) {
+            $message = $this->translator->trans('Zone dupplicated with success', [], 'Modules.Prettyblocks.Admin');
         }
         exit(json_encode([
             'success' => $success,
-            'message' => $message
+            'message' => $message,
         ]));
     }
 

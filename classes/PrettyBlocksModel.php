@@ -481,14 +481,16 @@ class PrettyBlocksModel extends ObjectModel
 
     /**
      * get shop by id
+     *
      * @param int $id
+     *
      * @return array
      */
     public static function getShopById($id)
     {
         return Db::getInstance()->getRow(
             'SELECT `id_shop`, `theme_name`
-            FROM `' . _DB_PREFIX_  . 'shop`
+            FROM `' . _DB_PREFIX_ . 'shop`
             WHERE `id_shop` = ' . (int) $id
         );
     }
@@ -503,9 +505,9 @@ class PrettyBlocksModel extends ObjectModel
     public static function updateThemeSettings($stateRequest)
     {
         $context = \Context::getContext();
-        
-        $id_shop  = (isset($stateRequest['context']['id_shop'])) ? (int)$stateRequest['context']['id_shop'] : $context->shop->id;
-        $id_lang = (isset($stateRequest['context']['id_lang'])) ? (int)$stateRequest['context']['id_shop'] : $context->language->id;
+
+        $id_shop = (isset($stateRequest['context']['id_shop'])) ? (int) $stateRequest['context']['id_shop'] : $context->shop->id;
+        $id_lang = (isset($stateRequest['context']['id_lang'])) ? (int) $stateRequest['context']['id_shop'] : $context->language->id;
         $shop = self::getShopById($id_shop);
 
         $profile = \PrettyBlocksSettingsModel::getProfileByTheme($shop['theme_name'], $id_shop);
@@ -520,7 +522,7 @@ class PrettyBlocksModel extends ObjectModel
                 $res[$name] = $fieldCore->compile();
             }
         }
-        if($profile->theme_name !== $shop['theme_name']){
+        if ($profile->theme_name !== $shop['theme_name']) {
             $profile->theme_name = pSQL($shop['theme_name']);
         }
         // todo update profile settings
@@ -528,9 +530,9 @@ class PrettyBlocksModel extends ObjectModel
         $profile->save();
         self::_compileSass([
             'id_shop' => $id_shop,
-            'id_lang' => $id_lang,  
+            'id_lang' => $id_lang,
             'theme_name' => $shop['theme_name'],
-            'profile' => $profile
+            'profile' => $profile,
         ]);
     }
 
@@ -824,6 +826,7 @@ class PrettyBlocksModel extends ObjectModel
     /**
      * moveBlockToZone
      * move a block to another zone
+     *
      * @param $id_prettyblocks int
      * @param $zone_name string
      * @param $id_lang int
@@ -838,9 +841,9 @@ class PrettyBlocksModel extends ObjectModel
         $model = new PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
         $model->zone_name = $zone_name;
         $model->position = (int) DB::getInstance()->getValue('SELECT MAX(position)  FROM `' . _DB_PREFIX_ . 'prettyblocks`') + 1;
-        return $model->save();
-    } 
 
+        return $model->save();
+    }
 
     public static function copyZone($zone_name, $zone_name_to_paste, $id_lang, $id_shop)
     {
@@ -848,8 +851,8 @@ class PrettyBlocksModel extends ObjectModel
         $query = new DbQuery();
         $query->from('prettyblocks');
         $query->where('zone_name = \'' . $zone_name . '\'');
-        $query->where('id_lang = ' . (int)$id_lang);
-        $query->where('id_shop = ' . (int)$id_shop);
+        $query->where('id_lang = ' . (int) $id_lang);
+        $query->where('id_shop = ' . (int) $id_shop);
         $results = $db->executeS($query);
         $result = true;
 
@@ -865,30 +868,28 @@ class PrettyBlocksModel extends ObjectModel
             $model->instance_id = $row['instance_id'];
             $model->id_shop = (int) $id_shop;
             $model->id_lang = (int) $id_lang;
-            if(!$model->save())
-            {
+            if (!$model->save()) {
                 $errors[] = $model;
             }
         }
 
         return $errors;
-
     }
 
     /**
      * deleteBlocksFromZone
      * delete all blocks from a zone
-     * 
      */
-    public static function deleteBlocksFromZone($zone_name,$id_lang,$id_shop)
+    public static function deleteBlocksFromZone($zone_name, $id_lang, $id_shop)
     {
         $db = Db::getInstance();
         $query = new DbQuery();
         $query->from('prettyblocks');
         $query->where('zone_name = \'' . $zone_name . '\'');
-        $query->where('id_lang = ' . (int)$id_lang);
-        $query->where('id_shop = ' . (int)$id_shop);
+        $query->where('id_lang = ' . (int) $id_lang);
+        $query->where('id_shop = ' . (int) $id_shop);
         $query->type('DELETE');
+
         return $db->execute($query);
     }
 

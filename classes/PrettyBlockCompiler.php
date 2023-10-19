@@ -27,10 +27,10 @@ class PrettyBlocksCompiler
     private $_sass = '';
     private $_compiled = '';
     private $outTarget = 'css';
-    public $compiler = null;
+    public $compiler;
     private $filesToExtract = [];
     private $theme_name = '';
-    private $id_shop = null;
+    private $id_shop;
 
     public function __construct($entries = [], $out = '')
     {
@@ -42,12 +42,14 @@ class PrettyBlocksCompiler
     public function setThemeName($theme_name)
     {
         $this->theme_name = $theme_name;
+
         return $this;
     }
 
     public function setIdShop($id_shop)
     {
         $this->id_shop = $id_shop;
+
         return $this;
     }
 
@@ -72,7 +74,9 @@ class PrettyBlocksCompiler
 
     /**
      * Set files to extract
+     *
      * @param $entries
+     *
      * @return PrettyBlockCompiler
      */
     public function setFilesToExtract($entries)
@@ -178,10 +182,10 @@ class PrettyBlocksCompiler
             }
         }
         $this->filterVars();
-        
+
         // add files to extract
         $this->_sass .= $this->filterFile($this->filesToExtract);
-        
+
         $compile = $scss->compileString($this->_sass)->getCss();
         if ($compile !== '' && $this->outTarget == 'css') {
             // compile sass to css
@@ -212,10 +216,12 @@ class PrettyBlocksCompiler
 
     /**
      * Filter file and replace vars
-     * @param $files 
-     * $files = [
-     *    '$/modules/your_module/views/css/vars.scss'
-     * ];
+     *
+     * @param $files
+     *               $files = [
+     *               '$/modules/your_module/views/css/vars.scss'
+     *               ];
+     *
      * @return string
      */
     public function filterFile($files)
@@ -224,29 +230,33 @@ class PrettyBlocksCompiler
             $files = [$files];
         }
         $to_filter = '';
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $path = HelperBuilder::pathFormattedFromString($file);
             $path = rtrim($path, '/');
             if (is_file($path)) {
                 $to_filter .= Tools::file_get_contents($path);
             }
         }
-       return $this->filterContent($to_filter);
+
+        return $this->filterContent($to_filter);
     }
+
     /**
      * Filter content and replace vars
+     *
      * @param $scss
+     *
      * @return string
      */
     public function filterContent($scss)
     {
-
         $re = '/.*(\$SETTINGS_.\S*);*\b/';
         preg_match_all($re, $scss, $vars);
         $content = str_replace('$SETTINGS_', '', $vars[1]);
         foreach ($content as $var) {
-            $scss = str_replace('$SETTINGS_' . $var, $this->getSettingsValue($var,$var), $scss);
+            $scss = str_replace('$SETTINGS_' . $var, $this->getSettingsValue($var, $var), $scss);
         }
+
         return $scss;
     }
 
@@ -257,15 +267,17 @@ class PrettyBlocksCompiler
         if (isset($settings[$defaultValue])) {
             $value = $settings[$defaultValue];
         }
+
         return $value;
     }
-
 
     private function getThemeSettings()
     {
         $psContext = Context::getContext();
+
         return PrettyBlocksModel::getThemeSettings(false, 'front', $this->id_shop);
     }
+
     /**
      * Write sass file if is compiled
      *

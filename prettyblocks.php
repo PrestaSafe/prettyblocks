@@ -207,8 +207,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function hookdisplayHeader($params)
     {
-        if($_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') {
-
+        if ($_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') {
             $this->context->controller->registerJavascript(
                 'prettyblocks',
                 'modules/' . $this->name . '/views/js/build.js',
