@@ -1028,9 +1028,9 @@ tinycolor2@^1.4.2:
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
 
 "tinymce@^6.0.0 || ^5.5.1":
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-6.6.0.tgz#daf0e8c04c6834c03b64efb4bda024e7f5bcf614"
-  integrity sha512-b9Mb7z8ryFOwLm8WCmlpwzdgOt1xD1u5Jjdh68B4QjkIyTLyHRBsfsrbiCUGonnVTymDlkexPkaP8sj24zexKQ==
+  version "6.7.1"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-6.7.1.tgz#62038eb298cfaeb4ffc7aae4d90401fc0bf9d7d7"
+  integrity sha512-SIGJgWk2d/X59VbO+i81QfNx2EP1P5t+sza2/1So3OLGtmMBhEJMag7sN/Mo8sq4s0niwb65Z51yLju32jP11g==
 
 to-regex-range@^5.0.1:
   version "5.0.1"
