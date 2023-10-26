@@ -143,9 +143,20 @@ export default class Iframe {
     async reloadIframe() {
         this.loader.value = true
         let iframe = document.getElementById('website-iframe')
-        iframe.src = this.current_url.value
+        iframe.src = this.updateFilteredURL(this.current_url.value)
         // this.loadIframe()
         // this.loader.value = false
+    }
+    updateFilteredURL(url) {
+        let hashIndex = url.indexOf('#');
+        if (hashIndex !== -1) {
+            url = url.substring(0, hashIndex) + '?prettyblocks=1' + url.substring(hashIndex);
+        } else if (!url.includes('?')) {
+            url += '?prettyblocks=1';
+        } else if (!url.includes('prettyblocks')) {
+            url += '&prettyblocks=1';
+        }
+        return url;
     }
 
     /**

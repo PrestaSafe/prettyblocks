@@ -75,6 +75,14 @@ let showLoader = computed(() => {
 })
 
  watch(iframe.loader);
+let filteredURL = computed(() => {
+  return iframe.updateFilteredURL(iframe.current_url.value)
+})
+
+
+watch(iframe.current_url, () => {
+  filteredURL.value = iframe.updateFilteredURL(iframe.current_url.value)
+})
 
 </script>
 
@@ -83,9 +91,8 @@ let showLoader = computed(() => {
   <section class="w-full h-full">
     <!-- <button @click="reloadIframe()"> reload iframe </button> {{ showLoader }} -->
     <!-- {{ classes }} -->
-
     <iframe id="website-iframe" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-      :class="[height, width, showLoader ? 'opacity-50' : '']" class="border-none h-full mx-auto rounded" :src="iframe.current_url.value"
+      :class="[height, width, showLoader ? 'opacity-50' : '']" class="border-none h-full mx-auto rounded" :src="filteredURL"
       frameborder="0"></iframe>
     <Loader :visible="showLoader" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       Chargement en cours</Loader>

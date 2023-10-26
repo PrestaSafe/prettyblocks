@@ -58,7 +58,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.0.0';
+        $this->version = '3.0.1';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -207,7 +207,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function hookdisplayHeader($params)
     {
-        if ($_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') {
+        if ((isset($_SERVER['HTTP_SEC_FETCH_DEST']) && $_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') || \Tools::getValue('prettyblocks') === '1') {
             $this->context->controller->registerJavascript(
                 'prettyblocks',
                 'modules/' . $this->name . '/views/js/build.js',
