@@ -29,7 +29,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     public function __construct()
     {
-        $this->ajax_token = Configuration::get('_PRETTYBLOCKS_TOKEN_');
+        $this->ajax_token = Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_');
         $this->translator = Context::getContext()->getTranslator();
         parent::__construct();
     }

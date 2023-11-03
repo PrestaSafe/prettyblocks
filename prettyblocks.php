@@ -58,7 +58,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.0.1';
+        $this->version = '3.0.2';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -161,7 +161,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     private function loadDefault()
     {
-        return Configuration::updateValue('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
+        return Configuration::updateGlobalValue('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
     }
 
     public function install()
@@ -224,6 +224,9 @@ class PrettyBlocks extends Module implements WidgetInterface
                     'priority' => 200,
                 ]
             );
+            $this->context->smarty->assign([
+                'prettyblocks' => true,
+            ]);
             // todo register css and js on iframe only from Hook
         }
     }

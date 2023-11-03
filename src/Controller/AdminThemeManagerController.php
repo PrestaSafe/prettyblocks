@@ -248,7 +248,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'type_search_here' => $translator->trans('Type your search here', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
-                'ajax_token' => \Configuration::get('_PRETTYBLOCKS_TOKEN_'),
+                'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),
                 'prettyblocks_version' => $module->version,
             ],
             'css_build' => $css,
