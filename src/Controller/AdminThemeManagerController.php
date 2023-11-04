@@ -244,6 +244,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'use_container' => $translator->trans('Place the element in a column (container)', [], 'Modules.Prettyblocks.Admin'),
                 'bg_color' => $translator->trans('Background color', [], 'Modules.Prettyblocks.Admin'),
                 'ex_color' => $translator->trans('Add a color ex: #123456', [], 'Modules.Prettyblocks.Admin'),
+                'css_class' => $translator->trans('CSS Classname', [], 'Modules.Prettyblocks.Admin'),
+                'ex_css_class' => $translator->trans('You can input multiple classes : class1 class2 class3', [], 'Modules.Prettyblocks.Admin'),
                 'theme_settings' => $translator->trans('Theme settings', [], 'Modules.Prettyblocks.Admin'),
                 'type_search_here' => $translator->trans('Type your search here', [], 'Modules.Prettyblocks.Admin'),
             ],

@@ -583,6 +583,7 @@ class PrettyBlocksModel extends ObjectModel
             'container' => true,
             'load_ajax' => false,
             'bg_color' => '',
+            'css_class' => '',
         ];
         $defaultParams = $this->getDefaultParams();
         if (!$defaultParams) {

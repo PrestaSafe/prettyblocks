@@ -326,6 +326,7 @@ class PrettyBlocksMigrate
             'container' => true,
             'load_ajax' => false,
             'bg_color' => '',
+            'css_class' => '',
         ];
         $defaultParams = \Configuration::get($key);
         if (!$defaultParams) {

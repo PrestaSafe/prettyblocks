@@ -112,6 +112,16 @@
         <target>Ajoutez une couleur ex: #121212</target>
         <note>Line: </note>
       </trans-unit>
+      <trans-unit id="e79b239b1d6059e081294d801a7acfdd">
+        <source>CSS Classname</source>
+        <target>Classe CSS</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="f835f67e99325d0cc2a9ac1a50f11f6c">
+        <source>You may input multiple classes : class1 class2 class3</source>
+        <target>Vous pouvez insérer plusieurs classes : class1 class2 class3</target>
+        <note>Line: </note>
+      </trans-unit>
       <trans-unit id="55b8deb25fdc0f8b628027f7d1d21cbe">
         <source>Theme settings</source>
         <target>Paramètres du thème</target>

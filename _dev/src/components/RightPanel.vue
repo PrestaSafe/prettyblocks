@@ -194,6 +194,10 @@ emitter.on('globalSave', () => {
         <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
         <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
       </div>
+      {{ trans('css_class') }}
+      <div class="flex mb-4 pt-4">
+        <Input class="flex-auto" :placeholder="trans('ex_css_class')" v-model="config.default.css_class" name="css_class" />
+      </div>
       <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected"
         :availableTpl="config.templates" :currentTpl="config.templateSelected"
         @update="value => console.log('value', value)" :label="trans('choose_template')" />
