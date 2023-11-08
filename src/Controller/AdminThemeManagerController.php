@@ -240,6 +240,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'current_zone' => $translator->trans('Current zone', [], 'Modules.Prettyblocks.Admin'),
                 'loading' => $translator->trans('Loading', [], 'Modules.Prettyblocks.Admin'),
                 'default_settings' => $translator->trans('Default settings', [], 'Modules.Prettyblocks.Admin'),
+                'block_settings' => $translator->trans('Block settings', [], 'Modules.Prettyblocks.Admin'),
                 'choose_template' => $translator->trans('Choose a template', [], 'Modules.Prettyblocks.Admin'),
                 'use_container' => $translator->trans('Place the element in a column (container)', [], 'Modules.Prettyblocks.Admin'),
                 'bg_color' => $translator->trans('Background color', [], 'Modules.Prettyblocks.Admin'),

@@ -184,23 +184,26 @@ emitter.on('globalSave', () => {
 
     <!-- Config panel -->
     <div v-if="config" id="configPanel" class="absolute top-0 left-0 overflow-y-auto w-full h-full flex flex-col p-2 bg-slate-100" @keyup.enter="saveConfig()">
-      <template v-for="f in config" :key="f">
-        <FieldRepeater @updateUpload="saveConfig()" :field="f" />
-      </template>
-      {{ trans('default_settings') }}
-      <Checkbox class="my-4" v-model="config.default.container" :title="trans('use_container')" name="container" />
-      {{ trans('bg_color') }}
-      <div class="flex mb-4 pt-4">
-        <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
-        <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
-      </div>
-      {{ trans('css_class') }}
-      <div class="flex mb-4 pt-4">
-        <Input class="flex-auto" :placeholder="trans('ex_css_class')" v-model="config.default.css_class" name="css_class" />
-      </div>
-      <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected"
-        :availableTpl="config.templates" :currentTpl="config.templateSelected"
-        @update="value => console.log('value', value)" :label="trans('choose_template')" />
+      <Accordion :title="trans('block_settings')" :open="true">
+        <template v-for="f in config" :key="f">
+          <FieldRepeater @updateUpload="saveConfig()" :field="f" />
+        </template>
+      </Accordion>
+      <Accordion :title="trans('default_settings')">
+        <Checkbox class="my-4" v-model="config.default.container" :title="trans('use_container')" name="container" />
+        {{ trans('bg_color') }}
+        <div class="flex mb-4 pt-4">
+          <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
+          <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
+        </div>
+        {{ trans('css_class') }}
+        <div class="flex mb-4 pt-4">
+          <Input class="flex-auto" :placeholder="trans('ex_css_class')" v-model="config.default.css_class" name="css_class" />
+        </div>
+        <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected"
+          :availableTpl="config.templates" :currentTpl="config.templateSelected"
+          @update="value => console.log('value', value)" :label="trans('choose_template')" />
+      </Accordion>
     </div>
 
     <!-- State panel  -->
