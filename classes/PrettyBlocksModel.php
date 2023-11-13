@@ -182,7 +182,7 @@ class PrettyBlocksModel extends ObjectModel
             }
             $jsonConfig[$name] = $newField;
             $this->config = json_encode($jsonConfig, true);
-            
+
             return $this->save();
         }
 
