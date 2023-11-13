@@ -391,15 +391,18 @@ class PrettyBlocksModel extends ObjectModel
         $fields = [];
         $stateRequest = json_decode($stateRequest, true);
         $fieldsRequest = array_filter($stateRequest, function ($field) {
-            return isset($field['type']);
+            return isset($field['type']) && $field['type'] !== 'title';
         });
-
+     
         foreach ($fieldsRequest as $key => $field) {
             $obj = (new FieldCore($field))->setAttribute('new_value', $field['value']);
             $fields[$key] = $obj;
         }
         $this->setConfigFields($fields);
-        $this->config = $this->generateJsonConfig();
+        $existingConfig = json_decode($this->config, true);
+        $newConfig = json_decode($this->generateJsonConfig(), true);
+        $mergedConfig = array_merge($existingConfig, $newConfig);
+        $this->config = json_encode($mergedConfig);
         $template_name = pSQL($stateRequest['templateSelected']);
         $this->setCurrentTemplate($template_name);
         $this->setDefaultParams($stateRequest['default']);
