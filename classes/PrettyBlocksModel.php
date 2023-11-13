@@ -393,7 +393,7 @@ class PrettyBlocksModel extends ObjectModel
         $fieldsRequest = array_filter($stateRequest, function ($field) {
             return isset($field['type']) && $field['type'] !== 'title';
         });
-     
+
         foreach ($fieldsRequest as $key => $field) {
             $obj = (new FieldCore($field))->setAttribute('new_value', $field['value']);
             $fields[$key] = $obj;
