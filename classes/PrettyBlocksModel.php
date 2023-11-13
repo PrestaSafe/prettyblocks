@@ -177,11 +177,11 @@ class PrettyBlocksModel extends ObjectModel
         if (isset($this->configFields[$name])) {
             $newField = $this->configFields[$name]->setAttribute('new_value', $new_value)->compile();
             $jsonConfig = json_decode($this->config, true);
-            if (!is_null($jsonConfig)) {
-                $json = [];
+            if (is_null($jsonConfig)) {
+                $jsonConfig = [];
             }
-            $json[$name] = $newField;
-            $this->config = json_encode($json, true);
+            $jsonConfig[$name] = $newField;
+            $this->config = json_encode($jsonConfig, true);
 
             return $this->save();
         }

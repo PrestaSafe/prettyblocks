@@ -6,7 +6,8 @@
     "dev": "vite --port 3002",
     "build": "vite build",
     "watch": "vite build --watch",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "watch-iframe": "vite build --watch --config vite.config.prettyblocks.js"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.16",
