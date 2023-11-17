@@ -16,7 +16,7 @@
     "@tailwindcss/forms": "^0.5.6",
     "@tinymce/tinymce-vue": "^5.1.1",
     "@vitejs/plugin-vue": "^2.3.4",
-    "@vueform/multiselect": "^2.6.2",
+    "@vueform/multiselect": "^2.6.6",
     "autoprefixer": "^10.4.16",
     "dropzone": "^6.0.0-beta.2",
     "pinia": "^2.1.6",
