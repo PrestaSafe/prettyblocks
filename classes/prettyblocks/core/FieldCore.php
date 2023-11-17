@@ -705,6 +705,7 @@ class FieldCore
         if ($this->allow_html) {
             return \Tools::purifyHTML($string);
         }
+
         return \Tools::purifyHTML(strip_tags($string));
     }
 
