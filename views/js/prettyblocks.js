@@ -123,16 +123,16 @@ const focusBlock = (id_prettyblocks) => {
 }
 const loadToolBar = (event) => {
     const tb = new toolbar( document.querySelectorAll('.ptb-title'), document, window);
-    tb.on('change', async (oldValue, newValue) => {
+    tb.on('change', async (value) => {
         let params = {
-            id_prettyblocks: oldValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks'),
-            field: oldValue.html.getAttribute('data-field'),
-            index: oldValue.html.hasAttribute('data-index') ? oldValue.html.getAttribute('data-index') : null
+            id_prettyblocks: value.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks'),
+            field: value.html.getAttribute('data-field'),
+            index: value.html.hasAttribute('data-index') ? value.html.getAttribute('data-index') : null
         }
         event.source.postMessage({ type: 'updateTitleComponent', 
-            data: { params: params, value: JSON.stringify(newValue) } }, '*');
+            data: { params: params, value: JSON.stringify(value) } }, '*'); 
     })
-}
+} 
 
 const moveBlockToZone = (event) => {
     let blockDragged = null;
