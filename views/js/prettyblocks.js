@@ -23,7 +23,7 @@ let eventHandler = (event) => {
     }
 
     if (event.data.type == 'initIframe') {
-        moveBlockToZone(event)
+        // moveBlockToZone(event)
         // register block click
         // document.querySelectorAll('div[data-block]').forEach((div) => {
 
@@ -33,14 +33,12 @@ let eventHandler = (event) => {
         //         event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
         //     })
         // })
-        console.log('hello iframe')
         event.source.postMessage({ type: 'iframeInit', data: null }, '*');
         return loadToolBar(event)
         
     }
     if(event.data.type == 'selectBlock')
     {
-        console.log('selectBlock iframe', event.data.data)
         let id_prettyblocks = event.data.data.id_prettyblocks
         return selectBlock(id_prettyblocks,event)
     }
@@ -141,27 +139,28 @@ const moveBlockToZone = (event) => {
     const blocks = document.querySelectorAll('[data-block]');
     const zones = document.querySelectorAll('[data-prettyblocks-zone]');
 
-    // blocks.forEach(block => {
-    //     block.setAttribute('draggable', true);
-    //     block.addEventListener('dragstart', () => {
-    //         blockDragged = block;
-    //         zones.forEach(zone => {
-    //             zone.classList.add('ondrag');
-    //         });
-    //     });
+    blocks.forEach(block => {
+        // block.setAttribute('draggable', true);
+        block.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+            // blockDragged = block;
+            // zones.forEach(zone => {
+            //     zone.classList.add('ondrag');
+            // });
+        });
 
-    //     block.addEventListener('dragend', () => {
-            
-    //         zones.forEach(zone => {
-    //             zone.classList.remove('ondrag');
-    //         });
-    //         blockDragged = null;
-    //     });
+        block.addEventListener('dragend', (e) => {
+            e.preventDefault()
+            // zones.forEach(zone => {
+            //     zone.classList.remove('ondrag');
+            // });
+            // blockDragged = null;
+        });
 
        
 
 
-    // });
+    });
 
     // zones.forEach(zone => {
     //     zone.addEventListener('dragover', function (e) {
