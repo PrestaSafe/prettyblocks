@@ -21,6 +21,7 @@ let eventHandler = (event) => {
         return event.source.postMessage({ type: 'setContext', 
             data: { data: context } }, '*'); 
     }
+
     if (event.data.type == 'initIframe') {
         moveBlockToZone(event)
         // register block click
@@ -32,6 +33,7 @@ let eventHandler = (event) => {
         //         event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
         //     })
         // })
+        console.log('hello iframe')
         event.source.postMessage({ type: 'iframeInit', data: null }, '*');
         return loadToolBar(event)
         
@@ -139,47 +141,47 @@ const moveBlockToZone = (event) => {
     const blocks = document.querySelectorAll('[data-block]');
     const zones = document.querySelectorAll('[data-prettyblocks-zone]');
 
-    blocks.forEach(block => {
-        block.setAttribute('draggable', true);
-        block.addEventListener('dragstart', () => {
-            blockDragged = block;
-            zones.forEach(zone => {
-                zone.classList.add('ondrag');
-            });
-        });
+    // blocks.forEach(block => {
+    //     block.setAttribute('draggable', true);
+    //     block.addEventListener('dragstart', () => {
+    //         blockDragged = block;
+    //         zones.forEach(zone => {
+    //             zone.classList.add('ondrag');
+    //         });
+    //     });
 
-        block.addEventListener('dragend', () => {
+    //     block.addEventListener('dragend', () => {
             
-            zones.forEach(zone => {
-                zone.classList.remove('ondrag');
-            });
-            blockDragged = null;
-        });
+    //         zones.forEach(zone => {
+    //             zone.classList.remove('ondrag');
+    //         });
+    //         blockDragged = null;
+    //     });
 
        
 
 
-    });
+    // });
 
-    zones.forEach(zone => {
-        zone.addEventListener('dragover', function (e) {
-            e.preventDefault();
-        });
+    // zones.forEach(zone => {
+    //     zone.addEventListener('dragover', function (e) {
+    //         e.preventDefault();
+    //     });
 
-        zone.addEventListener('dragenter', function (e) {
-            e.preventDefault();
-        });
-        zone.addEventListener('drop', function (e) {
-            let zone_name = zone.getAttribute('data-prettyblocks-zone')
-            let id_prettyblocks = blockDragged.getAttribute('data-id-prettyblocks')
-            let params = {
-                id_prettyblocks: id_prettyblocks,
-                zone_name: zone_name
-            }
-            event.source.postMessage({ type: 'moveBlockToZone', params: params }, '*');
-            this.appendChild(blockDragged);
-        });
-    });
+    //     zone.addEventListener('dragenter', function (e) {
+    //         e.preventDefault();
+    //     });
+    //     zone.addEventListener('drop', function (e) {
+    //         let zone_name = zone.getAttribute('data-prettyblocks-zone')
+    //         let id_prettyblocks = blockDragged.getAttribute('data-id-prettyblocks')
+    //         let params = {
+    //             id_prettyblocks: id_prettyblocks,
+    //             zone_name: zone_name
+    //         }
+    //         event.source.postMessage({ type: 'moveBlockToZone', params: params }, '*');
+    //         this.appendChild(blockDragged);
+    //     });
+    // });
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {

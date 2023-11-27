@@ -91,7 +91,7 @@ watch(iframe.current_url, () => {
   <section class="w-full h-full">
     <!-- <button @click="reloadIframe()"> reload iframe </button> {{ showLoader }} -->
     <!-- {{ classes }} -->
-    <iframe id="website-iframe" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+    <iframe id="website-iframe" sandbox="allow-modals allow-forms allow-popups allow-scripts"
       :class="[height, width, showLoader ? 'opacity-50' : '']" class="border-none h-full mx-auto rounded" :src="filteredURL"
       frameborder="0"></iframe>
     <Loader :visible="showLoader" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
