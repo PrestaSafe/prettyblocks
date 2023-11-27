@@ -268,12 +268,12 @@ class FieldCore
             'tag' => ($array['tag']) ? pSQL($array['tag']) : 'h2',
             'classes' => (isset($array['classes'])) ? array_map('pSQL', $array['classes']) : [],
             'value' => ($array['value']) ? $this->_clearValue($array['value']) : '',
-            'focus' => (bool) $array['focus'],
-            'inside' => (bool) $array['inside'],
-            'bold' => (bool) $array['bold'],
-            'italic' => (bool) $array['italic'],
-            'underline' => (bool) $array['underline'],
-            'size' => (int) $array['size'],
+            'focus' => (bool) (isset($array['focus'])) ? $array['focus'] : false,
+            'inside' => (bool) (isset($array['inside'])) ? $array['inside'] : true,
+            'bold' => (bool) (isset($array['bold'])) ? $array['bold'] : false,
+            'italic' => (bool) (isset($array['italic'])) ? $array['italic'] : false,
+            'underline' => (bool) (isset($array['underline'])) ? $array['underline'] : false,
+            'size' => (int) (isset($array['size'])) ? $array['size'] : 12,
         ];
 
         return $element;

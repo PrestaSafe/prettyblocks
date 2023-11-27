@@ -224,6 +224,7 @@ export default class Iframe {
 
         if (iframe) {
             await iframe.addEventListener('load', (e) => {
+
                 this.sendPrettyBlocksEvents('initIframe')
                 this.sendPrettyBlocksEvents('getZones')
                 emitter.off('stateUpdated')
