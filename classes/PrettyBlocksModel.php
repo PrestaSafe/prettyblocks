@@ -245,8 +245,7 @@ class PrettyBlocksModel extends ObjectModel
 
         $block['formatted'] = $this->formatBlock($block);
         $block['extra'] = [];
-        $block['templateSelected'] = $this->_getTemplateSelected($block);
-
+        
         $extraContent = Hook::exec('beforeRendering' . Tools::toCamelCase($this->code), [
             'block' => $block,
             'settings' => $block['settings'],
@@ -257,9 +256,10 @@ class PrettyBlocksModel extends ObjectModel
                 $res = $additionnalFormFields;
             }
         }
-
+        
         $block['extra'] = $res;
         $block['templates'] = $this->_getBlockTemplate($block);
+        $block['templateSelected'] = $this->_getTemplateSelected($block);
 
         return $block;
     }
@@ -338,6 +338,7 @@ class PrettyBlocksModel extends ObjectModel
         $id_prettyblocks = (int) $block['id_prettyblocks'];
         $key = Tools::strtoupper($id_prettyblocks . '_template');
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
+
         $defaultTemplate = (isset($block['templates']['default'])) ? 'default' : 'welcome';
         if ($this->template && isset($block['templates'][$this->template])) {
             $defaultTemplate = $this->template;
@@ -544,7 +545,7 @@ class PrettyBlocksModel extends ObjectModel
      *
      * @return array
      */
-    private function _getBlockTemplate(&$block)
+    private function _getBlockTemplate($block)
     {
         $hookName = 'actionExtendBlockTemplate' . Tools::toCamelCase($this->code);
         $extraContent = Hook::exec(
@@ -567,7 +568,7 @@ class PrettyBlocksModel extends ObjectModel
         if (!isset($block['templates'])) {
             $block['templates'] = [];
         }
-
+        
         return $block['templates'] + $res;
     }
 
