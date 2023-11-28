@@ -245,7 +245,7 @@ class PrettyBlocksModel extends ObjectModel
 
         $block['formatted'] = $this->formatBlock($block);
         $block['extra'] = [];
-        
+
         $extraContent = Hook::exec('beforeRendering' . Tools::toCamelCase($this->code), [
             'block' => $block,
             'settings' => $block['settings'],
@@ -256,7 +256,7 @@ class PrettyBlocksModel extends ObjectModel
                 $res = $additionnalFormFields;
             }
         }
-        
+
         $block['extra'] = $res;
         $block['templates'] = $this->_getBlockTemplate($block);
         $block['templateSelected'] = $this->_getTemplateSelected($block);
@@ -568,7 +568,7 @@ class PrettyBlocksModel extends ObjectModel
         if (!isset($block['templates'])) {
             $block['templates'] = [];
         }
-        
+
         return $block['templates'] + $res;
     }
 
