@@ -26,7 +26,7 @@
     "tiny-emitter": "^2.1.0",
     "uuid": "^9.0.1",
     "vite": "^2.9.16",
-    "vue": "^3.3.8",
+    "vue": "^3.3.9",
     "vue-color-input": "^1.0.8",
     "vuedraggable": "^4.1.0"
   },
