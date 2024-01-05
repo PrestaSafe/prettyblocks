@@ -204,6 +204,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
         $translator = \Context::getContext()->getTranslator();
         $shops = $this->getShops();
+        $available_language_ids = \Language::getLanguages(true, $this->context->shop->id);
         // url to load at startup : provided url or shop home page
         $startup_url = \Tools::getValue('startup_url', $shop_url);
 
@@ -250,6 +251,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),
                 'prettyblocks_version' => $module->version,
+                'available_language_ids' => $available_language_ids
             ],
             'css_build' => $css,
             'js_build' => $js,
