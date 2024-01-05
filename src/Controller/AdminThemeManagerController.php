@@ -251,7 +251,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),
                 'prettyblocks_version' => $module->version,
-                'available_language_ids' => $available_language_ids
+                'available_language_ids' => $available_language_ids,
             ],
             'css_build' => $css,
             'js_build' => $js,

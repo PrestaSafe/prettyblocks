@@ -238,11 +238,12 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         }
     }
 
-    //duplicate element
-    public function displayAjaxduplicateState(){
-        $idPrettyBlocks = (int)Tools::getValue('id_prettyblocks');
-        $idShop = (int)Tools::getValue('ctx_id_shop');
-        $selectedLanguages = (string)Tools::getValue('selectedLanguages');
+    // duplicate element
+    public function displayAjaxduplicateState()
+    {
+        $idPrettyBlocks = (int) Tools::getValue('id_prettyblocks');
+        $idShop = (int) Tools::getValue('ctx_id_shop');
+        $selectedLanguages = (string) Tools::getValue('selectedLanguages');
         if (!isset($idPrettyBlocks, $idShop, $selectedLanguages)) {
             exit(json_encode(['error' => 'Invalid input']));
         }
@@ -263,7 +264,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             $newBlock = new PrettyBlocksModel();
             $newBlock->hydrate($originalValues);
             $newBlock->id_shop = $idShop;
-            $newBlock->id_lang = (int)$language;
+            $newBlock->id_lang = (int) $language;
             $newBlock->add();
         }
         exit(json_encode(['message' => 'Duplication done!']));
