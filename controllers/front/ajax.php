@@ -256,7 +256,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
                 'id_shop',
                 'id_lang',
                 'instance_id',
-                'position'
+                'position',
             ];
             foreach ($excludedProperties as $property) {
                 unset($originalValues[$property]);
