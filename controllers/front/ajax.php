@@ -267,7 +267,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
             $newBlock->id_lang = (int) $language;
             $newBlock->add();
         }
-        exit(json_encode(['message' => 'Duplication done!']));
+        exit(json_encode(['message' => $this->translator->trans('Block duplicate successfully!', [], 'Modules.Prettyblocks.Admin')]));
     }
 
     // for pushing an empty element repeater
