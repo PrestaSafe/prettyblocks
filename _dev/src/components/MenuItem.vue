@@ -16,6 +16,7 @@ const props = defineProps({
   is_child: Boolean
 })
 
+let languages = security_app.available_language_ids;
 // used to get selected element in panel
 const store = useStore()
 const removeSubState = () => {
@@ -107,11 +108,41 @@ const highLightBlock = () => {
       <ButtonLight class="handle" v-if="props.config" icon="CogIcon" />
       <ButtonLight class="handle" v-if="props.is_child" @click.prevent="removeSubState" icon="TrashIcon" />
       <ButtonLight class="handle" v-if="!props.is_child" @click.prevent="removeState" icon="TrashIcon" />
+      <ButtonLight class="handle cursor-move" @click="openModal" icon="DocumentDuplicateIcon" />
+      <LanguageModal v-if="showModal" :id_prettyblocks="props.element.id_prettyblocks" :languages="languages" @closeModal="closeModal" @selectLanguages="selectLanguages" />
       <!-- <ButtonLight @click="disabled = !disabled" :icon="disabled ? 'EyeOffIcon' : 'EyeIcon'" /> -->
       <ButtonLight class="handle cursor-move" icon="ArrowsUpDownIcon" />
     </div>
   </div>
 </template>
+
+<script>
+import LanguageModal from '../components/LanguageModal.vue';
+
+export default {
+  data() {
+    return {
+      showModal: false,
+      selectedLanguages: [],
+    };
+  },
+  methods: {
+    openModal() {
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+    },
+    selectLanguages(selectedLanguages) {
+      this.selectedLanguages = selectedLanguages;
+      this.showModal = false;
+    },
+  },
+  components: {
+    LanguageModal,
+  },
+};
+</script>
 
 <style scoped>
 .menu-item.selected {

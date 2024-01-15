@@ -238,6 +238,38 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         }
     }
 
+    // duplicate element
+    public function displayAjaxduplicateState()
+    {
+        $idPrettyBlocks = (int) Tools::getValue('id_prettyblocks');
+        $idShop = (int) Tools::getValue('ctx_id_shop');
+        $selectedLanguages = (string) Tools::getValue('selectedLanguages');
+        if (!isset($idPrettyBlocks, $idShop, $selectedLanguages)) {
+            exit(json_encode(['error' => 'Invalid input']));
+        }
+        $languages = explode(',', $selectedLanguages);
+        foreach ($languages as $language) {
+            $originalBlock = new PrettyBlocksModel($idPrettyBlocks);
+            $originalValues = get_object_vars($originalBlock);
+            $excludedProperties = [
+                'id_prettyblocks',
+                'id_shop',
+                'id_lang',
+                'instance_id',
+                'position',
+            ];
+            foreach ($excludedProperties as $property) {
+                unset($originalValues[$property]);
+            }
+            $newBlock = new PrettyBlocksModel();
+            $newBlock->hydrate($originalValues);
+            $newBlock->id_shop = $idShop;
+            $newBlock->id_lang = (int) $language;
+            $newBlock->add();
+        }
+        exit(json_encode(['message' => $this->translator->trans('Block duplicate successfully!', [], 'Modules.Prettyblocks.Admin')]));
+    }
+
     // for pushing an empty element repeater
     public function displayAjaxgetEmptyState()
     {

@@ -12,6 +12,36 @@
         <target>Créez votre boutique à votre goût facilement</target>
         <note>Line: </note>
       </trans-unit>
+      <trans-unit id="58920020539a1da022c32e3c98670679">
+        <source>Block moved with success</source>
+        <target>Block déplacé avec succès !</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="97201ca1a46606725b397ec2f2ba4d1e">
+        <source>An error has occured during this process</source>
+        <target>Une erreur est survenue.</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="e42243f3c16d5ac842f0abb6d5f623c6">
+        <source>Blocks deleted with success</source>
+        <target>Blocks supprimés avec succès !</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="b72db274ba0f4a2f321670bba6a8e185">
+        <source>Zone dupplicated with success</source>
+        <target>Zone dupliquée avec succès !</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="ec9df3317b95a8a3a0aba19101a1f710">
+        <source>Block removed with success</source>
+        <target>Block supprimé avec succès !</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="a4ab04e50a0d201e2342bae9c5bb21e0">
+        <source>Block duplicate successfully!</source>
+        <target>Block dupliqué avec succès !</target>
+        <note>Line: </note>
+      </trans-unit>
       <trans-unit id="eadee7bb6891a2fa80300125f41cb7fb">
         <source>Updated with success</source>
         <target>Mise à jour réussi</target>
