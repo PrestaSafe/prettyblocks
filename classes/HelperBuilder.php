@@ -197,6 +197,17 @@ class HelperBuilder
             return $element['id_' . $collection];
         }, $ids);
 
+        if (empty($collectionIDS)) {
+            $array = [];
+            $array['show'] = [
+                'id' => 0,
+                'primary' => 0,
+                'name' => 'no results found',
+                'formatted' => 0 . ' - no results found',
+            ];
+
+            return $array;
+        }
         $randomIndex = array_rand($collectionIDS);
         $id_collection = $collectionIDS[$randomIndex];
 
