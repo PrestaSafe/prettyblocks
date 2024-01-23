@@ -25,6 +25,7 @@ use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
@@ -144,12 +145,10 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
      */
     private function getSFUrl($route, $entity = 'sf')
     {
-        $domain = \Tools::getShopDomainSsl(true);
+        $router = $this->get('router');
+        $url = $router->generate($route, [], UrlGeneratorInterface::NETWORK_PATH);
 
-        return $domain . \Link::getUrlSmarty([
-            'entity' => $entity,
-            'route' => $route,
-        ]);
+        return $url;
     }
 
     public function indexAction()
