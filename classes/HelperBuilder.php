@@ -40,6 +40,10 @@ class HelperBuilder
             throw new Exception('Path "' . $path . '" should begin by $ ex: "$/prettyblocks/path/to/images/"');
         }
         $pathFormatted = str_replace('$', _PS_ROOT_DIR_, $path);
+
+        if (substr($pathFormatted, -1) === '/') {
+            $pathFormatted = substr($pathFormatted, 0, -1);
+        }
         $path = realpath($pathFormatted) . '/';
         if ($rtrim) {
             $path = rtrim($path, '/');
