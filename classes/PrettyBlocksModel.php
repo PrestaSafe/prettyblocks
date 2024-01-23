@@ -400,8 +400,8 @@ class PrettyBlocksModel extends ObjectModel
             $fields[$key] = $obj;
         }
         $this->setConfigFields($fields);
-        $existingConfig = json_decode($this->config, true);
-        $newConfig = json_decode($this->generateJsonConfig(), true);
+        $existingConfig = json_decode($this->config, true) ?? [];
+        $newConfig = json_decode($this->generateJsonConfig(), true) ?? [];
         $mergedConfig = array_merge($existingConfig, $newConfig);
         $this->config = json_encode($mergedConfig, true);
         $template_name = pSQL($stateRequest['templateSelected']);
