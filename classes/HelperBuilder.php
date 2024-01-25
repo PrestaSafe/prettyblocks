@@ -36,10 +36,14 @@ class HelperBuilder
         if (strpos($path, '..') !== false) {
             throw new Exception('Invalid path');
         }
-        if (substr($path, 0, 1) !== '$') {
+        if ($path[0] !== '$') {
             throw new Exception('Path "' . $path . '" should begin by $ ex: "$/prettyblocks/path/to/images/"');
         }
         $pathFormatted = str_replace('$', _PS_ROOT_DIR_, $path);
+
+        if (substr($pathFormatted, -1) === '/') {
+            $pathFormatted = substr($pathFormatted, 0, -1);
+        }
         $path = realpath($pathFormatted) . '/';
         if ($rtrim) {
             $path = rtrim($path, '/');
