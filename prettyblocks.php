@@ -19,6 +19,8 @@
  */
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
+use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -53,6 +55,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         'actionDispatcher',
         'actionFrontControllerSetVariables',
         'ActionRegisterThemeSettings',
+        'displayBackOfficeHeader',
     ];
 
     public function __construct()
@@ -151,19 +154,38 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function getContent()
     {
+        return Tools::redirect($this->getPrettyBlocksUrl());
+    }
+
+    private function getPrettyBlocksUrl()
+    {
         $domain = Tools::getShopDomainSsl(true);
-        $symfonyUrl = $domain . Link::getUrlSmarty([
+        
+        return $domain . Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'admin_prettyblocks',
+           
         ]);
+        
 
-        return Tools::redirect($symfonyUrl);
     }
 
     private function loadDefault()
     {
         return Configuration::updateGlobalValue('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
     }
+
+    public function hookdisplayBackOfficeHeader($params)
+    {
+        $route = (new \Link())->getAdminLink('AdminThemeManagerControllerRouteGenerator');
+        Media::addJsDef([
+            'prettyblocks_route_generator' => $route,
+            'prettyblocks_logo' => HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png'),
+        ]);
+        
+        $this->context->controller->addJS($this->_path.'views/js/back.js');
+    }
+
 
     public function install()
     {

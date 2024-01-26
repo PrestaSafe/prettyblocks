@@ -5,6 +5,15 @@ admin_prettyblocks:
     _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::indexAction'
     _legacy_controller: AdminThemeManagerController
     _legacy_link: AdminThemeManagerController
+# route generator (for opening custom page in prettyblocks)
+
+prettyblocks_route_generator:
+  path: prettyblocks/route_generator/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::routeGeneratorAction'
+    _legacy_controller: AdminThemeManagerControllerRouteGenerator
+    _legacy_link: AdminThemeManagerControllerRouteGenerator
 
 prettyblocks_block_render:
   path: prettyblocks/block/
@@ -89,3 +98,4 @@ prettyblocks_theme_settings:
     _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getSettingsAction'
     _legacy_controller: AdminThemeManagerController
     _legacy_link: AdminThemeManagerController
+
