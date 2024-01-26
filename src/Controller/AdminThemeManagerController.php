@@ -208,18 +208,17 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         // url to load at startup : provided url or shop home page
         $startup_url = \Tools::getValue('startup_url', $shop_url);
 
-        if(\Tools::getValue('endpoint')){
-            switch(\Tools::getValue('endpoint'))
-            {
+        if (\Tools::getValue('endpoint')) {
+            switch (\Tools::getValue('endpoint')) {
                 case 'product':
-                    $startup_url = $link->getProductLink((int)\Tools::getValue('id'));
-                break;
+                    $startup_url = $link->getProductLink((int) \Tools::getValue('id'));
+                    break;
                 case 'category':
-                    $startup_url = $link->getCategoryLink((int)\Tools::getValue('id'));
-                break;
+                    $startup_url = $link->getCategoryLink((int) \Tools::getValue('id'));
+                    break;
                 case 'cms':
-                    $startup_url = $link->getCMSLink((int)\Tools::getValue('id'));
-                break;
+                    $startup_url = $link->getCMSLink((int) \Tools::getValue('id'));
+                    break;
             }
         }
 
@@ -631,23 +630,20 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return \Language::getIsoById($idLang) . '/';
     }
 
-
     public function routeGeneratorAction(Request $request)
     {
         $posts = json_decode($request->getContent(), true);
         $endpoint = $posts['endpoint'];
-        $id = (int)$posts['id'];
+        $id = (int) $posts['id'];
 
         $router = $this->get('router');
         $url = $router->generate('admin_prettyblocks', [
             'endpoint' => $endpoint,
             'id' => $id,
         ]);
+
         return (new JsonResponse())->setData([
             'url' => $url,
         ]);
-
-
     }
-
 }

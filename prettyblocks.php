@@ -19,8 +19,6 @@
  */
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
-use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -160,14 +158,11 @@ class PrettyBlocks extends Module implements WidgetInterface
     private function getPrettyBlocksUrl()
     {
         $domain = Tools::getShopDomainSsl(true);
-        
+
         return $domain . Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'admin_prettyblocks',
-           
         ]);
-        
-
     }
 
     private function loadDefault()
@@ -177,15 +172,14 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function hookdisplayBackOfficeHeader($params)
     {
-        $route = (new \Link())->getAdminLink('AdminThemeManagerControllerRouteGenerator');
+        $route = (new Link())->getAdminLink('AdminThemeManagerControllerRouteGenerator');
         Media::addJsDef([
             'prettyblocks_route_generator' => $route,
             'prettyblocks_logo' => HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png'),
         ]);
-        
-        $this->context->controller->addJS($this->_path.'views/js/back.js');
-    }
 
+        $this->context->controller->addJS($this->_path . 'views/js/back.js');
+    }
 
     public function install()
     {
