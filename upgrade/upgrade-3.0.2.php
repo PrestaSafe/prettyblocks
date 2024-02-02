@@ -31,8 +31,8 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_3_0_2($module)
 {
-    \Configuration::deleteByName('_PRETTYBLOCKS_TOKEN_');
-    \Configuration::updateGlobalValue('_PRETTYBLOCKS_TOKEN_', \Tools::passwdGen(25));
+    Configuration::deleteByName('_PRETTYBLOCKS_TOKEN_');
+    Configuration::updateGlobalValue('_PRETTYBLOCKS_TOKEN_', Tools::passwdGen(25));
 
     return true;
 }

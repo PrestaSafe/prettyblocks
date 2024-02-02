@@ -31,11 +31,11 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_3_0_0($module)
 {
-    if (!\PrettyBlocksMigrate::tableExists('prettyblocks_settings')) {
+    if (!PrettyBlocksMigrate::tableExists('prettyblocks_settings')) {
         $module->makeSettingsTable();
     }
-    \PrettyBlocksMigrate::migrateLangTable();
-    \PrettyBlocksMigrate::migrateSettings();
+    PrettyBlocksMigrate::migrateLangTable();
+    PrettyBlocksMigrate::migrateSettings();
     $module->registerHook('displayHeader');
 
     return true;

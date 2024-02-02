@@ -218,9 +218,9 @@ class PrettyBlocksCompiler
      * Filter file and replace vars
      *
      * @param $files
-     *               $files = [
-     *               '$/modules/your_module/views/css/vars.scss'
-     *               ];
+     *              $files = [
+     *              '$/modules/your_module/views/css/vars.scss'
+     *              ];
      *
      * @return string
      */
