@@ -442,7 +442,7 @@ class PrettyBlocksModel extends ObjectModel
     public function getDefaultParams()
     {
         $data = json_encode([], true);
-        if (\Validate::isJson($this->default_params)) {
+        if (Validate::isJson($this->default_params)) {
             $data = $this->default_params;
         }
 
@@ -508,13 +508,13 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function updateThemeSettings($stateRequest)
     {
-        $context = \Context::getContext();
+        $context = Context::getContext();
 
         $id_shop = (isset($stateRequest['context']['id_shop'])) ? (int) $stateRequest['context']['id_shop'] : $context->shop->id;
         $id_lang = (isset($stateRequest['context']['id_lang'])) ? (int) $stateRequest['context']['id_shop'] : $context->language->id;
         $shop = self::getShopById($id_shop);
 
-        $profile = \PrettyBlocksSettingsModel::getProfileByTheme($shop['theme_name'], $id_shop);
+        $profile = PrettyBlocksSettingsModel::getProfileByTheme($shop['theme_name'], $id_shop);
 
         $res = [];
         foreach ($stateRequest as $tabs) {
@@ -921,10 +921,10 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function getThemeSettings($with_tabs = true, $context = 'front', $id_shop = null)
     {
-        $context = \Context::getContext();
+        $context = Context::getContext();
         $id_shop = ($id_shop !== null) ? (int) $id_shop : $context->shop->id;
-        $theme_settings = \HelperBuilder::hookToArray('ActionRegisterThemeSettings');
-        $settingsDB = \PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $id_shop);
+        $theme_settings = HelperBuilder::hookToArray('ActionRegisterThemeSettings');
+        $settingsDB = PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $id_shop);
         $res = [];
         $no_tabs = [];
         foreach ($theme_settings as $key => $settings) {

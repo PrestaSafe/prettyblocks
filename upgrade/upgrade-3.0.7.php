@@ -29,7 +29,9 @@ if (!defined('_PS_VERSION_')) {
  * @throws PrestaShopDatabaseException
  * @throws PrestaShopException
  */
-function upgrade_module_2_0_0($module)
+function upgrade_module_3_0_7($module)
 {
-    return PrettyBlocksMigrate::migrateConfig();
+    $module->registerHook('ActionRegisterThemeSettings');
+
+    return true;
 }

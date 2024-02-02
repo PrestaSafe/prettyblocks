@@ -116,7 +116,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $zone_name = pSQL(Tools::getValue('zone'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
-        $success = \PrettyBlocksModel::deleteBlocksFromZone($zone_name, $id_lang, $id_shop);
+        $success = PrettyBlocksModel::deleteBlocksFromZone($zone_name, $id_lang, $id_shop);
         $message = $this->translator->trans('An error has occured during this process', [], 'Modules.Prettyblocks.Admin');
         if ($success) {
             $message = $this->translator->trans('Blocks deleted with success', [], 'Modules.Prettyblocks.Admin');
@@ -138,7 +138,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_shop = (int) Tools::getValue('ctx_id_shop');
         $zone_name = pSQL(Tools::getValue('zone'));
         $zone_name_to_paste = pSQL(Tools::getValue('zone_name_to_paste'));
-        $success = \PrettyBlocksModel::copyZone($zone_name, $zone_name_to_paste, $id_lang, $id_shop);
+        $success = PrettyBlocksModel::copyZone($zone_name, $zone_name_to_paste, $id_lang, $id_shop);
         $message = $this->translator->trans('An error has occured during this process', [], 'Modules.Prettyblocks.Admin');
         if ($success) {
             $message = $this->translator->trans('Zone dupplicated with success', [], 'Modules.Prettyblocks.Admin');
@@ -160,7 +160,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $zone_name = pSQL(Tools::getValue('zone_name'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');
-        $state = \PrettyBlocksModel::registerBlockToZone($zone_name, $code, $id_lang, $id_shop);
+        $state = PrettyBlocksModel::registerBlockToZone($zone_name, $code, $id_lang, $id_shop);
 
         exit(json_encode([
             'state' => $state,
@@ -487,7 +487,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $id_prettyblocks = (int) Tools::getValue('id_prettyblocks');
         $element = Tools::getValue('element');
 
-        $model = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
+        $model = new PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
         $model->mergeStateWithFields();
         if (Tools::getIsset('index')) {
             // save state

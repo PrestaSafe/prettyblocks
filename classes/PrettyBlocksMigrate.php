@@ -17,7 +17,7 @@ class PrettyBlocksMigrate
         $sql[] = 'ALTER TABLE `' . _DB_PREFIX_ . 'prettyblocks` ADD `template` longtext DEFAULT NULL AFTER `config`;';
         $sql[] = 'ALTER TABLE `' . _DB_PREFIX_ . 'prettyblocks` ADD `default_params` longtext DEFAULT NULL AFTER `config`;';
         foreach ($sql as $query) {
-            $res &= \Db::getInstance()->execute($query);
+            $res &= Db::getInstance()->execute($query);
         }
 
         return $res;
@@ -29,12 +29,12 @@ class PrettyBlocksMigrate
             && !self::columnExists('prettyblocks', 'default_params')) {
             self::addTemplateField();
         }
-        $langs = \Language::getLanguages();
+        $langs = Language::getLanguages();
         $res = true;
         $fields = [];
         foreach ($langs as $lang) {
             $lang_id = $lang['id_lang'];
-            $blocks = (new \PrestaShopCollection('PrettyBlocksModel', $lang_id))->getAll();
+            $blocks = (new PrestaShopCollection('PrettyBlocksModel', $lang_id))->getAll();
             // get old config
             foreach ($blocks as $model) {
                 $block = $model->mergeStateWithFields();
@@ -108,10 +108,10 @@ class PrettyBlocksMigrate
                 ADD COLUMN id_lang int(11) DEFAULT NULL,
                 ADD COLUMN state longtext DEFAULT NULL;
             ';
-            \Db::getInstance()->execute($sql);
+            Db::getInstance()->execute($sql);
         }
 
-        $blocks_lang = \Db::getInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'prettyblocks_lang');
+        $blocks_lang = Db::getInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'prettyblocks_lang');
         foreach ($blocks_lang as $block) {
             $existingBlock = new PrettyBlocksModel($block['id_prettyblocks']);
             $newBlocks = new PrettyBlocksModel();
@@ -133,7 +133,7 @@ class PrettyBlocksMigrate
         }
 
         $sql = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'prettyblocks_lang';
-        \Db::getInstance()->execute($sql);
+        Db::getInstance()->execute($sql);
 
         return true;
     }
@@ -167,7 +167,7 @@ class PrettyBlocksMigrate
 
         // get settings fields:
 
-        $settings_on_hooks = \HelperBuilder::hookToArray('ActionRegisterThemeSettings');
+        $settings_on_hooks = HelperBuilder::hookToArray('ActionRegisterThemeSettings');
         $res = [];
 
         foreach ($settings_on_hooks as $key => $field) {
@@ -320,14 +320,14 @@ class PrettyBlocksMigrate
     private static function _getDefaultParams($block)
     {
         $id_prettyblocks = (int) $block['id_prettyblocks'];
-        $key = \Tools::strtoupper($id_prettyblocks . '_default_params');
+        $key = Tools::strtoupper($id_prettyblocks . '_default_params');
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
         $options = [
             'container' => true,
             'load_ajax' => false,
             'bg_color' => '',
         ];
-        $defaultParams = \Configuration::get($key);
+        $defaultParams = Configuration::get($key);
         if (!$defaultParams) {
             return $options;
         }
@@ -345,10 +345,10 @@ class PrettyBlocksMigrate
     private static function _getTemplateSelected($block)
     {
         $id_prettyblocks = (int) $block['id_prettyblocks'];
-        $key = \Tools::strtoupper($id_prettyblocks . '_template');
+        $key = Tools::strtoupper($id_prettyblocks . '_template');
         // welcome = prettyblocks:views/templates/blocks/welcome.tpl
         $default_tpl = (isset($block['templates']['default'])) ? 'default' : 'welcome';
-        $currentTemplate = \Configuration::get($key, null, null, (int) $block['id_shop']);
+        $currentTemplate = Configuration::get($key, null, null, (int) $block['id_shop']);
         if ($currentTemplate !== false && isset($block['templates'][$currentTemplate])) {
             return $currentTemplate;
         }
@@ -358,41 +358,41 @@ class PrettyBlocksMigrate
 
     private static function _formatFieldConfigFront($field, $value, $block, $context = 'front')
     {
-        \FieldFormatter::setSuffix('_config');
+        FieldFormatter::setSuffix('_config');
 
         switch ($value['type']) {
             case 'editor':
-                return \FieldFormatter::formatFieldText($field, $value, $block, $context);
+                return FieldFormatter::formatFieldText($field, $value, $block, $context);
                 break;
             case 'text':
-                return \FieldFormatter::formatFieldText($field, $value, $block, $context);
+                return FieldFormatter::formatFieldText($field, $value, $block, $context);
                 break;
             case 'textarea':
-                return \FieldFormatter::formatFieldText($field, $value, $block, $context);
+                return FieldFormatter::formatFieldText($field, $value, $block, $context);
                 break;
             case 'color':
-                return \FieldFormatter::formatFieldText($field, $value, $block, $context);
+                return FieldFormatter::formatFieldText($field, $value, $block, $context);
                 break;
             case 'radio':
-                return \FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
+                return FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
                 break;
             case 'checkbox':
-                return \FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
+                return FieldFormatter::formatFieldBoxes($field, $value, $block, $context);
                 break;
             case 'fileupload':
-                return \FieldFormatter::formatFieldUpload($field, $value, $block, $context);
+                return FieldFormatter::formatFieldUpload($field, $value, $block, $context);
                 break;
             case 'upload':
-                return \FieldFormatter::formatFieldUpload($field, $value, $block, $context);
+                return FieldFormatter::formatFieldUpload($field, $value, $block, $context);
                 break;
             case 'selector':
-                return \FieldFormatter::formatFieldSelector($field, $value, $block, $context);
+                return FieldFormatter::formatFieldSelector($field, $value, $block, $context);
                 break;
             case 'select':
-                return \FieldFormatter::formatFieldSelect($field, $value, $block, $context);
+                return FieldFormatter::formatFieldSelect($field, $value, $block, $context);
                 break;
             case 'radio_group':
-                return \FieldFormatter::formatFieldRadioGroup($field, $value, $block, $context);
+                return FieldFormatter::formatFieldRadioGroup($field, $value, $block, $context);
                 break;
             default:
                 return '';

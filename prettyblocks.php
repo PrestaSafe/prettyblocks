@@ -52,13 +52,14 @@ class PrettyBlocks extends Module implements WidgetInterface
         'displayHeader',
         'actionDispatcher',
         'actionFrontControllerSetVariables',
+        'ActionRegisterThemeSettings',
     ];
 
     public function __construct()
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.0.6';
+        $this->version = '3.0.7';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -207,7 +208,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function hookdisplayHeader($params)
     {
-        if ((isset($_SERVER['HTTP_SEC_FETCH_DEST']) && $_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') || \Tools::getValue('prettyblocks') === '1') {
+        if ((isset($_SERVER['HTTP_SEC_FETCH_DEST']) && $_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') || Tools::getValue('prettyblocks') === '1') {
             $this->context->controller->registerJavascript(
                 'prettyblocks',
                 'modules/' . $this->name . '/views/js/build.js',
@@ -319,5 +320,22 @@ class PrettyBlocks extends Module implements WidgetInterface
         ]);
 
         return $context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
+    }
+
+    /**
+     * Hook for adding theme settings
+     * quick fix for adding tinyMCE api key.
+     */
+    public function hookActionRegisterThemeSettings()
+    {
+        return [
+             'tinymce_api_key' => [
+                 'type' => 'text', // type of field
+                 'label' => $this->l('TinyMCE api key'), // label to display
+                 'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
+                 'tab' => 'Settings',
+                 'default' => 'no-api-key', // default value (Boolean)
+             ],
+         ];
     }
 }
