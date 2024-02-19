@@ -41,7 +41,7 @@ onUnmounted(() => {
 const reloadIframe = () => {
   iframe.reloadIframe()
 }
-emitter.on('reloadIframe', async (id_prettyblocks) => {
+emitter.on('reloadIframe', async () => {
   let context = contextShop()
   iframe.setUrl(context.href)
   iframe.reloadIframe()

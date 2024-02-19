@@ -17,6 +17,9 @@ export const currentZone = defineStore('currentZone', {
   state: () => {
     return {
       name: 'displayHome',
+      alias: '',
+      priority: false,
+      zoneToFocus: '',
     }
   }
 })

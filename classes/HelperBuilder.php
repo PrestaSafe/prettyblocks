@@ -282,7 +282,7 @@ class HelperBuilder
     public static function getMediaTypeForExtension($extension): string
     {
         // media type (image, document, video, ...)
-        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'])) {
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'avif'])) {
             return 'image';
         }
         if (in_array($extension, ['mov', 'mp4', 'webm', 'ogg', 'ogv'])) {
@@ -290,5 +290,24 @@ class HelperBuilder
         }
 
         return 'document';
+    }
+
+    /**
+     * Check if there is a block in a zone
+     * @since 3.1.0
+     * @param string $zone_name
+     * @return bool
+     */
+    public static function zoneHasBlock($zone_name)
+    {
+        // Début de la sélection
+        $query = new DbQuery();
+        $query->select('COUNT(*)');
+        $query->from('prettyblocks');
+        $query->where('zone_name = "' . pSQL($zone_name) . '"');
+        
+        $count = Db::getInstance()->getValue($query);
+        // Fin de la sélection
+        return $count > 0;
     }
 }

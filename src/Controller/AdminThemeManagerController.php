@@ -25,6 +25,7 @@ use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Dotenv\Dotenv;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
@@ -221,6 +222,13 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                     break;
             }
         }
+        // register .env
+        $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
+
+        if(file_exists($env_file)){
+            $dotenv = new Dotenv();
+            $dotenv->load($env_file);
+        }
 
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
@@ -228,6 +236,10 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'favicon_url' => \Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
             'module_name' => $module->displayName,
             'shop_name' => $context->shop->name,
+            'env' => [
+                'vitedev' => getenv('PRETTYBLOCKS_VITE_DEV') ?? false,
+            ],
+
             'ajax_urls' => [
                 'shops' => $shops,
                 'simulate_home' => $symfonyUrl,
@@ -272,6 +284,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'js_build' => $js,
             'js_entry' => $js_entry,
         ]);
+
     }
 
     // (ajax_urls.state)

@@ -1,4 +1,5 @@
 import { toolbar } from '../../_dev/src/scripts/toolbar'
+import { getZoneDetailsByDom }  from '../../_dev/src/scripts/helper'
 window.hasEventListener = false;
 const unsubscribe = () => {
     window.removeEventListener("message", eventHandler, false);
@@ -76,8 +77,13 @@ let eventHandler = (event) => {
 
         els.forEach((el) => {
             let zone_name = el.getAttribute('data-zone-name')
+            let current_zone = {
+                name: el.getAttribute('data-zone-name'),
+                alias: el.getAttribute('data-zone-alias') || '',
+                priority: el.getAttribute('data-zone-priority') || 'false',
+            }
             if (zones.indexOf(zone_name) == -1) {
-                zones.push(zone_name)
+                zones.push(current_zone)
             }
         })
         return event.source.postMessage({ type: 'zones', data: zones }, '*');
@@ -96,9 +102,10 @@ let eventHandler = (event) => {
 const selectBlock = (id_prettyblocks, event) => {
         let el = focusBlock(id_prettyblocks)
         let zone_name = el.closest('[data-prettyblocks-zone]').getAttribute('data-prettyblocks-zone')
+        let zoneElement = getZoneDetailsByDom(document.getQuerySelector('[data-zone-name="' + zone_name + '"]'))
         let params = {
             id_prettyblocks: id_prettyblocks,
-            zone_name: zone_name
+            zone: zoneElement
         }
         return event.source.postMessage({ type: 'focusBlock', data: params }, '*');
 

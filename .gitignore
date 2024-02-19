@@ -10,3 +10,4 @@ views/images/*
 test.php
 .php-cs-fixer.cache
 _dev/yarn.lock
+.env

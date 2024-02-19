@@ -18,7 +18,7 @@
  *}
 
 
- <div data-prettyblocks-zone="{$zone_name}">
+ <div data-prettyblocks-zone="{$zone_name}" >
  {if $blocks|count > 0}
   {foreach from=$blocks item=block name=zoneBlocks}
   <div {if $block.settings.default.load_ajax} load-ajax {/if} data-block data-instance-id="{$block.instance_id}" data-id-prettyblocks="{$block.id_prettyblocks}">
@@ -40,6 +40,6 @@
   {/foreach}
 {/if}
   </div>
-<div class="d-none blocks text-center w-100 p-5" data-zone-name="{$zone_name}"></div>
+<div class="d-none blocks text-center w-100 p-5" data-zone-name="{$zone_name}" {if $priority}data-zone-priority="true"{/if} {if $alias}data-zone-alias="{$alias}"{/if}></div>
 
 

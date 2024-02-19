@@ -20,12 +20,14 @@
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
+
 
 class PrettyBlocks extends Module implements WidgetInterface
 {
@@ -54,13 +56,14 @@ class PrettyBlocks extends Module implements WidgetInterface
         'actionFrontControllerSetVariables',
         'ActionRegisterThemeSettings',
         'displayBackOfficeHeader',
+        'ActionRegisterBlock',
     ];
 
     public function __construct()
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.0.7';
+        $this->version = '3.1.0';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -222,8 +225,35 @@ class PrettyBlocks extends Module implements WidgetInterface
         ];
     }
 
+    private function _addDynamicZones()
+    {
+        $smartyVars = $this->context->smarty->getTemplateVars();
+        if($this->context->controller->php_self == 'product') {
+            if(isset($smartyVars['product']['description'])) {
+                $product  = $smartyVars['product'];
+                $zone_name = 'product_description_'.$smartyVars['product']['id_product'];
+                // if(\HelperBuilder::zoneHasBlock($zone_name))
+                // {
+                    // create empty blocks and register blocks in it. 
+                    $description = $this->renderZone(
+                        [
+                            'zone_name' => $zone_name, 
+                            'priority' => true,
+                            'alias' => 'Description produit',
+                        ]
+                    );
+                    $product['description'] = $description;
+                    $this->context->smarty->assign('product', $product);
+
+                // }
+
+
+            }
+        }
+    }
     public function hookdisplayHeader($params)
     {
+        $this->_addDynamicZones();
         if ((isset($_SERVER['HTTP_SEC_FETCH_DEST']) && $_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') || Tools::getValue('prettyblocks') === '1') {
             $this->context->controller->registerJavascript(
                 'prettyblocks',
@@ -320,6 +350,8 @@ class PrettyBlocks extends Module implements WidgetInterface
     public static function renderZone($params)
     {
         $zone_name = $params['zone_name'];
+        $priority = $params['priority'] ?? false;
+        $alias = $params['alias'] ?? '';
 
         if (empty($zone_name)) {
             return false;
@@ -332,6 +364,8 @@ class PrettyBlocks extends Module implements WidgetInterface
 
         $context->smarty->assign([
             'zone_name' => $zone_name,
+            'priority' => $priority,
+            'alias' => $alias,
             'blocks' => $blocks,
         ]);
 
@@ -353,5 +387,17 @@ class PrettyBlocks extends Module implements WidgetInterface
                  'default' => 'no-api-key', // default value (Boolean)
              ],
          ];
+    }
+
+    /** 
+     * Register blocks into prettyblocks
+     * register smartyblock
+     */
+    public function hookActionRegisterBlock($params)
+    {
+        return \HelperBuilder::renderBlocks([
+            new \SmartyRender($this),
+        ]);
+
     }
 }

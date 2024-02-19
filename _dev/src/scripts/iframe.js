@@ -86,13 +86,14 @@ export default class Iframe {
             if(event.data.type == 'focusBlock')
             {
                 let id_prettyblocks = event.data.data.id_prettyblocks
-                let zone_name = event.data.data.zone_name
+                let zone = event.data.data.zone
+
                 let piniaBlocks =  await storedBlocks().blocks
                 
                 let element = await piniaBlocks.find(b => {
                     return b.id_prettyblocks == id_prettyblocks
                 });
-                emitter.emit('selectZone', zone_name)
+                emitter.emit('selectZone', zone)
 
                 emitter.emit('displayBlockConfig', element)
                 emitter.emit('setSelectedElement', element.formatted.id)
@@ -144,8 +145,6 @@ export default class Iframe {
         this.loader.value = true
         let iframe = document.getElementById('website-iframe')
         iframe.src = this.updateFilteredURL(this.current_url.value)
-        // this.loadIframe()
-        // this.loader.value = false
     }
     updateFilteredURL(url) {
         let hashIndex = url.indexOf('#');

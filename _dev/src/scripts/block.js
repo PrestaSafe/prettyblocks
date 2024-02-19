@@ -86,7 +86,17 @@ export default class Block {
     {
         let key_formatted = 0
         this.subSelected = this.getCurrentBlock().subSelected
-        key_formatted = this.subSelected.split('-')[1]
+        if(typeof this.subSelected !== 'undefined'){
+            key_formatted = this.subSelected.split('-')[1]
+        } else {
+            let maxKey = 0
+            if(this.states.length == 0){
+                let keys = Object.keys(this.states).map(Number);
+                maxKey = Math.max(...keys); 
+            }
+            maxKey = maxKey + 1
+            key_formatted = this.id_prettyblocks + '-' + maxKey;
+        }
         return key_formatted
     }
 
