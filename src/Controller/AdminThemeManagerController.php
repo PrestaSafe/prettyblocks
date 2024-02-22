@@ -220,6 +220,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 case 'cms':
                     $startup_url = $link->getCMSLink((int) \Tools::getValue('id'));
                     break;
+                case 'custom' :
+                    $startup_url = $startup_url;
+                    break;
             }
         }
         // register .env
@@ -257,6 +260,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'block_action_urls' => $blockUrl,
                 'theme_settings' => $settingsUrls,
                 'startup_url' => $startup_url,
+                'prettyblocks_route_generator' => $this->getSFUrl('prettyblocks_route_generator')
             ],
             'trans_app' => [
                 'current_shop' => $translator->trans('Shop in modification', [], 'Modules.Prettyblocks.Admin'),
@@ -643,16 +647,21 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return \Language::getIsoById($idLang) . '/';
     }
 
+    /** 
+     * Generate URL for PrettyBlocks
+     */
     public function routeGeneratorAction(Request $request)
     {
         $posts = json_decode($request->getContent(), true);
         $endpoint = $posts['endpoint'];
         $id = (int) $posts['id'];
+        $startup_url = $posts['startup_url'] ?? '';
 
         $router = $this->get('router');
         $url = $router->generate('admin_prettyblocks', [
             'endpoint' => $endpoint,
             'id' => $id,
+            'startup_url' => $startup_url
         ]);
 
         return (new JsonResponse())->setData([

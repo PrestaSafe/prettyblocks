@@ -57,15 +57,37 @@ emitter.on('highLightBlock', (id_prettyblocks) => {
 emitter.on('changeUrl', (shop, custom_url = null) => {  
   if(custom_url == null)
   {
+    custom_url = shop.current_url
     iframe.setUrl(shop.current_url)
-  }else{
-    iframe.setUrl(custom_url)
   }
-
+  iframe.setUrl(custom_url)
   iframe.setIdLang(shop.id_lang)
   iframe.setIdShop(shop.id_shop)
   iframe.constructEvent()
   iframe.reloadIframe()
+  // change url dynamicly
+  let url = ajax_urls.prettyblocks_route_generator;
+  console.log('prettyblocks_route_generator', url);
+   fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            endpoint: 'custom',
+            id: 0,
+            startup_url: custom_url,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('prettyblocks_route_generator', data);
+          const location = data.url;
+          history.pushState({}, "", location);
+
+    });
+
+
 })
 
 
