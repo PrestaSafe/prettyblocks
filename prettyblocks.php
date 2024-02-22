@@ -288,13 +288,13 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function hookActionRegisterThemeSettings()
     {
         return [
-             'tinymce_api_key' => [
-                 'type' => 'text', // type of field
-                 'label' => $this->l('TinyMCE api key'), // label to display
-                 'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
-                 'tab' => 'Settings',
-                 'default' => 'no-api-key', // default value (Boolean)
-             ],
-         ];
-    }    
+            'tinymce_api_key' => [
+                'type' => 'text', // type of field
+                'label' => $this->l('TinyMCE api key'), // label to display
+                'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
+                'tab' => 'Settings',
+                'default' => 'no-api-key', // default value (Boolean)
+            ],
+        ];
+    }
 }
