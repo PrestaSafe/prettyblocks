@@ -55,6 +55,7 @@ const removeTinyNotifications = () => {
     })
   }, 300)
 }
+let tinymce_api_key = ref(window.security_app.tinymce_api_key)
 </script>
 
 <template>
@@ -79,6 +80,7 @@ const removeTinyNotifications = () => {
       <div class="pb-4"> {{ f.label }} </div>
       <Editor
         v-model="f.value"
+        :api-key="tinymce_api_key"
         @init="removeTinyNotifications()"
         :init="{
           height: 500,
