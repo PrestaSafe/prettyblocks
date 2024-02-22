@@ -51,13 +51,14 @@ class PrettyBlocks extends Module implements WidgetInterface
         'displayRightColumn',
         'actionDispatcher',
         'actionFrontControllerSetVariables',
+        'ActionRegisterThemeSettings',
     ];
 
     public function __construct()
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '2.2.0';
+        $this->version = '2.2.1';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -278,5 +279,22 @@ class PrettyBlocks extends Module implements WidgetInterface
         ]);
 
         return $context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
+    }
+
+    /**
+     * Hook for adding theme settings
+     * quick fix for adding tinyMCE api key.
+     */
+    public function hookActionRegisterThemeSettings()
+    {
+        return [
+            'tinymce_api_key' => [
+                'type' => 'text', // type of field
+                'label' => $this->l('TinyMCE api key'), // label to display
+                'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
+                'tab' => 'Settings',
+                'default' => 'no-api-key', // default value (Boolean)
+            ],
+        ];
     }
 }

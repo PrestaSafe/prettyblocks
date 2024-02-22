@@ -250,6 +250,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'security_app' => [
                 'ajax_token' => \Configuration::get('_PRETTYBLOCKS_TOKEN_'),
                 'prettyblocks_version' => $module->version,
+                'tinymce_api_key' => \TplSettings::getSettings('tinymce_api_key') ?? 'no-api-key',
             ],
             'css_build' => $css,
             'js_build' => $js,
