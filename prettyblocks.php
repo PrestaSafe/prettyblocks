@@ -201,6 +201,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function renderWidget($hookName = null, array $configuration = [])
     {
         $vars = $this->getWidgetVariables($hookName, $configuration);
+
         $this->smarty->assign($vars);
         if (isset($configuration['zone_name'])) {
             return $this->renderZone(['zone_name' => pSQL($configuration['zone_name'])]);
@@ -260,7 +261,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         return $title->setValueFromBlock(true)->setValue($value)->render();
     }
 
-    public static function renderZone($params)
+    public function renderZone($params)
     {
         $zone_name = $params['zone_name'];
 
@@ -268,19 +269,34 @@ class PrettyBlocks extends Module implements WidgetInterface
             return false;
         }
 
+        $templateFile = 'module:prettyblocks/views/templates/front/zone.tpl';
         $context = Context::getContext();
-        $id_lang = $context->language->id;
-        $id_shop = $context->shop->id;
-        $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
+        echo 'iscached : '.$this->isCached($templateFile, $this->getCacheId($zone_name));
+        if (!$this->isCached($templateFile, $this->getCacheId($zone_name))) {
+            $id_lang = $context->language->id;
+            $id_shop = $context->shop->id;
+            $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
 
-        $context->smarty->assign([
-            'zone_name' => $zone_name,
-            'blocks' => $blocks,
-        ]);
+            $context->smarty->assign([
+                'zone_name' => $zone_name,
+                'blocks' => $blocks,
+            ]);
+        }
 
-        return $context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
+        return $this->fetch($templateFile, $this->getCacheId($zone_name));
+        // return $context->smarty->fetch($templateFile, $this->getCacheId($zone_name));
     }
 
+    protected function getCacheId($name = null)
+    {
+        $cacheId = 'prettyblocks|' . parent::getCacheId($name);
+        /* if (!empty($this->context->customer->id)) {
+            $cacheId .= '|' . $this->context->customer->id;
+        } */
+
+        return $cacheId;
+    }
+    
     /**
      * Hook for adding theme settings
      * quick fix for adding tinyMCE api key.
@@ -296,5 +312,9 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'default' => 'no-api-key', // default value (Boolean)
             ],
         ];
+    }
+
+    public function clearCache($var) {
+        $this->_clearCache($var);
     }
 }
