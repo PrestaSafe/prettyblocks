@@ -67,7 +67,7 @@ emitter.on('changeUrl', (shop, custom_url = null) => {
   iframe.reloadIframe()
   // change url dynamicly
   let url = ajax_urls.prettyblocks_route_generator;
-  console.log('prettyblocks_route_generator', url);
+
    fetch(url, {
         method: 'POST',
         headers: {
@@ -81,10 +81,8 @@ emitter.on('changeUrl', (shop, custom_url = null) => {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('prettyblocks_route_generator', data);
           const location = data.url;
           history.pushState({}, "", location);
-
     });
 
 

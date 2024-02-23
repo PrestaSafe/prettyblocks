@@ -26,6 +26,7 @@ use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
 class FieldCore
 {
     public $type;
+    public $provider;
     public $label;
     public $path;
     public $collection;
@@ -118,6 +119,9 @@ class FieldCore
         $data = [];
         if ($this->type) {
             $data['type'] = $this->type;
+        }
+        if ($this->provider) {
+            $data['provider'] = $this->provider;
         }
         if ($this->label) {
             $data['label'] = $this->label;

@@ -15,6 +15,10 @@ import FileUpload from './form/FileUpload.vue'
 import Choices from './form/Choices.vue'
 import Icon from './Icon.vue'
 import Editor from '@tinymce/tinymce-vue'
+// vue quill or tinymce
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import '@vueup/vue-quill/dist/vue-quill.bubble.css';
 import { v4 as uuidv4 } from 'uuid'
 import { defineComponent, defineProps, ref, defineEmits, onMounted } from 'vue'
 
@@ -77,8 +81,9 @@ let tinymce_api_key = ref(window.security_app.tinymce_api_key)
       placeholder="Entrez du texte" />
     <Checkbox class="my-4" v-if="f.type == 'checkbox' || f.type == 'radio'" :name="uuidv4()" v-model="f.value"
       :title="f.label" />
-    <div class="clearfix" v-if="f.type == 'editor'">
-      <div class="pb-4"> {{ f.label }} </div>
+    <div class="clearfix" v-if="f.type == 'editor' && f.provider == 'tinymce'">
+      <div class="block text-sm font-medium text-gray-700 pb-2"> {{ f.label }} </div>
+      <!--  TinyMCE -->
       <Editor
         v-model="f.value"
         :api-key="tinymce_api_key"
@@ -91,6 +96,13 @@ let tinymce_api_key = ref(window.security_app.tinymce_api_key)
           toolbar2: 'bold italic underline bullist numlist link',
         }"
       />
+    </div>
+    <!--  VueQuill -->
+    <div v-else-if="f.type == 'editor' && (f.provider !== 'tinymce' || f.provider == 'vuequill')" class="clearfix">
+      <div class="block text-sm font-medium text-gray-700 pb-2"> {{ f.label }} </div>
+      <div class="bg-white">
+        <QuillEditor  v-model:content="f.value"  contentType="html" theme="snow" toolbar="full" />
+      </div>
     </div>
     <div v-if="f.type == 'select'">
       <Choices :choices="f.choices" v-model="f.value" :label="f.label" />

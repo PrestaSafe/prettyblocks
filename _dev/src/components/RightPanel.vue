@@ -195,8 +195,7 @@ emitter.on('globalSave', () => {
         <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
       </div>
       <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected"
-        :availableTpl="config.templates" :currentTpl="config.templateSelected"
-        @update="value => console.log('value', value)" :label="trans('choose_template')" />
+        :availableTpl="config.templates" :currentTpl="config.templateSelected" :label="trans('choose_template')" />
     </div>
 
     <!-- State panel  -->
