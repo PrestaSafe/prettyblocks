@@ -20,14 +20,12 @@
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
-
 
 class PrettyBlocks extends Module implements WidgetInterface
 {
@@ -228,29 +226,28 @@ class PrettyBlocks extends Module implements WidgetInterface
     private function _addDynamicZones()
     {
         $smartyVars = $this->context->smarty->getTemplateVars();
-        if($this->context->controller->php_self == 'product') {
-            if(isset($smartyVars['product']['description'])) {
-                $product  = $smartyVars['product'];
-                $zone_name = 'product_description_'.$smartyVars['product']['id_product'];
+        if ($this->context->controller->php_self == 'product') {
+            if (isset($smartyVars['product']['description'])) {
+                $product = $smartyVars['product'];
+                $zone_name = 'product_description_' . $smartyVars['product']['id_product'];
                 // if(\HelperBuilder::zoneHasBlock($zone_name))
                 // {
-                    // create empty blocks and register blocks in it. 
-                    $description = $this->renderZone(
-                        [
-                            'zone_name' => $zone_name, 
-                            'priority' => true,
-                            'alias' => 'Description produit',
-                        ]
-                    );
-                    $product['description'] = $description;
-                    $this->context->smarty->assign('product', $product);
+                // create empty blocks and register blocks in it.
+                $description = $this->renderZone(
+                    [
+                        'zone_name' => $zone_name,
+                        'priority' => true,
+                        'alias' => 'Description produit',
+                    ]
+                );
+                $product['description'] = $description;
+                $this->context->smarty->assign('product', $product);
 
                 // }
-
-
             }
         }
     }
+
     public function hookdisplayHeader($params)
     {
         $this->_addDynamicZones();
@@ -389,15 +386,14 @@ class PrettyBlocks extends Module implements WidgetInterface
          ];
     }
 
-    /** 
+    /**
      * Register blocks into prettyblocks
      * register smartyblock
      */
     public function hookActionRegisterBlock($params)
     {
-        return \HelperBuilder::renderBlocks([
-            new \SmartyRender($this),
+        return HelperBuilder::renderBlocks([
+            new SmartyRender($this),
         ]);
-
     }
 }

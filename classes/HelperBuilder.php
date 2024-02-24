@@ -294,8 +294,11 @@ class HelperBuilder
 
     /**
      * Check if there is a block in a zone
+     *
      * @since 3.1.0
+     *
      * @param string $zone_name
+     *
      * @return bool
      */
     public static function zoneHasBlock($zone_name)
@@ -305,8 +308,9 @@ class HelperBuilder
         $query->select('COUNT(*)');
         $query->from('prettyblocks');
         $query->where('zone_name = "' . pSQL($zone_name) . '"');
-        
+
         $count = Db::getInstance()->getValue($query);
+
         // Fin de la sélection
         return $count > 0;
     }

@@ -272,7 +272,7 @@ class PrettyBlocksModel extends ObjectModel
         foreach ($this->configFields as $name => $field) {
             $formatted[$name] = (new FieldCore($field))->compile();
         }
-        
+
         // is settings_formatted section block
         $formatted['templates'] = $this->_getBlockTemplate($block);
         $formatted['templateSelected'] = $this->_getTemplateSelected($block);

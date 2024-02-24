@@ -227,8 +227,9 @@ class FieldCore
         |
     */
 
-    /** 
+    /**
      * formatFieldDatePicker
+     *
      * @return DateTime
      */
     public function formatFieldDatepicker()
@@ -241,6 +242,7 @@ class FieldCore
         if ($this->force_default_value && is_null($this->new_value)) {
             return \DateTime::createFromFormat('Y-m-d', $this->default)->format('Y-m-d');
         }
+
         // dump($this->new_value);
         return \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $this->new_value)->format('Y-m-d');
     }

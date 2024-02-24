@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -23,25 +24,22 @@ use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 class SmartyRender implements BlockInterface
 {
     private $module;
-    
+
     public function __construct($module)
     {
         $this->module = $module;
     }
 
-    
-
-
     public function registerBlocks(): array
     {
-        return   [
+        return [
             'name' => $this->module->l('Smarty render'),
             'description' => $this->module->l('Execute smarty code'),
             'code' => 'prettyblocks_smarty_render',
             'tab' => 'general',
             'icon' => 'CommandLineIcon',
             'need_reload' => false,
-            'insert_default_values' => true, 
+            'insert_default_values' => true,
             'templates' => [
                 'default' => 'module:' . $this->module->name . '/views/templates/blocks/smarty_render.tpl',
             ],
@@ -54,7 +52,6 @@ class SmartyRender implements BlockInterface
                     ],
                 ],
             ],
-
         ];
     }
 }

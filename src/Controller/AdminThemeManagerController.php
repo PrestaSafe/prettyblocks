@@ -22,10 +22,10 @@ namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Dotenv\Dotenv;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
@@ -220,7 +220,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 case 'cms':
                     $startup_url = $link->getCMSLink((int) \Tools::getValue('id'));
                     break;
-                case 'custom' :
+                case 'custom':
                     $startup_url = $startup_url;
                     break;
             }
@@ -228,7 +228,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         // register .env
         $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
 
-        if(file_exists($env_file)){
+        if (file_exists($env_file)) {
             $dotenv = new Dotenv();
             $dotenv->load($env_file);
         }
@@ -260,7 +260,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'block_action_urls' => $blockUrl,
                 'theme_settings' => $settingsUrls,
                 'startup_url' => $startup_url,
-                'prettyblocks_route_generator' => $this->getSFUrl('prettyblocks_route_generator')
+                'prettyblocks_route_generator' => $this->getSFUrl('prettyblocks_route_generator'),
             ],
             'trans_app' => [
                 'current_shop' => $translator->trans('Shop in modification', [], 'Modules.Prettyblocks.Admin'),
@@ -288,7 +288,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'js_build' => $js,
             'js_entry' => $js_entry,
         ]);
-
     }
 
     // (ajax_urls.state)
@@ -625,7 +624,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
      *
      * @return string
      */
-    protected function getLangLink($idLang = null, \Context $context = null, $idShop = null)
+    protected function getLangLink($idLang = null, ?\Context $context = null, $idShop = null)
     {
         static $psRewritingSettings = null;
         if ($psRewritingSettings === null) {
@@ -647,7 +646,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return \Language::getIsoById($idLang) . '/';
     }
 
-    /** 
+    /**
      * Generate URL for PrettyBlocks
      */
     public function routeGeneratorAction(Request $request)
@@ -661,7 +660,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $url = $router->generate('admin_prettyblocks', [
             'endpoint' => $endpoint,
             'id' => $id,
-            'startup_url' => $startup_url
+            'startup_url' => $startup_url,
         ]);
 
         return (new JsonResponse())->setData([
