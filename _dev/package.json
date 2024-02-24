@@ -17,6 +17,7 @@
     "@tinymce/tinymce-vue": "^5.1.1",
     "@vitejs/plugin-vue": "^2.3.4",
     "@vueform/multiselect": "^2.6.6",
+    "@vuepic/vue-datepicker": "^8.1.1",
     "@vueup/vue-quill": "^1.2.0",
     "autoprefixer": "^10.4.16",
     "dropzone": "^6.0.0-beta.2",

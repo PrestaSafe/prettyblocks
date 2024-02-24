@@ -227,6 +227,24 @@ class FieldCore
         |
     */
 
+    /** 
+     * formatFieldDatePicker
+     * @return DateTime
+     */
+    public function formatFieldDatepicker()
+    {
+        // if value exists in DB and new_value is empty
+        if (!is_null($this->value) && is_null($this->new_value)) {
+            return \DateTime::createFromFormat('Y-m-d', $this->value)->format('Y-m-d');
+        }
+        // if value doesn't exists in DB and new value is set
+        if ($this->force_default_value && is_null($this->new_value)) {
+            return \DateTime::createFromFormat('Y-m-d', $this->default)->format('Y-m-d');
+        }
+        // dump($this->new_value);
+        return \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $this->new_value)->format('Y-m-d');
+    }
+
     /**
      * formatFieldTitle
      *

@@ -1,4 +1,5 @@
 <script setup>
+// PrettyBLock Core
 import FormControl from './form/FormControl.vue'
 import Accordion from './Accordion.vue'
 import ColorInput from 'vue-color-input'
@@ -8,20 +9,32 @@ import SimpleSelect from './form/SimpleSelect.vue'
 import MultiSelect from './form/MultiSelect.vue'
 import HeaderDropdown from './HeaderDropdown.vue'
 import Textarea from './form/Textarea.vue'
+import Title from './Title.vue'
 import Checkbox from './form/Checkbox.vue'
 import Radio from './form/Radio.vue'
 import Button from './Button.vue'
 import FileUpload from './form/FileUpload.vue'
 import Choices from './form/Choices.vue'
 import Icon from './Icon.vue'
+
+// tinyMCE 
 import Editor from '@tinymce/tinymce-vue'
+
 // vue quill or tinymce
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import '@vueup/vue-quill/dist/vue-quill.bubble.css';
-import { v4 as uuidv4 } from 'uuid'
-import { defineComponent, defineProps, ref, defineEmits, onMounted } from 'vue'
 
+//  date picker 
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css' 
+
+// UUID
+import { v4 as uuidv4 } from 'uuid'
+
+// Vue
+import { defineComponent, defineProps, ref, defineEmits, onMounted } from 'vue'
+let date = ref('2024/02/23')
 defineComponent({
   FormControl,
   Accordion,
@@ -40,6 +53,9 @@ defineComponent({
   Choices,
   MultiSelect
 })
+const formatDateFromString = (date) => {
+  return new Date(date)
+}
 const props = defineProps({
   field: {
     type: Object,
@@ -82,7 +98,7 @@ let tinymce_api_key = ref(window.security_app.tinymce_api_key)
     <Checkbox class="my-4" v-if="f.type == 'checkbox' || f.type == 'radio'" :name="uuidv4()" v-model="f.value"
       :title="f.label" />
     <div class="clearfix" v-if="f.type == 'editor' && f.provider == 'tinymce'">
-      <div class="block text-sm font-medium text-gray-700 pb-2"> {{ f.label }} </div>
+      <Title :title="f.label" />
       <!--  TinyMCE -->
       <Editor
         v-model="f.value"
@@ -99,7 +115,7 @@ let tinymce_api_key = ref(window.security_app.tinymce_api_key)
     </div>
     <!--  VueQuill -->
     <div v-else-if="f.type == 'editor' && (f.provider !== 'tinymce' || f.provider == 'vuequill')" class="clearfix">
-      <div class="block text-sm font-medium text-gray-700 pb-2"> {{ f.label }} </div>
+      <Title :title="f.label" />
       <div class="bg-white">
         <QuillEditor  v-model:content="f.value"  contentType="html" theme="snow" toolbar="full" />
       </div>
@@ -115,6 +131,11 @@ let tinymce_api_key = ref(window.security_app.tinymce_api_key)
       <Radio v-for='(group, value, key) in f.choices' :key="group" v-model="f.value" :title="group"
         :name="'radio-group-' + key" :value="value" />
     </FormControl>
+
+    <div class="my-4" v-if="f.type == 'datepicker'">
+      <Title :title="f.label" />
+      <VueDatePicker :model-value="formatDateFromString(f.value)" :enable-time-picker="false" @update:modelValue="f.value = $event" />
+    </div>  
   </div>
 </template>
 
