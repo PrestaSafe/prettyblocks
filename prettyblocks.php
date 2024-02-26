@@ -52,13 +52,15 @@ class PrettyBlocks extends Module implements WidgetInterface
         'actionDispatcher',
         'actionFrontControllerSetVariables',
         'ActionRegisterThemeSettings',
+        'actionProductUpdate',
+        'actionProductDelete',
     ];
 
     public function __construct()
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '2.2.1';
+        $this->version = '2.3.0';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -236,8 +238,8 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function hookActionDispatcher()
     {
         /* @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
-        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
-        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
+        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZoneStatic']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZoneStatic']);
         $this->context->smarty->registerPlugin('function', 'prettyblocks_title', [PrettyBlocks::class, 'renderTitle']);
     }
 
@@ -271,7 +273,6 @@ class PrettyBlocks extends Module implements WidgetInterface
 
         $templateFile = 'module:prettyblocks/views/templates/front/zone.tpl';
         $context = Context::getContext();
-        echo 'iscached : '.$this->isCached($templateFile, $this->getCacheId($zone_name));
         if (!$this->isCached($templateFile, $this->getCacheId($zone_name))) {
             $id_lang = $context->language->id;
             $id_shop = $context->shop->id;
@@ -285,6 +286,13 @@ class PrettyBlocks extends Module implements WidgetInterface
 
         return $this->fetch($templateFile, $this->getCacheId($zone_name));
         // return $context->smarty->fetch($templateFile, $this->getCacheId($zone_name));
+    }
+
+    public function renderZoneStatic($params)
+    {
+        $module = \Module::getInstanceByName('prettyblocks');
+
+        return $module->renderZone($params);
     }
 
     protected function getCacheId($name = null)
@@ -312,6 +320,16 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'default' => 'no-api-key', // default value (Boolean)
             ],
         ];
+    }
+
+    public function hookActionProductUpdate($params)
+    {
+        $this->clearCache('*');
+    }
+
+    public function hookActionProductDelete($params)
+    {
+        $this->clearCache('*');
     }
 
     public function clearCache($var) {
