@@ -101,6 +101,7 @@ let eventHandler = (event) => {
  */
 const selectBlock = (id_prettyblocks, event) => {
         let el = focusBlock(id_prettyblocks)
+
         let zone_name = el.closest('[data-prettyblocks-zone]').getAttribute('data-prettyblocks-zone')
         let zoneElement = getZoneDetailsByDom(document.getQuerySelector('[data-zone-name="' + zone_name + '"]'))
         let params = {
@@ -113,6 +114,7 @@ const selectBlock = (id_prettyblocks, event) => {
 const focusBlock = (id_prettyblocks) => {
     let doc = document
     let el = doc.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
+
     if (doc.body.contains(el) && !el.classList.contains('border-dotted')) {
         el.scrollIntoView({
             alignToTop: false,
@@ -191,6 +193,7 @@ const moveBlockToZone = (event) => {
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
+    console.log('hello')
     if (!window.hasEventListener) {
         window.addEventListener("message", eventHandler, false)
         window.hasEventListener = true;

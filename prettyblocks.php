@@ -153,6 +153,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function getContent()
     {
+        // $this->registerHook('displayBackOfficeHeader');
         return Tools::redirect($this->getPrettyBlocksUrl());
     }
 
@@ -177,6 +178,9 @@ class PrettyBlocks extends Module implements WidgetInterface
         Media::addJsDef([
             'prettyblocks_route_generator' => $route,
             'prettyblocks_logo' => HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png'),
+            'ps_version' => _PS_VERSION_,
+            'ps17' => version_compare(_PS_VERSION_, '8.0.0', '<='),
+            'ps8' => version_compare(_PS_VERSION_, '8.0.0', '>=')
         ]);
 
         $this->context->controller->addJS($this->_path . 'views/js/back.js');
@@ -250,7 +254,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     public function hookdisplayHeader($params)
     {
-        $this->_addDynamicZones();
+        // $this->_addDynamicZones();
         if ((isset($_SERVER['HTTP_SEC_FETCH_DEST']) && $_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') || Tools::getValue('prettyblocks') === '1') {
             $this->context->controller->registerJavascript(
                 'prettyblocks',
