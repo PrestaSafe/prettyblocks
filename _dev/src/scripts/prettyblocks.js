@@ -1,5 +1,5 @@
-import { toolbar } from '../../_dev/src/scripts/toolbar'
-import { getZoneDetailsByDom }  from '../../_dev/src/scripts/helper'
+import { toolbar } from './toolbar'
+import { getZoneDetailsByDom }  from './helper'
 window.hasEventListener = false;
 const unsubscribe = () => {
     window.removeEventListener("message", eventHandler, false);
@@ -74,15 +74,17 @@ let eventHandler = (event) => {
     if (event.data.type == 'getZones') {
         let els = document.querySelectorAll('[data-zone-name]')
         let zones = []
+        let zone_name = ''
 
         els.forEach((el) => {
-            let zone_name = el.getAttribute('data-zone-name')
+            zone_name = el.getAttribute('data-zone-name')
             let current_zone = {
                 name: el.getAttribute('data-zone-name'),
                 alias: el.getAttribute('data-zone-alias') || '',
                 priority: el.getAttribute('data-zone-priority') || 'false',
             }
-            if (zones.indexOf(zone_name) == -1) {
+
+            if (!zones.some(zone => zone.name === zone_name)) {
                 zones.push(current_zone)
             }
         })

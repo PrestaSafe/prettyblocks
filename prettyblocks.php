@@ -180,7 +180,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             'prettyblocks_logo' => HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png'),
             'ps_version' => _PS_VERSION_,
             'ps17' => version_compare(_PS_VERSION_, '8.0.0', '<='),
-            'ps8' => version_compare(_PS_VERSION_, '8.0.0', '>=')
+            'ps8' => version_compare(_PS_VERSION_, '8.0.0', '>='),
         ]);
 
         $this->context->controller->addJS($this->_path . 'views/js/back.js');
@@ -230,13 +230,16 @@ class PrettyBlocks extends Module implements WidgetInterface
     private function _addDynamicZones()
     {
         $smartyVars = $this->context->smarty->getTemplateVars();
+
         if ($this->context->controller->php_self == 'product') {
+            // product description
             if (isset($smartyVars['product']['description'])) {
                 $product = $smartyVars['product'];
                 $zone_name = 'product_description_' . $smartyVars['product']['id_product'];
-                // if(\HelperBuilder::zoneHasBlock($zone_name))
-                // {
-                // create empty blocks and register blocks in it.
+                // si no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                    $this->registerBlockToZone($zone_name, 'prettyblocks_product_description');
+                }
                 $description = $this->renderZone(
                     [
                         'zone_name' => $zone_name,
@@ -246,15 +249,32 @@ class PrettyBlocks extends Module implements WidgetInterface
                 );
                 $product['description'] = $description;
                 $this->context->smarty->assign('product', $product);
+            }
 
-                // }
+            // product description short
+            if (isset($smartyVars['product']['description_short'])) {
+                $product = $smartyVars['product'];
+                $zone_name = 'product_description_short_' . $smartyVars['product']['id_product'];
+                // si no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                    $this->registerBlockToZone($zone_name, 'prettyblocks_product_description_short');
+                }
+                $description_short = $this->renderZone(
+                    [
+                        'zone_name' => $zone_name,
+                        'priority' => false,
+                        'alias' => 'Description courte produit',
+                    ]
+                );
+                $product['description_short'] = $description_short;
+                $this->context->smarty->assign('product', $product);
             }
         }
     }
 
     public function hookdisplayHeader($params)
     {
-        // $this->_addDynamicZones();
+        $this->_addDynamicZones();
         if ((isset($_SERVER['HTTP_SEC_FETCH_DEST']) && $_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') || Tools::getValue('prettyblocks') === '1') {
             $this->context->controller->registerJavascript(
                 'prettyblocks',
@@ -397,7 +417,9 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function hookActionRegisterBlock($params)
     {
         return HelperBuilder::renderBlocks([
-            new SmartyRender($this),
+            // new SmartyRender($this),
+            new ProductDescriptionBlock($this),
+            new ProductDescriptionShortBlock($this),
         ]);
     }
 }

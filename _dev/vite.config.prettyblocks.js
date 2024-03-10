@@ -4,13 +4,15 @@ export default defineConfig({
   build: {
     outDir: '../views/js/',
     assetsDir: '',
+    emptyOutDir: true, 
 
     rollupOptions: {
       output: {
         entryFileNames: 'build.js',
         chunkFileNames: 'build.js',
       },
-      input: '../views/js/prettyblocks.js' // Remplacez par le chemin correct vers votre fichier
+      input: './src/scripts/prettyblocks.js' // Remplacez par le chemin correct vers votre fichier
     }
   }
 });
+
