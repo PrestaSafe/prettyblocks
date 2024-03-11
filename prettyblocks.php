@@ -180,7 +180,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             'prettyblocks_logo' => HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png'),
             'ps_version' => _PS_VERSION_,
             'ps17' => version_compare(_PS_VERSION_, '8.0.0', '<='),
-            'ps8' => version_compare(_PS_VERSION_, '8.0.0', '>=')
+            'ps8' => version_compare(_PS_VERSION_, '8.0.0', '>='),
         ]);
 
         $this->context->controller->addJS($this->_path . 'views/js/back.js');

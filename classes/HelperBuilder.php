@@ -314,4 +314,23 @@ class HelperBuilder
         // Fin de la sélection
         return $count > 0;
     }
+
+    /**
+     * Merge 2 array recusivly
+     *
+     * @param $array1 will receive data fomr $array2
+     * @param $array2 array to merge in $array1
+     *
+     * @return void
+     */
+    public static function mergeArraysRecursively(&$array1, $array2)
+    {
+        foreach ($array2 as $key => $value) {
+            if (isset($array1[$key]) && is_array($array1[$key]) && is_array($value)) {
+                HelperBuilder::mergeArraysRecursively($array1[$key], $value);
+            } else {
+                $array1[$key] = $value;
+            }
+        }
+    }
 }

@@ -251,10 +251,15 @@ class PrettyBlocksModel extends ObjectModel
             'settings' => $block['settings'],
         ], null, true);
         $res = [];
+
         if (is_array($extraContent)) {
             foreach ($extraContent as $moduleName => $additionnalFormFields) {
                 $res = $additionnalFormFields;
             }
+        }
+        if (isset($res['config'])) {
+            HelperBuilder::mergeArraysRecursively($block['config'], $res['config']);
+            $block['settings_formatted'] = $this->_formatConfig($block, 'back');
         }
 
         $block['extra'] = $res;
