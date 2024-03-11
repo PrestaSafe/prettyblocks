@@ -37,21 +37,12 @@ class ProductDescriptionBlock implements BlockInterface
             'description' => $this->module->l('Render product description in a block'),
             'code' => 'prettyblocks_product_description',
             'tab' => 'product',
-            'icon' => 'CommandLineIcon',
+            'icon' => 'DocumentTextIcon',
             'need_reload' => false,
             'insert_default_values' => true,
             'templates' => [
                 'default' => 'module:' . $this->module->name . '/views/templates/blocks/products/product_description_block.tpl',
-            ],
-            'config' => [
-                'fields' => [
-                    'code' => [
-                        'type' => 'textarea',
-                        'label' => $this->module->l('Smarty code'),
-                        'default' => '',
-                    ],
-                ],
-            ],
+            ]
         ];
     }
 }

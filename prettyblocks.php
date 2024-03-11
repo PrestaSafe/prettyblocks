@@ -270,6 +270,47 @@ class PrettyBlocks extends Module implements WidgetInterface
                 $this->context->smarty->assign('product', $product);
             }
         }
+
+        if ($this->context->controller->php_self == 'category') {
+            // categories 
+            if (isset($smartyVars['category'])) {
+                $category = $smartyVars['category'];
+                $zone_name = 'category_description_' . $smartyVars['category']['id'];
+                // si no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                    $this->registerBlockToZone($zone_name, 'prettyblocks_category_description');
+                }
+                $description = $this->renderZone(
+                    [
+                        'zone_name' => $zone_name,
+                        'priority' => true,
+                        'alias' => 'Description catégorie',
+                    ]
+                );
+                $category['description'] = $description;
+                $this->context->smarty->assign('category', $category);
+            }
+        }
+        // cms
+        if ($this->context->controller->php_self == 'cms') {
+            if (isset($smartyVars['cms'])) {
+                $cms = $smartyVars['cms'];
+                $zone_name = 'cms_description_' . $smartyVars['cms']['id'];
+                // si no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                    $this->registerBlockToZone($zone_name, 'prettyblocks_cms_content');
+                }
+                $description = $this->renderZone(
+                    [
+                        'zone_name' => $zone_name,
+                        'priority' => true,
+                        'alias' => 'Description CMS',
+                    ]
+                );
+                $cms['content'] = $description;
+                $this->context->smarty->assign('cms', $cms);
+            }
+        }
     }
 
     public function hookdisplayHeader($params)
@@ -416,10 +457,14 @@ class PrettyBlocks extends Module implements WidgetInterface
      */
     public function hookActionRegisterBlock($params)
     {
-        return HelperBuilder::renderBlocks([
-            // new SmartyRender($this),
+        $defaultsBlocks = [
             new ProductDescriptionBlock($this),
             new ProductDescriptionShortBlock($this),
-        ]);
+            new CmsContentBlock($this),
+            new CategoryDescriptionBlock($this),
+        ];
+        // https://preview.keenthemes.com/html/keen/docs/general/tiny-slider/overview
+        $defaultsBlocks[] = new TinySlider($this);
+        return HelperBuilder::renderBlocks($defaultsBlocks);
     }
 }

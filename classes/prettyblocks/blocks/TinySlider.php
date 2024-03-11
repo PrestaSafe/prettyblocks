@@ -1,5 +1,5 @@
-
 <?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -21,7 +21,7 @@
 
 use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 
-class ProductDescriptionShortBlock implements BlockInterface
+class TinySlider implements BlockInterface
 {
     private $module;
 
@@ -33,16 +33,16 @@ class ProductDescriptionShortBlock implements BlockInterface
     public function registerBlocks(): array
     {
         return [
-            'name' => $this->module->l('Product description short block'),
-            'description' => $this->module->l('Render product description short in a block'),
-            'code' => 'prettyblocks_product_description_short',
-            'tab' => 'product',
-            'icon' => 'DocumentTextIcon',
+            'name' => $this->module->l('Tiny Slider'),
+            'description' => $this->module->l('Render a simple and nice slider'),
+            'code' => 'prettyblocks_tiny_slider',
+            'tab' => 'sliders',
+            'icon' => 'RectangleStackIcon',
             'need_reload' => false,
             'insert_default_values' => true,
             'templates' => [
-                'default' => 'module:' . $this->module->name . '/views/templates/blocks/products/product_description_short_block.tpl',
-            ]
+                'default' => 'module:' . $this->module->name . '/views/templates/blocks/tinyslider/default.tpl',
+            ],
         ];
     }
 }
