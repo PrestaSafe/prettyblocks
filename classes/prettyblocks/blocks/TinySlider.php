@@ -38,11 +38,32 @@ class TinySlider implements BlockInterface
             'code' => 'prettyblocks_tiny_slider',
             'tab' => 'sliders',
             'icon' => 'RectangleStackIcon',
-            'need_reload' => false,
+            'need_reload' => true,
             'insert_default_values' => true,
             'templates' => [
                 'default' => 'module:' . $this->module->name . '/views/templates/blocks/tinyslider/default.tpl',
             ],
+
+            'repeater' => [
+                'name' => 'Slides',
+                'nameFrom' => 'alt_image',
+                'groups' => [
+                    'image' => [
+                        'type' => 'fileupload',
+                        'label' => $this->module->l('File upload'),
+                        'path' => '$/modules/'.$this->module->name.'/views/images/',
+                        'default' => [
+                            'url' => 'https://placehold.co/1110x522',
+                        ],
+                    ],
+                    'alt_image' => [
+                        'type' => 'text',
+                        'label' => $this->module->l('Image Alt'),
+                        'default' => 'Image alt',
+                    ],
+                ]
+            ]
+            
         ];
     }
 }

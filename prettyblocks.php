@@ -338,6 +338,35 @@ class PrettyBlocks extends Module implements WidgetInterface
             ]);
             // todo register css and js on iframe only from Hook
         }
+        $this->context->controller->registerStylesheet(
+            'tiny-slider-css',
+            'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css',
+            [
+                'media' => 'all',
+                'priority' => 200,
+                'server' => 'remote', // added remote option
+            ]
+        );
+
+        $this->context->controller->registerJavascript(
+            'tiny-slider-js',
+            'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js',
+            [
+                'media' => 'all',
+                'priority' => 150,
+                'server' => 'remote', // added remote option
+            ]
+        );
+
+        $this->context->controller->registerJavascript(
+            'prettyblocks-init',
+            'modules/' . $this->name . '/views/js/front.js',
+            [
+                'media' => 'all',
+                'priority' => 200,
+            ]
+        );
+        
     }
 
     /**
