@@ -1,3 +1,4 @@
+@ -0,0 +1,99 @@
 const addPrettyButton = (btnGroupClass = '.btn-group-action', endpoint, idEndpointTarget) => {
     let btnGroups = document.querySelectorAll(btnGroupClass);
     btnGroups.forEach(btnGroup => {

@@ -319,7 +319,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         if ((isset($_SERVER['HTTP_SEC_FETCH_DEST']) && $_SERVER['HTTP_SEC_FETCH_DEST'] == 'iframe') || Tools::getValue('prettyblocks') === '1') {
             $this->context->controller->registerJavascript(
                 'prettyblocks',
-                'modules/' . $this->name . '/views/js/build.js',
+                'modules/' . $this->name . '/views/js/build/build.js',
                 [
                     'position' => 'bottom',
                     'priority' => 150,
@@ -327,7 +327,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             );
             $this->context->controller->registerStylesheet(
                 'prettyblocks',
-                'modules/' . $this->name . '/build/iframe.css',
+                'modules/' . $this->name . '/views/css/iframe.css',
                 [
                     'media' => 'all',
                     'priority' => 200,
@@ -494,6 +494,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         ];
         // https://preview.keenthemes.com/html/keen/docs/general/tiny-slider/overview
         $defaultsBlocks[] = new TinySlider($this);
+        $defaultsBlocks[] = new CustomImage($this);
         return HelperBuilder::renderBlocks($defaultsBlocks);
     }
 }

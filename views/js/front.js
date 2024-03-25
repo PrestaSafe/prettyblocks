@@ -7,7 +7,5 @@ document.addEventListener('DOMContentLoaded', function() {
         nav: false, // disable dots
         controls: false, // disable controls
         autoplayButtonOutput: false
-    });
-
-    
+    }); 
 });
