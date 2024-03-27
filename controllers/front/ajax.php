@@ -21,7 +21,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-
+use Symfony\Component\Dotenv\Dotenv;
 class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 {
     private $ajax_token;
@@ -67,6 +67,20 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         if (!in_array($host, $shop_domains)) {
             header('Access-Control-Allow-Origin: ' . $protocol . '://' . $host);
         }
+         // register .env
+         $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
+
+         if (file_exists($env_file)) {
+             $dotenv = new Dotenv();
+             $dotenv->load($env_file);
+         }
+         if(getenv('PRETTYBLOCKS_CUSTOM_HEADERS'))
+         {
+            $headers = explode(',', getenv('PRETTYBLOCKS_CUSTOM_HEADERS'));
+            foreach($headers as $header){
+                header('Access-Control-Allow-Origin: '.$header);
+            }
+         }
     }
 
     /**
