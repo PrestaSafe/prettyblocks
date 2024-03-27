@@ -30,10 +30,12 @@
       var ajax_urls = {{ ajax_urls|json_encode|raw }}
       var trans_app = {{ trans_app|json_encode|raw }}
       var security_app = {{ security_app|json_encode|raw }}
+      var prettyblocks_env = {{ env|json_encode|raw }}
       window.base_url = base_url  
       window.ajax_urls = ajax_urls  
       window.trans_app = trans_app  
       window.security_app = security_app  
+      window.prettyblocks_env = prettyblocks_env  
     </script>
   </body>
 </html>

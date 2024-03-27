@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineComponent } from 'vue'
+import { ref, defineComponent, onMounted, onBeforeUnmount, computed } from 'vue'
 import emitter from 'tiny-emitter/instance'
 import { HttpClient } from "../services/HttpClient";
 import Block from './Block.vue'
@@ -12,14 +12,47 @@ defineComponent({
 
 let showModal = ref(false)
 let blocks = ref([])
-
+let search = ref('')
+let showSearch = ref(false)
+let filteredBlocks = computed(() => {
+  let results = blocks.value
+  if (search.value && typeof blocks.value === 'object') {
+    results = {}
+    Object.keys(blocks.value).forEach(index => {
+      if (
+        blocks.value[index].name.includes(search.value) 
+        || blocks.value[index].description.includes(search.value)
+        || blocks.value[index].code.includes(search.value)
+      ) {
+        results[index] = blocks.value[index];
+      }
+    });
+  }
+    return results
+});
 const toggleModal = () => {
   showModal.value = !showModal.value;
 }
 
+const handleEscape = (event) => {
+  if (event.key === 'Escape') {
+    toggleModal();
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleEscape)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleEscape)
+})
+
+
 emitter.on('toggleModal', async (zone_name) => {
   toggleModal()
   getBlocksAvailable()
+  
   let current_zone = currentZone()
   await current_zone.$patch({
     name: zone_name,
@@ -28,8 +61,12 @@ emitter.on('toggleModal', async (zone_name) => {
 
 const getBlocksAvailable = () => {
   HttpClient.get(ajax_urls.blocks_available)
-    .then((data) => blocks.value = data.blocks)
+    .then((data) => {
+        blocks.value = data.blocks
+        showSearch.value = true
+      })
     .catch(error => console.error(error));
+
 }
 
 </script>
@@ -39,11 +76,16 @@ const getBlocksAvailable = () => {
     <div class="flex flex-col w-full max-w-5xl max-h-full bg-white rounded-lg shadow-lg">
       <!-- Header -->
       <div class="flex items-start justify-between p-5 border-b border-solid border-slate-200">
-        <h2 class="text-2xl font-semibold">{{ trans('avalaible_elements') }}</h2>
+          <h2 class="text-2xl font-semibold">{{ trans('avalaible_elements') }}</h2>
+          <div v-if="showSearch">
+            <input type="text" v-model="search" :placeholder="trans('search_blocks')" class="w-full px-3 py-2 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline ease-linear transition-all duration-150" />
+          </div>
       </div>
       <!-- Body -->
+      
       <div class="overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
-        <Block v-for="block in blocks" :key="block.code" :icon_path="block.icon_path" :name="block.name" :icon="block.icon" :description="block.description" :code="block.code" />
+      <!-- Search Input -->
+        <Block v-for="block in filteredBlocks" :key="block.code" :icon_path="block.icon_path" :name="block.name" :icon="block.icon" :description="block.description" :code="block.code" />
       </div>
       <!-- Footer -->
       <div class="flex items-center justify-end p-5 border-t border-solid border-slate-200">

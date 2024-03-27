@@ -1,0 +1,129 @@
+.border-dotted{
+  border-color: rgb(73, 141, 201);
+  border-style: solid !important;
+  border-radius: 8px;
+  border-width: 4px;
+  position: relative;
+}
+
+[data-prettyblocks-zone].border-dotted{
+  
+  border-color: rgb(225, 212, 68);
+}
+
+
+/* hn editor */
+
+
+#toolbar button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+#toolbar button:hover {
+  border-color: #646cff;
+}
+#toolbar button:focus,
+#toolbar button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  #toolbar a:hover {
+    color: #747bff;
+  }
+  #toolbar button {
+    background-color: #f9f9f9;
+  }
+}
+
+.ptb-title {
+  font-weight: normal;
+  margin: 0;
+}
+
+#editor {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+}
+
+#toolbar {
+  display: none;
+  z-index: 2000;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 10px 20px;
+  background-color: #1a1a1a;
+  border: 1px solid #646cff;
+  border-radius: 4px;
+  position: absolute;
+  justify-content: center;
+  font-size: 18px;
+  gap: 10px;
+  transform: translate(50%, -80px);
+}
+
+#toolbar::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  z-index: -5;
+  background-color: #1a1a1a;
+  border: 1px solid #646cff;
+  transform: rotate(45deg);
+  bottom: -11px;
+}
+
+#toolbar div.sep {
+  width: 2px;
+  height: 20px;
+  background-color: #646cff;
+  margin: 0 10px;
+}
+
+#toolbar button {
+  padding: 0.2em 0.6em;
+}
+
+#toolbar input, #toolbar select, #toolbar select option {
+  height: 30px;
+  padding: 0.2px 0.6em;
+  border: 0;
+  border-radius: 4px;
+}
+
+/* [data-prettyblocks-zone].ondrag{
+background-color: #646cff;
+border: 1px solid #646cff;
+padding: 20px;
+
+} */
+
+/* [data-block]:active {
+  background-color: grey;
+  height: 20px;
+  position: relative;
+}
+
+[data-block]:active::after {
+  content: attr(data-id-prettyblocks);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+} */

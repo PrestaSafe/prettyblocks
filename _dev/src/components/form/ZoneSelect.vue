@@ -15,7 +15,7 @@ let current_zone = currentZone()
 emitter.on('loadZones', (zonesState) => {
   items.value = zonesState
   if (zonesState.indexOf(currentZone().name) == -1) {
-    let priorityZone = zonesState[0]
+    let priorityZone = zonesState[0];
 
     // if prettyblocks already init (when reloading a simple page)
     let isPresent = zonesState.find(zone => {
@@ -33,8 +33,11 @@ emitter.on('loadZones', (zonesState) => {
         priority: zonesState[0].priority,
         zoneToFocus: zonesState[0].name,
       })
-  
-      priorityZone = zonesState[0]
+      if (zonesState.some(zone => zone.name === props.modelValue.name)) {
+        priorityZone = zonesState.find(zone => zone.name === props.modelValue.name);
+      } else {
+        priorityZone = zonesState[0];
+      }
   
   
       // check if there is a priority zone 

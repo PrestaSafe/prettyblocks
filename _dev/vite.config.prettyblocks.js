@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
-    outDir: '../views/js/',
+    outDir: '../views/js/build/',
     assetsDir: '',
     emptyOutDir: true, 
 
@@ -11,7 +11,7 @@ export default defineConfig({
         entryFileNames: 'build.js',
         chunkFileNames: 'build.js',
       },
-      input: './src/scripts/prettyblocks.js' // Remplacez par le chemin correct vers votre fichier
+      input: './src/scripts/prettyblocks.js'
     }
   }
 });

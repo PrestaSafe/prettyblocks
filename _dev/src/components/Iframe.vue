@@ -7,6 +7,7 @@ import Iframe from '../scripts/iframe'
 import { contextShop } from '../store/currentBlock'
 
 let iframe = new Iframe(ajax_urls.startup_url, 1, 1)
+let iframe_sandbox = ref(window.prettyblocks_env.iframe_sandbox)
 defineProps({
   src: String
 })
@@ -112,7 +113,7 @@ watch(iframe.current_url, () => {
     <!-- <button @click="reloadIframe()"> reload iframe </button> {{ showLoader }} -->
     <!-- {{ classes }} -->
 
-    <iframe id="website-iframe" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin allow-presentation"
+    <iframe id="website-iframe" :sandbox="iframe_sandbox"
       :class="[height, width, showLoader ? 'opacity-50' : '']" class="border-none h-full mx-auto rounded" :src="filteredURL"
       frameborder="0"></iframe>
     <Loader :visible="showLoader" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

@@ -27,6 +27,9 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
+use PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinitionInterface;
+use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollectionInterface;
+
 class PrettyBlocks extends Module implements WidgetInterface
 {
     public $js_path;
@@ -55,6 +58,9 @@ class PrettyBlocks extends Module implements WidgetInterface
         'ActionRegisterThemeSettings',
         'displayBackOfficeHeader',
         'ActionRegisterBlock',
+        'ActionProductGridDefinitionModifier',
+        'ActionCategoryGridDefinitionModifier',
+        'ActionCmsPageGridDefinitionModifier',
     ];
 
     public function __construct()
@@ -75,6 +81,71 @@ class PrettyBlocks extends Module implements WidgetInterface
         $this->controllers = ['ajax'];
 
         $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
+    }
+
+    /**
+     * Add button prettyblocks to product grid
+     * @param array $params
+     * @return void
+     */
+    public function hookActionProductGridDefinitionModifier(array $params): void
+    {
+        /** @var GridDefinitionInterface $gridDefinition */
+        $gridDefinition = $params['definition'];
+        $this->_generateButtonPrettyBLocks($gridDefinition, 'product', 'id_product');
+    }
+
+    /**
+     * Add button prettyblocks to category grid
+     * @param array $params
+     * @return void
+     */
+    public function hookActionCategoryGridDefinitionModifier(array $params): void
+    {
+        /** @var GridDefinitionInterface $gridDefinition */
+        $gridDefinition = $params['definition'];
+        $this->_generateButtonPrettyBLocks($gridDefinition, 'category', 'id_category');
+    }
+
+    /**
+     * Add button prettyblocks to cms grid
+     * @param array $params
+     * @return void
+     */
+    public function hookActionCmsPageGridDefinitionModifier(array $params): void
+    {
+        /** @var GridDefinitionInterface $gridDefinition */
+        $gridDefinition = $params['definition'];
+        $this->_generateButtonPrettyBLocks($gridDefinition, 'cms', 'id_cms');
+    }
+
+    // actionCmsPageCategoryGridDefinitionModifier
+
+    /**
+     * Add button prettyblocks to product grid
+     * @param GridDefinitionInterface $definition
+     * @return GridDefinitionInterface
+     */
+    private function _generateButtonPrettyBLocks($definition, $endpoint = 'custom', $field = 'id_product')
+    {
+        /** @var RowActionCollectionInterface $actionsCollection */
+        $prettyblocksImg = HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png');
+        $columnCollection = (new PrestaSafe\PrettyBlocks\Core\Grid\Column\Type\PrettyBlocksButtonColumn('edit2'))
+            ->setName($this->trans('Edit 2', [], 'Admin.Actions'))
+            ->setOptions([
+                'route' => 'admin_prettyblocks',
+                'route_param_name' => 'id',
+                'route_param_field' => $field,
+                'icon' => $prettyblocksImg,
+                'field' => $field,
+                'endpoint' => $endpoint,
+                'attr' => [
+                    'action' => 'view',
+                    'class' => 'btn btn-prettyblocks text-white',
+                ]
+                // 'clickable_row' => true,
+        ]);
+        return $definition->getColumns()->add($columnCollection);
     }
 
     public function isUsingNewTranslationSystem()
@@ -182,8 +253,9 @@ class PrettyBlocks extends Module implements WidgetInterface
             'ps17' => version_compare(_PS_VERSION_, '8.0.0', '<='),
             'ps8' => version_compare(_PS_VERSION_, '8.0.0', '>='),
         ]);
+        $this->context->controller->addCSS($this->_path . 'views/css/back.css');
 
-        $this->context->controller->addJS($this->_path . 'views/js/back.js');
+        // $this->context->controller->addJS($this->_path . 'views/js/back.js');
     }
 
     public function install()
@@ -235,7 +307,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             // product description
             if (isset($smartyVars['product']['description'])) {
                 $product = $smartyVars['product'];
-                $zone_name = 'product_description_' . $smartyVars['product']['id_product'];
+                $zone_name = 'product-description-' . $smartyVars['product']['id_product'];
                 // si no blocks on this zone, feed product description
                 if (!HelperBuilder::zoneHasBlock($zone_name)) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_product_description');
@@ -254,7 +326,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             // product description short
             if (isset($smartyVars['product']['description_short'])) {
                 $product = $smartyVars['product'];
-                $zone_name = 'product_description_short_' . $smartyVars['product']['id_product'];
+                $zone_name = 'product-description-short-' . $smartyVars['product']['id_product'];
                 // si no blocks on this zone, feed product description
                 if (!HelperBuilder::zoneHasBlock($zone_name)) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_product_description_short');
@@ -275,7 +347,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             // categories 
             if (isset($smartyVars['category'])) {
                 $category = $smartyVars['category'];
-                $zone_name = 'category_description_' . $smartyVars['category']['id'];
+                $zone_name = 'category-description-' . $smartyVars['category']['id'];
                 // si no blocks on this zone, feed product description
                 if (!HelperBuilder::zoneHasBlock($zone_name)) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_category_description');
@@ -295,7 +367,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         if ($this->context->controller->php_self == 'cms') {
             if (isset($smartyVars['cms'])) {
                 $cms = $smartyVars['cms'];
-                $zone_name = 'cms_description_' . $smartyVars['cms']['id'];
+                $zone_name = 'cms-description-' . $smartyVars['cms']['id'];
                 // si no blocks on this zone, feed product description
                 if (!HelperBuilder::zoneHasBlock($zone_name)) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_cms_content');

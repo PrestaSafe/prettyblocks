@@ -1,0 +1,15 @@
+#subtab-AdminThemeManagerController {
+    padding: 0 4px
+}
+
+#subtab-AdminThemeManagerController i{
+        font-size: 0;
+        background-image: url(../../logo.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: left;
+        width: 19px;
+        height: 16px;
+        display: inline-block;
+        vertical-align: middle;
+}

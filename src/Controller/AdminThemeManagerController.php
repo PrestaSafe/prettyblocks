@@ -242,6 +242,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'shop_name' => $context->shop->name,
             'env' => [
                 'vitedev' => getenv('PRETTYBLOCKS_VITE_DEV') ?? false,
+                'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-modals allow-forms allow-popups allow-scripts allow-presentation',
             ],
 
             'ajax_urls' => [
@@ -278,6 +279,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'ex_color' => $translator->trans('Add a color ex: #123456', [], 'Modules.Prettyblocks.Admin'),
                 'theme_settings' => $translator->trans('Theme settings', [], 'Modules.Prettyblocks.Admin'),
                 'type_search_here' => $translator->trans('Type your search here', [], 'Modules.Prettyblocks.Admin'),
+                'search_blocks' => $translator->trans('Search blocks', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),

@@ -195,31 +195,26 @@ const moveBlockToZone = (event) => {
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    console.log('hello')
     if (!window.hasEventListener) {
         window.addEventListener("message", eventHandler, false)
         window.hasEventListener = true;
     }
     // Sélectionnez tous les liens de la page
     const links = document.querySelectorAll('a');
-  
+    
     links.forEach(link => {
-      link.addEventListener('click', function(e) {
-        // Empêchez la navigation
-        e.preventDefault();
-  
-        // Récupérez l'URL du lien
-        const url = e.currentTarget.href;
-        let context = getContext()
-        let params = {
-            context: context,
-            url: url,
-        }
-
-        window.parent.postMessage({ type: 'setNewUrl', params: params }, '*');
-        
-        // À ce stade, vous pouvez faire ce que vous voulez avec l'URL récupérée
-      });
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            let href = link.getAttribute('href')
+            if (href && href !== '#' && (href.includes('http') || href.includes('https'))) {
+              let context = getContext()
+              let params = {
+                context: context,
+                url: href,
+              }
+              window.parent.postMessage({ type: 'setNewUrl', params: params }, '*');
+            }
+            });
     });
 });
 
