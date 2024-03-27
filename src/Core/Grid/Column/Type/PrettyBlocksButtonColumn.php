@@ -61,7 +61,7 @@ final class PrettyBlocksButtonColumn extends AbstractColumn
                 'route',
                 'route_param_name',
                 'route_param_field',
-                'endpoint'
+                'endpoint',
             ])
             ->setDefined([
                 'icon',

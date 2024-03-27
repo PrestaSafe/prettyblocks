@@ -27,8 +27,8 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-use PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinitionInterface;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollectionInterface;
+use PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinitionInterface;
 
 class PrettyBlocks extends Module implements WidgetInterface
 {
@@ -85,7 +85,9 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * Add button prettyblocks to product grid
+     *
      * @param array $params
+     *
      * @return void
      */
     public function hookActionProductGridDefinitionModifier(array $params): void
@@ -97,7 +99,9 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * Add button prettyblocks to category grid
+     *
      * @param array $params
+     *
      * @return void
      */
     public function hookActionCategoryGridDefinitionModifier(array $params): void
@@ -109,7 +113,9 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * Add button prettyblocks to cms grid
+     *
      * @param array $params
+     *
      * @return void
      */
     public function hookActionCmsPageGridDefinitionModifier(array $params): void
@@ -123,7 +129,9 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * Add button prettyblocks to product grid
+     *
      * @param GridDefinitionInterface $definition
+     *
      * @return GridDefinitionInterface
      */
     private function _generateButtonPrettyBLocks($definition, $endpoint = 'custom', $field = 'id_product')
@@ -142,9 +150,10 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'attr' => [
                     'action' => 'view',
                     'class' => 'btn btn-prettyblocks text-white',
-                ]
+                ],
                 // 'clickable_row' => true,
-        ]);
+            ]);
+
         return $definition->getColumns()->add($columnCollection);
     }
 
@@ -344,7 +353,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         }
 
         if ($this->context->controller->php_self == 'category') {
-            // categories 
+            // categories
             if (isset($smartyVars['category'])) {
                 $category = $smartyVars['category'];
                 $zone_name = 'category-description-' . $smartyVars['category']['id'];
@@ -438,7 +447,6 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'priority' => 200,
             ]
         );
-        
     }
 
     /**
@@ -542,14 +550,14 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function hookActionRegisterThemeSettings()
     {
         return [
-             'tinymce_api_key' => [
-                 'type' => 'text', // type of field
-                 'label' => $this->l('TinyMCE api key'), // label to display
-                 'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
-                 'tab' => 'Settings',
-                 'default' => 'no-api-key', // default value (Boolean)
-             ],
-         ];
+            'tinymce_api_key' => [
+                'type' => 'text', // type of field
+                'label' => $this->l('TinyMCE api key'), // label to display
+                'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
+                'tab' => 'Settings',
+                'default' => 'no-api-key', // default value (Boolean)
+            ],
+        ];
     }
 
     /**
@@ -567,6 +575,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         // https://preview.keenthemes.com/html/keen/docs/general/tiny-slider/overview
         $defaultsBlocks[] = new TinySlider($this);
         $defaultsBlocks[] = new CustomImage($this);
+
         return HelperBuilder::renderBlocks($defaultsBlocks);
     }
 }

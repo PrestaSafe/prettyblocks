@@ -42,7 +42,7 @@ class ProductDescriptionBlock implements BlockInterface
             'insert_default_values' => true,
             'templates' => [
                 'default' => 'module:' . $this->module->name . '/views/templates/blocks/products/product_description_block.tpl',
-            ]
+            ],
         ];
     }
 }

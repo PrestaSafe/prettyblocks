@@ -51,7 +51,7 @@ class TinySlider implements BlockInterface
                     'image' => [
                         'type' => 'fileupload',
                         'label' => $this->module->l('File upload'),
-                        'path' => '$/modules/'.$this->module->name.'/views/images/',
+                        'path' => '$/modules/' . $this->module->name . '/views/images/',
                         'default' => [
                             'url' => 'https://placehold.co/1110x522',
                         ],
@@ -61,9 +61,8 @@ class TinySlider implements BlockInterface
                         'label' => $this->module->l('Image Alt'),
                         'default' => 'Image alt',
                     ],
-                ]
-            ]
-            
+                ],
+            ],
         ];
     }
 }
