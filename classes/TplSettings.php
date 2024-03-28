@@ -29,7 +29,7 @@ class TplSettings
         return $result;
     }
 
-    public static function getVars()
+    private static function getVars()
     {
         $cache_id = 'PrettyBlocks::getVars';
         if (!Cache::isStored($cache_id)) {

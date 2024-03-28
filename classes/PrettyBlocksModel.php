@@ -933,7 +933,12 @@ class PrettyBlocksModel extends ObjectModel
         $settingsDB = PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $id_shop);
         $res = [];
         $no_tabs = [];
+
         foreach ($theme_settings as $key => $settings) {
+            if (isset($settings['private']) && $settings['private'] === true && $context == 'front') {
+                continue;
+            }
+            
             $tab = $settings['tab'] ?? 'general';
             $fieldCore = (new FieldCore($settings));
             if (isset($settingsDB[$key]['value'])) {

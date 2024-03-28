@@ -556,6 +556,7 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
                 'tab' => 'Settings',
                 'default' => 'no-api-key', // default value (Boolean)
+                'private' => true
             ],
         ];
     }
