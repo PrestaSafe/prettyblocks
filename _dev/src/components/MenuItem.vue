@@ -108,7 +108,7 @@ const highLightBlock = () => {
       <ButtonLight class="handle" v-if="props.config" icon="CogIcon" />
       <ButtonLight class="handle" v-if="props.is_child" @click.prevent="removeSubState" icon="TrashIcon" />
       <ButtonLight class="handle" v-if="!props.is_child" @click.prevent="removeState" icon="TrashIcon" />
-      <ButtonLight class="handle cursor-move" @click="openModal" icon="DocumentDuplicateIcon" />
+      <ButtonLight v-if="!props.is_child" class="handle cursor-move" @click="openModal" icon="DocumentDuplicateIcon" />
       <LanguageModal v-if="showModal" :id_prettyblocks="props.element.id_prettyblocks" :languages="languages" @closeModal="closeModal" @selectLanguages="selectLanguages" />
       <!-- <ButtonLight @click="disabled = !disabled" :icon="disabled ? 'EyeOffIcon' : 'EyeIcon'" /> -->
       <ButtonLight class="handle cursor-move" icon="ArrowsUpDownIcon" />

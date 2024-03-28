@@ -33,9 +33,7 @@ class TplSettings
     {
         $cache_id = 'PrettyBlocks::getVars';
         if (!Cache::isStored($cache_id)) {
-            // $smarty_vars = Context::getContext()->smarty->getTemplateVars();
             $smarty_vars = Hook::exec('ActionFrontControllerSetVariables', [], null, true);
-            // dump($smarty_vars);
             Cache::store($cache_id, $smarty_vars);
         }
 
