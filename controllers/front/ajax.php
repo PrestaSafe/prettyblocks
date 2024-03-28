@@ -78,6 +78,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxinsertBlock()
     {
+        $this->module->clearCache('*');
         $code = pSQL(Tools::getValue('code'));
         $zone_name = pSQL(Tools::getValue('zone_name'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
@@ -150,6 +151,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     // remove element
     public function displayAjaxremoveState()
     {
+        $this->module->clearCache('*');
         $id_prettyblocks = (int) Tools::getValue('id_prettyblocks');
         $block = new PrettyBlocksModel($id_prettyblocks);
         if ($block->delete()) {
@@ -283,6 +285,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     public function displayAjaxupdateBlockConfig()
     {
+        $this->module->clearCache('*');
         $id_block = (int) Tools::getValue('id_prettyblocks');
         $id_lang = (int) Tools::getValue('ctx_id_lang');
         $id_shop = (int) Tools::getValue('ctx_id_shop');

@@ -52,13 +52,15 @@ class PrettyBlocks extends Module implements WidgetInterface
         'actionDispatcher',
         'actionFrontControllerSetVariables',
         'ActionRegisterThemeSettings',
+        'actionProductUpdate',
+        'actionProductDelete',
     ];
 
     public function __construct()
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '2.2.1';
+        $this->version = '2.3.0';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -201,6 +203,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function renderWidget($hookName = null, array $configuration = [])
     {
         $vars = $this->getWidgetVariables($hookName, $configuration);
+
         $this->smarty->assign($vars);
         if (isset($configuration['zone_name'])) {
             return $this->renderZone(['zone_name' => pSQL($configuration['zone_name'])]);
@@ -235,8 +238,8 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function hookActionDispatcher()
     {
         /* @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
-        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
-        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
+        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZoneStatic']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZoneStatic']);
         $this->context->smarty->registerPlugin('function', 'prettyblocks_title', [PrettyBlocks::class, 'renderTitle']);
     }
 
@@ -260,7 +263,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         return $title->setValueFromBlock(true)->setValue($value)->render();
     }
 
-    public static function renderZone($params)
+    public function renderZone($params)
     {
         $zone_name = $params['zone_name'];
 
@@ -268,19 +271,40 @@ class PrettyBlocks extends Module implements WidgetInterface
             return false;
         }
 
+        $templateFile = 'module:prettyblocks/views/templates/front/zone.tpl';
         $context = Context::getContext();
-        $id_lang = $context->language->id;
-        $id_shop = $context->shop->id;
-        $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
+        if (!$this->isCached($templateFile, $this->getCacheId($zone_name))) {
+            $id_lang = $context->language->id;
+            $id_shop = $context->shop->id;
+            $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
 
-        $context->smarty->assign([
-            'zone_name' => $zone_name,
-            'blocks' => $blocks,
-        ]);
+            $context->smarty->assign([
+                'zone_name' => $zone_name,
+                'blocks' => $blocks,
+            ]);
+        }
 
-        return $context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
+        return $this->fetch($templateFile, $this->getCacheId($zone_name));
+        // return $context->smarty->fetch($templateFile, $this->getCacheId($zone_name));
     }
 
+    public function renderZoneStatic($params)
+    {
+        $module = \Module::getInstanceByName('prettyblocks');
+
+        return $module->renderZone($params);
+    }
+
+    protected function getCacheId($name = null)
+    {
+        $cacheId = 'prettyblocks|' . parent::getCacheId($name);
+        /* if (!empty($this->context->customer->id)) {
+            $cacheId .= '|' . $this->context->customer->id;
+        } */
+
+        return $cacheId;
+    }
+    
     /**
      * Hook for adding theme settings
      * quick fix for adding tinyMCE api key.
@@ -296,5 +320,19 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'default' => 'no-api-key', // default value (Boolean)
             ],
         ];
+    }
+
+    public function hookActionProductUpdate($params)
+    {
+        $this->clearCache('*');
+    }
+
+    public function hookActionProductDelete($params)
+    {
+        $this->clearCache('*');
+    }
+
+    public function clearCache($var) {
+        $this->_clearCache($var);
     }
 }
