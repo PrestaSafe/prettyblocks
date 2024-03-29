@@ -111,27 +111,16 @@ class PrettyBlocksMigrate
             Db::getInstance()->execute($sql);
         }
 
-        $blocks_lang = Db::getInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'prettyblocks_lang');
+        $blocks_lang = Db::getInstance()->executeS('SELECT '. _DB_PREFIX_ . 'prettyblocks_lang.* FROM ' . _DB_PREFIX_ . 'prettyblocks_lang INNER JOIN ' . _DB_PREFIX_ . 'prettyblocks ON ' . _DB_PREFIX_ . 'prettyblocks_lang.id_prettyblocks = ' . _DB_PREFIX_ . 'prettyblocks.id_prettyblocks');
+
         foreach ($blocks_lang as $block) {
-            $existingBlock = new PrettyBlocksModel($block['id_prettyblocks']);
-            $newBlocks = new PrettyBlocksModel();
-            $newBlocks->instance_id = $existingBlock->instance_id;
-            $newBlocks->id_shop = (int) $block['id_shop'];
-            $newBlocks->id_lang = (int) $block['id_lang'];
-            $newBlocks->state = $block['state'];
-            $newBlocks->code = $existingBlock->code;
-            $newBlocks->zone_name = $existingBlock->zone_name;
-            $newBlocks->position = $existingBlock->position;
-
-            $newBlocks->name = $existingBlock->name;
-            $newBlocks->config = $existingBlock->config;
-            $newBlocks->template = $existingBlock->template;
-            $newBlocks->default_params = $existingBlock->default_params;
-            $newBlocks->save();
-
-            $existingBlock->delete();
+            Db::getInstance()->update('prettyblocks', array(
+                'id_shop' => (int) $block['id_shop'],
+                'id_lang' => (int) $block['id_lang'],
+                'state' => pSQL($block['state'])
+            ), 'id_prettyblocks = '. $block['id_prettyblocks']);
         }
-
+        
         $sql = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'prettyblocks_lang';
         Db::getInstance()->execute($sql);
 
