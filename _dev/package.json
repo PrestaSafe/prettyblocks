@@ -20,7 +20,7 @@
     "autoprefixer": "^10.4.16",
     "dropzone": "^6.0.0-beta.2",
     "pinia": "^2.1.7",
-    "postcss": "^8.4.32",
+    "postcss": "^8.4.38",
     "sortablejs": "^1.15.1",
     "tailwindcss": "^3.4.0",
     "tiny-emitter": "^2.1.0",
