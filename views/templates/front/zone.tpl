@@ -28,10 +28,11 @@
           {$template = $block.templates[$block.templateSelected]}
         {/if}
 
-        {include file=$template
+        {prettyblocks 
+          file=$template
           instance_id=$block.instance_id
           id_prettyblocks=$block.id_prettyblocks
-          block=$block
+          data=$block
           states=$block.states}
       {else}  
         Chargement en cours.... 

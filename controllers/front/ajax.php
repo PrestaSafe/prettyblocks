@@ -49,6 +49,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         }
         $this->ajax = $this->isAjax();
 
+        $this->module->clearCache('*');
         parent::init();
     }
 
@@ -170,6 +171,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxinsertBlock()
     {
+        
         $code = pSQL(Tools::getValue('code'));
         $zone_name = pSQL(Tools::getValue('zone_name'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
@@ -216,6 +218,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     // remove sub element OK
     public function displayAjaxremoveSubState()
     {
+
         $formattedID = pSQL(Tools::getValue('formattedID'));
         $ids = explode('-', $formattedID);
         $id_block = $ids[0];

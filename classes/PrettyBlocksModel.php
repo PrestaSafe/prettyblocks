@@ -592,6 +592,7 @@ class PrettyBlocksModel extends ObjectModel
         $options = [
             'container' => true,
             'load_ajax' => false,
+            'is_cached' => false,
             'bg_color' => '',
         ];
         $defaultParams = $this->getDefaultParams();

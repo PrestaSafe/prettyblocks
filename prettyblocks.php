@@ -489,9 +489,38 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function hookActionDispatcher()
     {
         /* @deprecated {magic_zone} is deprecated since v1.1.0. Use {prettyblocks_zone} instead. */
-        $this->context->smarty->registerPlugin('function', 'magic_zone', [PrettyBlocks::class, 'renderZone']);
-        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [PrettyBlocks::class, 'renderZone']);
-        $this->context->smarty->registerPlugin('function', 'prettyblocks_title', [PrettyBlocks::class, 'renderTitle']);
+        $this->context->smarty->registerPlugin('function', 'magic_zone', [$this, 'renderZone']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [$this, 'renderZone']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks_title', [$this, 'renderTitle']);
+        $this->context->smarty->registerPlugin('function', 'prettyblocks', [$this, 'renderBlocks']);
+    }
+
+
+    public function renderBlocks($params)
+    {
+
+        $template = $params['template'];
+        $instance_id=$params['instance_id'];
+        $id_prettyblocks=$params['id_prettyblocks'];
+        $block=$params['data'];  
+        $states=$params['states'];
+        
+        $cacheId = 'prettyblocks_'.$id_prettyblocks.'_'.$instance_id;
+        $cacheSettings = isset($block['settings']['default']['is_cached']) ? (bool)$block['settings']['default']['is_cached'] : false;
+       
+       
+        if ($cacheSettings && !$this->isCached($template, $this->getCacheId($cacheId))) {
+
+            $this->context->smarty->assign([
+                'template' => $params['template'],
+                'block' => $block,
+                'instance_id' => $params['instance_id'],
+                'id_prettyblocks' => $params['id_prettyblocks'],
+                'states' => $params['states'],
+            ]);
+        }
+
+        return $this->fetch($template, $this->getCacheId($cacheId));
     }
 
     /**
@@ -518,7 +547,7 @@ class PrettyBlocks extends Module implements WidgetInterface
                 ->setValue($value)->render();
     }
 
-    public static function renderZone($params)
+    public function renderZone($params)
     {
         $zone_name = $params['zone_name'];
         $priority = $params['priority'] ?? false;
@@ -527,20 +556,24 @@ class PrettyBlocks extends Module implements WidgetInterface
         if (empty($zone_name)) {
             return false;
         }
-
+        $templateFile = 'module:prettyblocks/views/templates/front/zone.tpl';
         $context = Context::getContext();
-        $id_lang = $context->language->id;
-        $id_shop = $context->shop->id;
-        $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
 
-        $context->smarty->assign([
-            'zone_name' => $zone_name,
-            'priority' => $priority,
-            'alias' => $alias,
-            'blocks' => $blocks,
-        ]);
 
-        return $context->smarty->fetch('module:prettyblocks/views/templates/front/zone.tpl');
+        // if (!$this->isCached($templateFile, $this->getCacheId($zone_name))) {
+            $id_lang = $context->language->id;
+            $id_shop = $context->shop->id;
+            $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
+
+            $context->smarty->assign([
+                'zone_name' => $zone_name,
+                'priority' => $priority,
+                'alias' => $alias,
+                'blocks' => $blocks,
+            ]);
+        // }
+
+        return $this->fetch($templateFile, $this->getCacheId($zone_name));
     }
 
     /**
@@ -578,5 +611,19 @@ class PrettyBlocks extends Module implements WidgetInterface
         $defaultsBlocks[] = new CustomImage($this);
 
         return HelperBuilder::renderBlocks($defaultsBlocks);
+    }
+
+    protected function getCacheId($name = null)
+    {
+        $cacheId = 'prettyblocks|' . parent::getCacheId($name);
+        /* if (!empty($this->context->customer->id)) {
+            $cacheId .= '|' . $this->context->customer->id;
+        } */
+
+        return $cacheId;
+    }
+
+    public function clearCache($var) {
+        $this->_clearCache($var);
     }
 }

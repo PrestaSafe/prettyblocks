@@ -14,7 +14,7 @@ import Icon from './Icon.vue'
 import PanelThemeSettings from './PanelThemeSettings.vue'
 import { useStore } from '../store/currentBlock'
 import emitter from 'tiny-emitter/instance'
-
+import Title from './Title.vue'
 import Loader from './Loader.vue'
 import Modal from './Modal.vue'
 import Accordion from './Accordion.vue'
@@ -49,7 +49,8 @@ defineComponent({
   SimpleSelect,
   Editor,
   ColorInput,
-  FieldRepeater
+  FieldRepeater, 
+  Title
 })
 let showPanel = ref(true)
 
@@ -187,15 +188,26 @@ emitter.on('globalSave', () => {
       <template v-for="f in config" :key="f">
         <FieldRepeater @updateUpload="saveConfig()" :field="f" />
       </template>
-      {{ trans('default_settings') }}
-      <Checkbox class="my-4" v-model="config.default.container" :title="trans('use_container')" name="container" />
-      {{ trans('bg_color') }}
-      <div class="flex mb-4 pt-4">
-        <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
-        <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
+   
+      <hr class="my-2">
+      <Title :title="trans('default_settings')" />
+      <hr class="my-2">
+      <div class="my-2">
+        <Checkbox v-model="config.default.container" :title="trans('use_container')" name="container" />
       </div>
-      <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected"
-        :availableTpl="config.templates" :currentTpl="config.templateSelected" :label="trans('choose_template')" />
+      <div class="my-2">
+        <Checkbox  v-model="config.default.is_cached" :title="trans('is_cached')" name="is_cached" />
+      </div>
+
+      <Title :title="trans('bg_color')" />
+      <div class="my-4 flex">
+          <ColorInput class="flex-auto rounded-full" v-model="config.default.bg_color" format="hex string" />
+          <Input class="flex-auto" :placeholder="trans('ex_color')" v-model="config.default.bg_color" name="bg_color" />
+      </div>
+
+      <SimpleSelect v-if="Object.keys(config.templates).length > 1" v-model="config.templateSelected" :availableTpl="config.templates" :currentTpl="config.templateSelected" :label="trans('choose_template')" />
+      
+
     </div>
 
     <!-- State panel  -->
