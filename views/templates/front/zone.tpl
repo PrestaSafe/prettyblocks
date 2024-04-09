@@ -20,20 +20,19 @@
 
  <div data-prettyblocks-zone="{$zone_name}" >
  {if $blocks|count > 0}
-  {foreach from=$blocks item=block name=zoneBlocks}
-  <div {if $block.settings.default.load_ajax} load-ajax {/if} data-block data-instance-id="{$block.instance_id}" data-id-prettyblocks="{$block.id_prettyblocks}">
-    {if !$block.settings.default.load_ajax}
+  {foreach from=$blocks item=data name=zoneBlocks}
+  <div {if $data.settings.default.load_ajax} load-ajax {/if} data-block data-instance-id="{$data.instance_id}" data-id-prettyblocks="{$data.id_prettyblocks}">
+    {if !$data.settings.default.load_ajax}
         {$template = 'module:prettyblocks/views/templates/blocks/welcome.tpl'}
-        {if isset($block.templates[$block.templateSelected])}
-          {$template = $block.templates[$block.templateSelected]}
+        {if isset($data.templates[$data.templateSelected])}
+          {$template = $data.templates[$data.templateSelected]}
         {/if}
-
-        {prettyblocks 
+        {include 
           file=$template
-          instance_id=$block.instance_id
-          id_prettyblocks=$block.id_prettyblocks
-          data=$block
-          states=$block.states}
+          instance_id=$data.instance_id
+          id_prettyblocks=$data.id_prettyblocks
+          block=$data
+          states=$data.states}
       {else}  
         Chargement en cours.... 
       {/if}

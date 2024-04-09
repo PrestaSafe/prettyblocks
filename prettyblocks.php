@@ -496,27 +496,31 @@ class PrettyBlocks extends Module implements WidgetInterface
     }
 
 
+    /** 
+     * Render blocks
+     * BUG with cache
+     * $block.states is not defined
+     */
     public function renderBlocks($params)
     {
 
-        $template = $params['template'];
+        $template = $params['file'];
         $instance_id=$params['instance_id'];
         $id_prettyblocks=$params['id_prettyblocks'];
-        $block=$params['data'];  
-        $states=$params['states'];
+        $data=$params['data'];  
+       
         
         $cacheId = 'prettyblocks_'.$id_prettyblocks.'_'.$instance_id;
         $cacheSettings = isset($block['settings']['default']['is_cached']) ? (bool)$block['settings']['default']['is_cached'] : false;
-       
-       
+
         if ($cacheSettings && !$this->isCached($template, $this->getCacheId($cacheId))) {
 
-            $this->context->smarty->assign([
-                'template' => $params['template'],
-                'block' => $block,
-                'instance_id' => $params['instance_id'],
-                'id_prettyblocks' => $params['id_prettyblocks'],
-                'states' => $params['states'],
+            $this->smarty->assign([
+                'template' => $template,
+                'block' => $data,
+                'instance_id' => $instance_id,
+                'id_prettyblocks' => $id_prettyblocks,
+                'states' => $data['states'],
             ]);
         }
 
@@ -547,6 +551,9 @@ class PrettyBlocks extends Module implements WidgetInterface
                 ->setValue($value)->render();
     }
 
+    /** 
+     * Render zone
+     */
     public function renderZone($params)
     {
         $zone_name = $params['zone_name'];
@@ -559,8 +566,6 @@ class PrettyBlocks extends Module implements WidgetInterface
         $templateFile = 'module:prettyblocks/views/templates/front/zone.tpl';
         $context = Context::getContext();
 
-
-        // if (!$this->isCached($templateFile, $this->getCacheId($zone_name))) {
             $id_lang = $context->language->id;
             $id_shop = $context->shop->id;
             $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
@@ -571,9 +576,8 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'alias' => $alias,
                 'blocks' => $blocks,
             ]);
-        // }
 
-        return $this->fetch($templateFile, $this->getCacheId($zone_name));
+        return $this->fetch($templateFile);
     }
 
     /**

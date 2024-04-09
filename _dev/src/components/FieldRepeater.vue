@@ -76,6 +76,15 @@ const removeTinyNotifications = () => {
   }, 300)
 }
 let tinymce_api_key = ref(window.security_app.tinymce_api_key)
+const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike',{ 'color': [] }, { 'background': [] }, 'link', 'video'],        // toggled buttons
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+  [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+  [{ 'align': [] }],
+
+  ['clean']                                         // remove formatting button
+];
 
 </script>
 
@@ -117,7 +126,7 @@ let tinymce_api_key = ref(window.security_app.tinymce_api_key)
     <div v-else-if="f.type == 'editor' && (f.provider !== 'tinymce' || f.provider == 'vuequill')" class="clearfix">
       <Title :title="f.label" />
       <div class="bg-white">
-        <QuillEditor  v-model:content="f.value"  contentType="html" theme="snow" toolbar="full" />
+        <QuillEditor  v-model:content="f.value"  contentType="html" theme="snow" :toolbar="toolbarOptions" />
       </div>
     </div>
     <div v-if="f.type == 'select'">
