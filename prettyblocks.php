@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -17,6 +18,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  */
+
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
@@ -419,43 +421,46 @@ class PrettyBlocks extends Module implements WidgetInterface
             ]);
             // todo register css and js on iframe only from Hook
         }
-        $this->context->controller->registerStylesheet(
-            'tiny-slider-css',
-            'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css',
-            [
-                'media' => 'all',
-                'priority' => 200,
-                'server' => 'remote', // added remote option
-            ]
-        );
+        // load default blocks styles
+        if (TplSettings::getSettings('load_default_blocks')) {
+            $this->context->controller->registerStylesheet(
+                'tiny-slider-css',
+                'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css',
+                [
+                    'media' => 'all',
+                    'priority' => 200,
+                    'server' => 'remote', // added remote option
+                ]
+            );
 
-        $this->context->controller->registerJavascript(
-            'tiny-slider-js',
-            'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js',
-            [
-                'media' => 'all',
-                'priority' => 150,
-                'server' => 'remote', // added remote option
-            ]
-        );
+            $this->context->controller->registerJavascript(
+                'tiny-slider-js',
+                'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js',
+                [
+                    'media' => 'all',
+                    'priority' => 150,
+                    'server' => 'remote', // added remote option
+                ]
+            );
 
-        $this->context->controller->registerJavascript(
-            'prettyblocks-init',
-            'modules/' . $this->name . '/views/js/front.js',
-            [
-                'media' => 'all',
-                'priority' => 200,
-            ]
-        );
+            $this->context->controller->registerJavascript(
+                'prettyblocks-init',
+                'modules/' . $this->name . '/views/js/front.js',
+                [
+                    'media' => 'all',
+                    'priority' => 200,
+                ]
+            );
 
-        $this->context->controller->registerStylesheet(
-            'prettyblocks-front',
-            'modules/' . $this->name . '/views/css/front.css',
-            [
-                'media' => 'all',
-                'priority' => 250,
-            ]
-        );
+            $this->context->controller->registerStylesheet(
+                'prettyblocks-front',
+                'modules/' . $this->name . '/views/css/front.css',
+                [
+                    'media' => 'all',
+                    'priority' => 250,
+                ]
+            );
+        }
     }
 
     /**
@@ -553,7 +558,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         }
 
         return $title->setValueFromBlock(true)
-                ->setValue($value)->render();
+            ->setValue($value)->render();
     }
 
     /**
