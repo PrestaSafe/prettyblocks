@@ -242,7 +242,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'shop_name' => $context->shop->name,
             'env' => [
                 'vitedev' => getenv('PRETTYBLOCKS_VITE_DEV') ?? false,
-                'PRETTYBLOCKS_VITE_HOST' => getenv('PRETTYBLOCKS_VITE_HOST') ? getenv('PRETTYBLOCKS_VITE_HOST') :  'http://localhost:3002/',
+                'PRETTYBLOCKS_VITE_HOST' => getenv('PRETTYBLOCKS_VITE_HOST') ? getenv('PRETTYBLOCKS_VITE_HOST') : 'http://localhost:3002/',
                 'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-modals allow-forms allow-popups allow-scripts allow-presentation',
             ],
 

@@ -1,0 +1,1 @@
+{if $block.settings.content}{$block.settings.content nofilter}{/if}

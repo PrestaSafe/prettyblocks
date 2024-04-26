@@ -939,7 +939,7 @@ class PrettyBlocksModel extends ObjectModel
             if (isset($settings['private']) && $settings['private'] === true && $context == 'front') {
                 continue;
             }
-            
+
             $tab = $settings['tab'] ?? 'general';
             $fieldCore = (new FieldCore($settings));
             if (isset($settingsDB[$key]['value'])) {

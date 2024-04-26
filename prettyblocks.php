@@ -504,26 +504,22 @@ class PrettyBlocks extends Module implements WidgetInterface
         $this->context->smarty->registerPlugin('function', 'prettyblocks', [$this, 'renderBlocks']);
     }
 
-
-    /** 
+    /**
      * Render blocks
      * BUG with cache
      * $block.states is not defined
      */
     public function renderBlocks($params)
     {
-
         $template = $params['file'];
-        $instance_id=$params['instance_id'];
-        $id_prettyblocks=$params['id_prettyblocks'];
-        $data=$params['data'];  
-       
-        
-        $cacheId = 'prettyblocks_'.$id_prettyblocks.'_'.$instance_id;
-        $cacheSettings = isset($block['settings']['default']['is_cached']) ? (bool)$block['settings']['default']['is_cached'] : false;
+        $instance_id = $params['instance_id'];
+        $id_prettyblocks = $params['id_prettyblocks'];
+        $data = $params['data'];
+
+        $cacheId = 'prettyblocks_' . $id_prettyblocks . '_' . $instance_id;
+        $cacheSettings = isset($block['settings']['default']['is_cached']) ? (bool) $block['settings']['default']['is_cached'] : false;
 
         if ($cacheSettings && !$this->isCached($template, $this->getCacheId($cacheId))) {
-
             $this->smarty->assign([
                 'template' => $template,
                 'block' => $data,
@@ -560,7 +556,7 @@ class PrettyBlocks extends Module implements WidgetInterface
                 ->setValue($value)->render();
     }
 
-    /** 
+    /**
      * Render zone
      */
     public function renderZone($params)
@@ -575,16 +571,16 @@ class PrettyBlocks extends Module implements WidgetInterface
         $templateFile = 'module:prettyblocks/views/templates/front/zone.tpl';
         $context = Context::getContext();
 
-            $id_lang = $context->language->id;
-            $id_shop = $context->shop->id;
-            $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
+        $id_lang = $context->language->id;
+        $id_shop = $context->shop->id;
+        $blocks = PrettyBlocksModel::getInstanceByZone($zone_name, 'front', $id_lang, $id_shop);
 
-            $context->smarty->assign([
-                'zone_name' => $zone_name,
-                'priority' => $priority,
-                'alias' => $alias,
-                'blocks' => $blocks,
-            ]);
+        $context->smarty->assign([
+            'zone_name' => $zone_name,
+            'priority' => $priority,
+            'alias' => $alias,
+            'blocks' => $blocks,
+        ]);
 
         return $this->fetch($templateFile);
     }
@@ -602,7 +598,7 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'description' => $this->l('Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/'), // description to display
                 'tab' => 'Settings',
                 'default' => 'no-api-key', // default value (Boolean)
-                'private' => true
+                'private' => true,
             ],
             'load_default_blocks' => [
                 'type' => 'checkbox', // type of field
@@ -610,11 +606,11 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'description' => $this->l('Load default blocks'), // description to display
                 'tab' => 'Settings',
                 'default' => true, // default value (Boolean)
-                'private' => true
-            ]
+                'private' => true,
+            ],
         ];
     }
-    
+
     /**
      * Register blocks into prettyblocks
      * register smartyblock
@@ -628,10 +624,11 @@ class PrettyBlocks extends Module implements WidgetInterface
             new CategoryDescriptionBlock($this),
         ];
 
-        if(TplSettings::getSettings('load_default_blocks')){
+        if (TplSettings::getSettings('load_default_blocks')) {
             $defaultsBlocks[] = new TinySlider($this);
             $defaultsBlocks[] = new CustomImage($this);
             $defaultsBlocks[] = new PrettyBlocksFAQ($this);
+            $defaultsBlocks[] = new PrettyBlocksCustomText($this);
         }
 
         return HelperBuilder::renderBlocks($defaultsBlocks);
@@ -647,7 +644,8 @@ class PrettyBlocks extends Module implements WidgetInterface
         return $cacheId;
     }
 
-    public function clearCache($var) {
+    public function clearCache($var)
+    {
         $this->_clearCache($var);
     }
 }

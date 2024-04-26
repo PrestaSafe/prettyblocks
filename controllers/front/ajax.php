@@ -22,6 +22,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 use Symfony\Component\Dotenv\Dotenv;
+
 class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 {
     private $ajax_token;
@@ -68,20 +69,19 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         if (!in_array($host, $shop_domains)) {
             header('Access-Control-Allow-Origin: ' . $protocol . '://' . $host);
         }
-         // register .env
-         $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
+        // register .env
+        $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
 
-         if (file_exists($env_file)) {
-             $dotenv = new Dotenv();
-             $dotenv->load($env_file);
-         }
-         if(getenv('PRETTYBLOCKS_CUSTOM_HEADERS'))
-         {
+        if (file_exists($env_file)) {
+            $dotenv = new Dotenv();
+            $dotenv->load($env_file);
+        }
+        if (getenv('PRETTYBLOCKS_CUSTOM_HEADERS')) {
             $headers = explode(',', getenv('PRETTYBLOCKS_CUSTOM_HEADERS'));
-            foreach($headers as $header){
-                header('Access-Control-Allow-Origin: '.$header);
+            foreach ($headers as $header) {
+                header('Access-Control-Allow-Origin: ' . $header);
             }
-         }
+        }
     }
 
     /**
@@ -171,7 +171,6 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
      */
     public function displayAjaxinsertBlock()
     {
-        
         $code = pSQL(Tools::getValue('code'));
         $zone_name = pSQL(Tools::getValue('zone_name'));
         $id_lang = (int) Tools::getValue('ctx_id_lang');
@@ -218,7 +217,6 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     // remove sub element OK
     public function displayAjaxremoveSubState()
     {
-
         $formattedID = pSQL(Tools::getValue('formattedID'));
         $ids = explode('-', $formattedID);
         $id_block = $ids[0];
