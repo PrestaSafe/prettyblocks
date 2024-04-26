@@ -447,6 +447,15 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'priority' => 200,
             ]
         );
+
+        $this->context->controller->registerStylesheet(
+            'prettyblocks-front',
+            'modules/' . $this->name . '/views/css/front.css',
+            [
+                'media' => 'all',
+                'priority' => 250,
+            ]
+        );
     }
 
     /**
@@ -595,9 +604,17 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'default' => 'no-api-key', // default value (Boolean)
                 'private' => true
             ],
+            'load_default_blocks' => [
+                'type' => 'checkbox', // type of field
+                'label' => $this->l('Load default blocks'), // label to display
+                'description' => $this->l('Load default blocks'), // description to display
+                'tab' => 'Settings',
+                'default' => true, // default value (Boolean)
+                'private' => true
+            ]
         ];
     }
-
+    
     /**
      * Register blocks into prettyblocks
      * register smartyblock
@@ -610,9 +627,12 @@ class PrettyBlocks extends Module implements WidgetInterface
             new CmsContentBlock($this),
             new CategoryDescriptionBlock($this),
         ];
-        // https://preview.keenthemes.com/html/keen/docs/general/tiny-slider/overview
-        $defaultsBlocks[] = new TinySlider($this);
-        $defaultsBlocks[] = new CustomImage($this);
+
+        if(TplSettings::getSettings('load_default_blocks')){
+            $defaultsBlocks[] = new TinySlider($this);
+            $defaultsBlocks[] = new CustomImage($this);
+            $defaultsBlocks[] = new PrettyBlocksFAQ($this);
+        }
 
         return HelperBuilder::renderBlocks($defaultsBlocks);
     }
