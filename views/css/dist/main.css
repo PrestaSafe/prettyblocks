@@ -1,0 +1,428 @@
+/* @tailwind base; */
+
+.tw_absolute {
+  position: absolute;
+}
+
+.tw_float-right {
+  float: right;
+}
+
+.tw_clear-both {
+  clear: both;
+}
+
+.tw_mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tw_mt-4 {
+  margin-top: 1rem;
+}
+
+.tw_mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.tw_mt-1 {
+  margin-top: 0.25rem;
+}
+
+.tw_mr-1 {
+  margin-right: 0.25rem;
+}
+
+.tw_mr-4 {
+  margin-right: 1rem;
+}
+
+.tw_ml-2 {
+  margin-left: 0.5rem;
+}
+
+.tw_mt-2 {
+  margin-top: 0.5rem;
+}
+
+.tw_mb-4 {
+  margin-bottom: 1rem;
+}
+
+.tw_flex {
+  display: flex;
+}
+
+.tw_grid {
+  display: grid;
+}
+
+.tw_h-40 {
+  height: 10rem;
+}
+
+.tw_w-full {
+  width: 100%;
+}
+
+.tw_max-w-sm {
+  max-width: 24rem;
+}
+
+.tw_grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.tw_grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tw_grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tw_justify-center {
+  justify-content: center;
+}
+
+.tw_gap-6 {
+  gap: 1.5rem;
+}
+
+.tw_gap-4 {
+  gap: 1rem;
+}
+
+.tw_space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.tw_rounded-md {
+  border-radius: 0.375rem;
+}
+
+.tw_rounded {
+  border-radius: 0.25rem;
+}
+
+.tw_rounded-tl-lg {
+  border-top-left-radius: 0.5rem;
+}
+
+.tw_rounded-tr-lg {
+  border-top-right-radius: 0.5rem;
+}
+
+.tw_border {
+  border-width: 1px;
+}
+
+.tw_border-0 {
+  border-width: 0px;
+}
+
+.tw_bg-blue-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
+
+.tw_bg-orange-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 115 22 / var(--tw-bg-opacity));
+}
+
+.tw_bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.tw_p-4 {
+  padding: 1rem;
+}
+
+.tw_px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.tw_py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.tw_px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.tw_px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.tw_py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.tw_py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.tw_px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.tw_px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.tw_py-0 {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.tw_py-0\.5 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+.tw_py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.tw_pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.tw_text-center {
+  text-align: center;
+}
+
+.tw_text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.tw_font-semibold {
+  font-weight: 600;
+}
+
+.tw_font-bold {
+  font-weight: 700;
+}
+
+.tw_uppercase {
+  text-transform: uppercase;
+}
+
+.tw_text-red-600 {
+  --tw-text-opacity: 1;
+  color: rgb(220 38 38 / var(--tw-text-opacity));
+}
+
+.tw_text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.tw_line-through {
+  text-decoration-line: line-through;
+}
+
+.tw_shadow {
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.img-flexible {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.title-center {
+  text-align: center;
+}
+
+:root {
+  --pd-s: 5px;
+  --pd-m: 10px;
+  --pd-l: 15px;
+  --pd-xl: 20px;
+  --pd-2xl: 25px;
+  --pd-3xl: 30px;
+  --pd-4xl: 35px;
+  --pd-5xl: 40px;
+  --bg: #fff;
+  --text: #7288a2;
+  --gray: #4d5974;
+  --lightgray: #e5e5e5;
+  --blue: #03b5d2;
+}
+
+.pd-s {
+  padding: var(--pd-s);
+}
+
+.pd-m {
+  padding: var(--pd-m);
+}
+
+.pd-l {
+  padding: var(--pd-l);
+}
+
+.pd-xl {
+  padding: var(--pd-xl);
+}
+
+.pd-2xl {
+  padding: var(--pd-2xl);
+}
+
+.pd-3xl {
+  padding: var(--pd-3xl);
+}
+
+.pd-4xl {
+  padding: var(--pd-4xl);
+}
+
+.pd-5xl {
+  padding: var(--pd-5xl);
+}
+
+/* FAQ */
+
+.accordion .accordion-item {
+  border-bottom: 1px solid var(--lightgray);
+}
+
+.accordion .accordion-item button[aria-expanded='true'] {
+  border-bottom: 1px solid var(--blue);
+}
+
+.accordion button {
+  position: relative;
+  display: block;
+  text-align: left;
+  width: 100%;
+  padding: 1em 0;
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 400;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+.accordion button:hover, .accordion button:focus {
+  cursor: pointer;
+  color: var(--blue);
+}
+
+.accordion button:hover::after, .accordion button:focus::after {
+  cursor: pointer;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+}
+
+.accordion .accordion-title {
+  padding: 1em 1.5em 1em 0;
+}
+
+.accordion .icon {
+  display: inline-block;
+  position: absolute;
+  top: 18px;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  border: 1px solid;
+  border-radius: 22px;
+}
+
+.accordion .icon::before {
+  display: block;
+  position: absolute;
+  content: '';
+  top: 9px;
+  left: 5px;
+  width: 10px;
+  height: 2px;
+  background: currentColor;
+}
+
+.accordion .icon::after {
+  display: block;
+  position: absolute;
+  content: '';
+  top: 5px;
+  left: 9px;
+  width: 2px;
+  height: 10px;
+  background: currentColor;
+}
+
+.accordion button[aria-expanded='true'] {
+  color: var(--blue);
+}
+
+.accordion button[aria-expanded='true'] .icon::after {
+  width: 0;
+}
+
+.accordion button[aria-expanded='true'] + .accordion-content {
+  opacity: 1;
+  max-height: 9em;
+  transition: all 200ms linear;
+  will-change: opacity, max-height;
+  background-color: white;
+}
+
+.accordion .accordion-content {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 200ms linear, max-height 200ms linear;
+  will-change: opacity, max-height;
+}
+
+.accordion .accordion-content p {
+  font-size: 1rem;
+  margin: 0.5em 0;
+  padding: 0 0.5em;
+}
+
+.hover\:tw_bg-blue-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(29 78 216 / var(--tw-bg-opacity));
+}
+
+@media (min-width: 640px) {
+  .sm\:tw_grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:tw_grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  @media (min-width: 1024px) {
+    .dark\:lg\:hover\:\[paint-order\:markers\]:hover {
+      paint-order: markers;
+    }
+  }
+}

@@ -1,21 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('tinySlider', document.querySelectorAll('.prettyblocks-tns').length)
     if (document.querySelectorAll('.prettyblocks-tns').length > 0) {
         var sliders = document.querySelectorAll('.prettyblocks-tns');
         sliders.forEach(function (slider) {
-            console.log('slider', slider)
             tns({
                 container: slider,
                 items: 1,
                 slideBy: 'page',
                 autoWidth: true,
-                autoHeight: true,
+                center: true,
+                // autoHeight: true,
                 autoplay: true,
                 nav: false, // disable dots
                 controls: false, // disable controls
                 autoplayButtonOutput: false,
                 mouseDrag: true,
                 loop: true,
+                rewind: true,
                 autoplayTimeout: 4000,
             });
         });

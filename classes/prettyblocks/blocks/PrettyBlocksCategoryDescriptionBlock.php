@@ -21,7 +21,7 @@
 
 use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 
-class SmartyRender implements BlockInterface
+class PrettyBlocksCategoryDescriptionBlock implements BlockInterface
 {
     private $module;
 
@@ -33,24 +33,15 @@ class SmartyRender implements BlockInterface
     public function registerBlocks(): array
     {
         return [
-            'name' => $this->module->l('Smarty render'),
-            'description' => $this->module->l('Execute smarty code'),
-            'code' => 'prettyblocks_smarty_render',
-            'tab' => 'general',
-            'icon' => 'CommandLineIcon',
+            'name' => $this->module->l('PrettyBlocks Category description block'),
+            'description' => $this->module->l('Render category description in a block'),
+            'code' => 'prettyblocks_category_description',
+            'tab' => 'product',
+            'icon' => 'DocumentTextIcon',
             'need_reload' => false,
             'insert_default_values' => true,
             'templates' => [
-                'default' => 'module:' . $this->module->name . '/views/templates/blocks/smarty_render.tpl',
-            ],
-            'config' => [
-                'fields' => [
-                    'code' => [
-                        'type' => 'textarea',
-                        'label' => $this->module->l('Smarty code'),
-                        'default' => '',
-                    ],
-                ],
+                'default' => 'module:' . $this->module->name . '/views/templates/blocks/category/category_description_block.tpl',
             ],
         ];
     }

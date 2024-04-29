@@ -16,6 +16,8 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-{if isset($product) && isset($product.description)}
-    {$product.description nofilter}
+{if $block.settings.image} 
+<div class="{if $block.settings.alignment}text-sm-{$block.settings.alignment}{/if} d-block w-full">
+    <img class="img-flexible" src="{$block.settings.image.url}" />
+</div>
 {/if}

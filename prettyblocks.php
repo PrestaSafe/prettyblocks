@@ -63,6 +63,8 @@ class PrettyBlocks extends Module implements WidgetInterface
         'ActionProductGridDefinitionModifier',
         'ActionCategoryGridDefinitionModifier',
         'ActionCmsPageGridDefinitionModifier',
+        'BeforeRenderingPrettyblocksFeaturedProduct',
+        'BeforeRenderingPrettyBlocksRenderModule',
     ];
 
     public function __construct()
@@ -422,7 +424,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             // todo register css and js on iframe only from Hook
         }
         // load default blocks styles
-        if (TplSettings::getSettings('load_default_blocks')) {
+        if (!TplSettings::getSettings('remove_default_blocks')) {
             $this->context->controller->registerStylesheet(
                 'tiny-slider-css',
                 'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css',
@@ -454,13 +456,51 @@ class PrettyBlocks extends Module implements WidgetInterface
 
             $this->context->controller->registerStylesheet(
                 'prettyblocks-front',
-                'modules/' . $this->name . '/views/css/front.css',
+                'modules/' . $this->name . '/views/css/dist/main.css',
                 [
                     'media' => 'all',
                     'priority' => 250,
                 ]
             );
         }
+    }
+
+    /**
+     * Hook before rendering prettyblocks featured product
+     * @param array $params
+     * @return array
+     */
+    public function hookBeforeRenderingPrettyblocksFeaturedProduct($params)
+    {
+        $settings = $params['block']['settings'];
+        $nProducts = (int)$settings['number'] ?? 8;
+		if ($settings) {
+            if (isset($settings['category']['id'])) {
+                $id_category = (int)$settings['category']['id'];
+				return ['products' => HelperBuilder::getProductsCategory($id_category, $nProducts)];
+			}
+		}
+		return ['products' => false];
+    }
+
+    /**
+     * Hook before rendering prettyblocks render module
+     * @param array $params
+     * @return array
+     */
+    public function hookBeforeRenderingPrettyBlocksRenderModule($params)
+    {
+        $settings = $params['block']['settings'];
+        $module_name = $settings['module_name'];
+        
+        if(isset($module_name) && $module_name && \Validate::isModuleName($module_name)) {
+            $module = Module::getInstanceByName($module_name);
+            if($module && $module instanceof WidgetInterface) {
+                return ['module' => $module_name];
+            }
+        }
+
+        return ['module' => false];
     }
 
     /**
@@ -605,12 +645,12 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'default' => 'no-api-key', // default value (Boolean)
                 'private' => true,
             ],
-            'load_default_blocks' => [
+            'remove_default_blocks' => [
                 'type' => 'checkbox', // type of field
-                'label' => $this->l('Load default blocks'), // label to display
-                'description' => $this->l('Load default blocks'), // description to display
+                'label' => $this->l('Remove default blocks (if you using yours custom blocks)'), // label to display
+                'description' => $this->l('Remove default blocks (if you using yours custom blocks)'), // description to display
                 'tab' => 'Settings',
-                'default' => true, // default value (Boolean)
+                'default' => false, // default value (Boolean)
                 'private' => true,
             ],
         ];
@@ -623,17 +663,21 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function hookActionRegisterBlock($params)
     {
         $defaultsBlocks = [
-            new ProductDescriptionBlock($this),
-            new ProductDescriptionShortBlock($this),
-            new CmsContentBlock($this),
-            new CategoryDescriptionBlock($this),
+            new PrettyBlocksProductDescriptionBlock($this),
+            new PrettyBlocksProductDescriptionShortBlock($this),
+            new PrettyBlocksCmsContentBlock($this),
+            new PrettyBlocksCategoryDescriptionBlock($this),
         ];
 
-        if (TplSettings::getSettings('load_default_blocks')) {
-            $defaultsBlocks[] = new TinySlider($this);
-            $defaultsBlocks[] = new CustomImage($this);
+        if (!TplSettings::getSettings('remove_default_blocks')) {
+            $defaultsBlocks[] = new PrettyBlocksTinySlider($this);
+            $defaultsBlocks[] = new PrettyBlocksCustomImage($this);
             $defaultsBlocks[] = new PrettyBlocksFAQ($this);
             $defaultsBlocks[] = new PrettyBlocksCustomText($this);
+            $defaultsBlocks[] = new PrettyBlocksFeaturedProducts($this);
+            $defaultsBlocks[] = new PrettyBlocksTitle($this);
+            $defaultsBlocks[] = new PrettyBlocksRenderModule($this);
+            $defaultsBlocks[] = new PrettyBlocksRenderHook($this);
         }
 
         return HelperBuilder::renderBlocks($defaultsBlocks);

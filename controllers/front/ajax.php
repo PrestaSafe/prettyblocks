@@ -50,7 +50,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         }
         $this->ajax = $this->isAjax();
 
-        $this->module->clearCache('*');
+        // $this->module->clearCache('*');
         parent::init();
     }
 

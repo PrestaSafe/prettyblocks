@@ -21,7 +21,7 @@
 
 use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 
-class TinySlider implements BlockInterface
+class PrettyBlocksCustomImage implements BlockInterface
 {
     private $module;
 
@@ -32,34 +32,40 @@ class TinySlider implements BlockInterface
 
     public function registerBlocks(): array
     {
-        return [
-            'name' => $this->module->l('Tiny Slider'),
-            'description' => $this->module->l('Render a simple and nice slider'),
-            'code' => 'prettyblocks_tiny_slider',
-            'tab' => 'sliders',
-            'icon' => 'RectangleStackIcon',
-            'need_reload' => true,
-            'insert_default_values' => true,
-            'templates' => [
-                'default' => 'module:' . $this->module->name . '/views/templates/blocks/tinyslider/default.tpl',
-            ],
+        $context = Context::getContext();
 
-            'repeater' => [
-                'name' => 'Slides',
-                'nameFrom' => 'alt_image',
-                'groups' => [
+        return [
+            'name' => $this->module->l('PrettyBlocks Custom Image Block'),
+            'description' => $this->module->l('Display custom text anywhere'),
+            'code' => 'prettyblocks_custom_image_block', // unique code
+            'tab' => 'general', // for future use
+            'icon' => 'DocumentTextIcon', // heroicons v2
+            'insert_default_values' => true, // insert default values on new block
+            'need_reload' => false, // reload iframe on save
+            'templates' => [
+                'default' => 'module:' . $this->module->name . '/views/templates/blocks/customimage/default.tpl',
+            ],
+            'config' => [
+                'fields' => [
                     'image' => [
                         'type' => 'fileupload',
-                        'label' => $this->module->l('File upload'),
+                        'force_default_value' => true,
+                        'label' => $this->module->l('Image first banner'),
                         'path' => '$/modules/' . $this->module->name . '/views/images/',
                         'default' => [
-                            'url' => 'https://placehold.co/1110x522',
+                            'url' => 'https://placehold.co/600x400',
                         ],
                     ],
-                    'alt_image' => [
-                        'type' => 'text',
-                        'label' => $this->module->l('Image Alt'),
-                        'default' => 'Image alt',
+
+                    'alignment' => [
+                        'type' => 'select',
+                        'label' => $this->module->l('Choose alignment'),
+                        'default' => 'left',
+                        'choices' => [
+                            'left' => 'left',
+                            'center' => 'center',
+                            'right' => 'right',
+                        ],
                     ],
                 ],
             ],

@@ -16,6 +16,6 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-{if isset($product) && isset($product.description)}
-    {$product.description nofilter}
-{/if}
+<{if isset($block.settings.tag) && !empty($block.settings.tag)}{$block.settings.tag}{else}h2{/if} class="{if isset($block.settings.classes) && !empty($block.settings.classes)}{$block.settings.classes}{/if}">
+    {if isset($block.settings.title) && !empty($block.settings.title)}{$block.settings.title nofilter}{/if}
+</{if isset($block.settings.tag) && !empty($block.settings.tag)}{$block.settings.tag}{else}h2{/if}>

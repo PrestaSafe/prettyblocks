@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -21,27 +20,37 @@
 
 use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 
-class CmsContentBlock implements BlockInterface
+class PrettyBlocksRenderHook implements BlockInterface
 {
     private $module;
-
+    
     public function __construct($module)
     {
         $this->module = $module;
     }
 
+
     public function registerBlocks(): array
     {
-        return [
-            'name' => $this->module->l('Cms content block'),
-            'description' => $this->module->l('Render CMS description in a block'),
-            'code' => 'prettyblocks_cms_content',
-            'tab' => 'product',
-            'icon' => 'DocumentTextIcon',
-            'need_reload' => false,
-            'insert_default_values' => true,
+        return  [
+            'name' => $this->module->l('PrettyBlocks Render Hook'),
+            'description' => $this->module->l('Render any hook'),
+            'code' => 'prettyblocks_render_hook',
+            'tab' => 'general',
+            'icon' => 'CommandLineIcon',
+            'insert_default_values' => true, 
+            'need_reload' => true,
             'templates' => [
-                'default' => 'module:' . $this->module->name . '/views/templates/blocks/cms/cms_content_block.tpl',
+                'default' => 'module:' . $this->module->name . '/views/templates/blocks/renderhook/default.tpl',
+            ],
+            'config' => [
+                'fields' => [
+                    'hook_name' => [
+                        'type' => 'text', // type of field
+                        'label' => $this->module->l('Hook to render'),
+                        'default' => '',
+                    ],
+                ],
             ],
         ];
     }

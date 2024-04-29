@@ -16,6 +16,10 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-{if isset($product) && isset($product.description)}
-    {$product.description nofilter}
-{/if}
+
+{capture assign="productClasses"}{if !empty($productClass)}{$productClass}{else}col-xs-12 col-sm-6 col-xl-4{/if}{/capture}
+<div class="{if !empty($cssClass)} {$cssClass}{/if}">
+{foreach from=$products item="product" key="position"}
+    {include file="module:prettyblocks/views/templates/blocks/featured_products/product.tpl" product=$product position=$position productClasses=$productClasses}
+{/foreach}
+</div>

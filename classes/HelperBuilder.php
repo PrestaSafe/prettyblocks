@@ -1,7 +1,10 @@
 <?php
 
 use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
-
+use PrestaShop\PrestaShop\Adapter\Category\CategoryProductSearchProvider;
+use PrestaShop\PrestaShop\Core\Product\Search\ProductSearchContext;
+use PrestaShop\PrestaShop\Core\Product\Search\ProductSearchQuery;
+use PrestaShop\PrestaShop\Core\Product\Search\SortOrder;
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -332,5 +335,57 @@ class HelperBuilder
                 $array1[$key] = $value;
             }
         }
+    }
+
+    /**
+     * Get products from category
+     * @param int $id_category
+     * @param int $nProducts
+     * @return array
+     */
+    public static function getProductsCategory($id_category, $nProducts = 8)
+    {
+        $context = Context::getContext();
+		$category = new Category((int) $id_category);
+
+		$searchProvider = new CategoryProductSearchProvider(
+			$context->getTranslator(),
+			$category
+		);
+
+		$searchContext = new ProductSearchContext($context);
+
+		$query = new ProductSearchQuery();
+
+
+		$query
+			->setResultsPerPage($nProducts)
+			->setPage(1);
+
+
+		$query->setSortOrder(new SortOrder('product', 'position', 'asc'));
+
+
+		$result = $searchProvider->runQuery(
+			$searchContext,
+			$query
+		);
+
+		$assembler            = new ProductAssembler($context);
+		$presenterFactory     = new ProductPresenterFactory($context);
+		$presentationSettings = $presenterFactory->getPresentationSettings();
+		$presenter            = $presenterFactory->getPresenter();
+
+		$products_for_template = [];
+
+		foreach ($result->getProducts() as $rawProduct) {
+			$products_for_template[] = $presenter->present(
+				$presentationSettings,
+				$assembler->assembleProduct($rawProduct),
+				$context->language
+			);
+		}
+
+		return $products_for_template;
     }
 }

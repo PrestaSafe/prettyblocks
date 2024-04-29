@@ -16,6 +16,11 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-{if isset($product) && isset($product.description)}
-    {$product.description nofilter}
+
+{if $block.settings.hook_name}
+<div class="{if $block.settings.default.container} container {/if}" {if $block.settings.default.bg_color}style="{$block.settings.default.bg_color}"{/if}>
+    {hook h=$block.settings.hook_name}
+</div>  
 {/if}
+ 
+ 

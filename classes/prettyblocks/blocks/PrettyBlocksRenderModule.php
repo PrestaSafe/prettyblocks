@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -21,27 +20,37 @@
 
 use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 
-class CategoryDescriptionBlock implements BlockInterface
+class PrettyBlocksRenderModule implements BlockInterface
 {
     private $module;
-
+    
     public function __construct($module)
     {
         $this->module = $module;
     }
 
+
     public function registerBlocks(): array
     {
-        return [
-            'name' => $this->module->l('Category description block'),
-            'description' => $this->module->l('Render category description in a block'),
-            'code' => 'prettyblocks_category_description',
-            'tab' => 'product',
-            'icon' => 'DocumentTextIcon',
-            'need_reload' => false,
-            'insert_default_values' => true,
+        return  [
+            'name' => $this->module->l('PrettyBlocks Render Module'),
+            'description' => $this->module->l('Render any module'),
+            'code' => 'prettyblocks_render_module',
+            'tab' => 'general',
+            'icon' => 'CommandLineIcon',
+            'insert_default_values' => true, 
+            'need_reload' => true,
             'templates' => [
-                'default' => 'module:' . $this->module->name . '/views/templates/blocks/category/category_description_block.tpl',
+                'default' => 'module:' . $this->module->name . '/views/templates/blocks/rendermodule/default.tpl',
+            ],
+            'config' => [
+                'fields' => [
+                    'module_name' => [
+                        'type' => 'text', // type of field
+                        'label' => $this->module->l('Module to render'),
+                        'default' => '',
+                    ],
+                ],
             ],
         ];
     }

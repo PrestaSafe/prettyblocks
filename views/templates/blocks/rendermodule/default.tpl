@@ -16,6 +16,15 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-{if isset($product) && isset($product.description)}
-    {$product.description nofilter}
-{/if}
+
+ {if $block.extra.module}
+ <div class="{if $block.settings.default.container} container {/if}" {if $block.settings.default.bg_color}style="{$block.settings.default.bg_color}"{/if}>
+         {widget name=$block.extra.module}
+     </div>
+    {else if !$block.extra.module && $block.settings.module_name != ''}
+     <div class="alert alert-waning">
+         Module not compatible, wrong name or not compatible with Widget interface
+     </div>
+ {/if}
+ 
+ 
