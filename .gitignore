@@ -3,6 +3,7 @@ build/
 vendor/
 node_modules/
 **/node_modules
+**node_modules**
 .vscode/
 views/images/*
 !views/images/favicon.ico
