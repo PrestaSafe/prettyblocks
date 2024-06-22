@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -23,22 +24,21 @@ use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 class PrettyBlocksRenderHook implements BlockInterface
 {
     private $module;
-    
+
     public function __construct($module)
     {
         $this->module = $module;
     }
 
-
     public function registerBlocks(): array
     {
-        return  [
+        return [
             'name' => $this->module->l('PrettyBlocks Render Hook'),
             'description' => $this->module->l('Render any hook'),
             'code' => 'prettyblocks_render_hook',
             'tab' => 'general',
             'icon' => 'CommandLineIcon',
-            'insert_default_values' => true, 
+            'insert_default_values' => true,
             'need_reload' => true,
             'templates' => [
                 'default' => 'module:' . $this->module->name . '/views/templates/blocks/renderhook/default.tpl',

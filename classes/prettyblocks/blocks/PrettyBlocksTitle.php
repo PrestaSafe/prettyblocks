@@ -23,52 +23,52 @@ use PrestaSafe\PrettyBlocks\Interfaces\BlockInterface;
 
 class PrettyBlocksTitle implements BlockInterface
 {
-	private $module;
+    private $module;
 
-	public function __construct($module)
-	{
-		$this->module = $module;
-	}
+    public function __construct($module)
+    {
+        $this->module = $module;
+    }
 
-	public function registerBlocks(): array
-	{
-		return [
-			'name' => $this->module->l('PrettyBlocks Title blocks'),
-			'description' => $this->module->l('Render title block'),
-			'code' => 'prettyblocks_title',
-			'tab' => 'general',
-			'icon' => 'DocumentTextIcon',
-			'need_reload' => true,
-			'templates' => [
-				'default' => 'module:' . $this->module->name . '/views/templates/blocks/title/default.tpl'
-			],
-			'config' => [
-				'fields' => [
-					'tag' => [
-						'type' => 'select', // type of field
-						'label' => $this->module->l('Choose a tag'), // label to display
-						'default' => 'h2', // default value (String)
-						'choices' => [
-							'h1' => 'h1',
-							'h2' => 'h2',
-							'h3' => 'h3',
-							'h4' => 'h4',
-							'h5' => 'h5',
-							'h6' => 'h6',
-						]
-					],
-					'title' => [
-						'type' => 'text',
-						'default' => $this->module->l('Your title'),
-						'label' => $this->module->l('You can use HTML tags to customize your title.')
-					],
-					'classes' => [
-						'type' => 'text',
-						'default' => '',
-						'label' => $this->module->l('Add classes to your title')
-					],
-				],
-			],
-		];
-	}
+    public function registerBlocks(): array
+    {
+        return [
+            'name' => $this->module->l('PrettyBlocks Title blocks'),
+            'description' => $this->module->l('Render title block'),
+            'code' => 'prettyblocks_title',
+            'tab' => 'general',
+            'icon' => 'DocumentTextIcon',
+            'need_reload' => true,
+            'templates' => [
+                'default' => 'module:' . $this->module->name . '/views/templates/blocks/title/default.tpl',
+            ],
+            'config' => [
+                'fields' => [
+                    'tag' => [
+                        'type' => 'select', // type of field
+                        'label' => $this->module->l('Choose a tag'), // label to display
+                        'default' => 'h2', // default value (String)
+                        'choices' => [
+                            'h1' => 'h1',
+                            'h2' => 'h2',
+                            'h3' => 'h3',
+                            'h4' => 'h4',
+                            'h5' => 'h5',
+                            'h6' => 'h6',
+                        ],
+                    ],
+                    'title' => [
+                        'type' => 'text',
+                        'default' => $this->module->l('Your title'),
+                        'label' => $this->module->l('You can use HTML tags to customize your title.'),
+                    ],
+                    'classes' => [
+                        'type' => 'text',
+                        'default' => '',
+                        'label' => $this->module->l('Add classes to your title'),
+                    ],
+                ],
+            ],
+        ];
+    }
 }

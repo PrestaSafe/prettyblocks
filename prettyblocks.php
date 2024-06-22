@@ -467,35 +467,41 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * Hook before rendering prettyblocks featured product
+     *
      * @param array $params
+     *
      * @return array
      */
     public function hookBeforeRenderingPrettyblocksFeaturedProduct($params)
     {
         $settings = $params['block']['settings'];
-        $nProducts = (int)$settings['number'] ?? 8;
-		if ($settings) {
+        $nProducts = (int) $settings['number'] ?? 8;
+        if ($settings) {
             if (isset($settings['category']['id'])) {
-                $id_category = (int)$settings['category']['id'];
-				return ['products' => HelperBuilder::getProductsCategory($id_category, $nProducts)];
-			}
-		}
-		return ['products' => false];
+                $id_category = (int) $settings['category']['id'];
+
+                return ['products' => HelperBuilder::getProductsCategory($id_category, $nProducts)];
+            }
+        }
+
+        return ['products' => false];
     }
 
     /**
      * Hook before rendering prettyblocks render module
+     *
      * @param array $params
+     *
      * @return array
      */
     public function hookBeforeRenderingPrettyBlocksRenderModule($params)
     {
         $settings = $params['block']['settings'];
         $module_name = $settings['module_name'];
-        
-        if(isset($module_name) && $module_name && \Validate::isModuleName($module_name)) {
+
+        if (isset($module_name) && $module_name && Validate::isModuleName($module_name)) {
             $module = Module::getInstanceByName($module_name);
-            if($module && $module instanceof WidgetInterface) {
+            if ($module && $module instanceof WidgetInterface) {
                 return ['module' => $module_name];
             }
         }
