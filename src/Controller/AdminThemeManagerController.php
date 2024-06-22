@@ -170,8 +170,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         if ($filesystem->exists($build_dir)) {
             // load manifest.json
             $manifest = $build_dir . '.vite/manifest.json';
-            // dump($manifest);
-            // die();
+
             if (!$filesystem->exists($manifest)) {
                 throw new \Exception('manifest.json not exist');
             }
@@ -282,6 +281,11 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'type_search_here' => $translator->trans('Type your search here', [], 'Modules.Prettyblocks.Admin'),
                 'search_blocks' => $translator->trans('Search blocks', [], 'Modules.Prettyblocks.Admin'),
                 'is_cached' => $translator->trans('Enable cache', [], 'Modules.Prettyblocks.Admin'),
+                'paddings' => $translator->trans('Paddings', [], 'Modules.Prettyblocks.Admin'),
+                'top' => $translator->trans('Top', [], 'Modules.Prettyblocks.Admin'),
+                'right' => $translator->trans('Right', [], 'Modules.Prettyblocks.Admin'),
+                'bottom' => $translator->trans('Bottom', [], 'Modules.Prettyblocks.Admin'),
+                'left' => $translator->trans('Left', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),

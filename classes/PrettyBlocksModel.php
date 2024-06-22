@@ -594,6 +594,58 @@ class PrettyBlocksModel extends ObjectModel
             'load_ajax' => false,
             'is_cached' => false,
             'bg_color' => '',
+            'paddings' => [
+                'desktop' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'use_custom_data' => false,
+                    'left' => 0
+                ],
+                'tablet' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'mobile' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+            ],
+            'margins' => [
+                'desktop' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'use_custom_data' => false,
+                    'left' => 0
+                ],
+                'tablet' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'mobile' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+            ],
         ];
         $defaultParams = $this->getDefaultParams();
         if (!$defaultParams) {
@@ -708,6 +760,7 @@ class PrettyBlocksModel extends ObjectModel
     private static function formatBlock($block)
     {
         $formatted = [];
+
         $id = (isset($block['id_prettyblocks'])) ? '-' . $block['id_prettyblocks'] : '';
         $formatted['id'] = $block['code'] . $id;
         $formatted['id_prettyblocks'] = $block['id_prettyblocks'] ?? '';

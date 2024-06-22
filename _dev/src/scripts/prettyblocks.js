@@ -1,5 +1,6 @@
 import { toolbar } from './toolbar'
 import { getZoneDetailsByDom }  from './helper'
+import emitter from 'tiny-emitter/instance'
 window.hasEventListener = false;
 const unsubscribe = () => {
     window.removeEventListener("message", eventHandler, false);
@@ -65,6 +66,7 @@ let eventHandler = (event) => {
         let data = event.data.data.html
         let domBlock = document.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
         domBlock.innerHTML = data
+        document.dispatchEvent(new CustomEvent('updatePrettyBlocks', { detail: id_prettyblocks }));
         return loadToolBar(event)
     }
 
@@ -216,7 +218,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
             });
     });
+  
 });
+
 
   
 
