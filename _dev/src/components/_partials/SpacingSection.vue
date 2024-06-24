@@ -3,7 +3,9 @@
         <!--  Spacing Sections   -->
         <hr class="my-2" />
         <div class="flex items-center justify-between">
-            <Title :title="trans(props.title)" /> 
+            <div class="flex">
+              <Title :title="trans(props.title)" /> 
+            </div>
             <div class="flex">
                 <Icon @click="changeDevice('desktop')" name="ComputerDesktopIcon" :class="[
               'h-9 inline p-2 rounded',
@@ -18,6 +20,7 @@
               { 'bg-black bg-opacity-10': current_device == 'mobile' },
             ]" />
                 <Icon name="QuestionMarkCircleIcon" class="h-9 inline p-2 rounded" @click="popover = !popover" />
+                <Icon name="TrashIcon" class="h-9 inline p-2 text-red-500" @click="resetValues()"/>
             </div>
         </div>
 
@@ -30,7 +33,8 @@
      
     <!-- Auto slider  -->
         <div class="w-full" v-if="!(props.modelValue[props.section_key][current_device].use_custom_data ?? false)" >
-            <Title :title="trans('auto_size_section')" />
+              <Title :title="trans('auto_size_section')" />
+
             <input class=" w-full"  type="range" min="0" max="12" step="1"  @change="updateAutoPaddingDevices"  v-model="props.modelValue[props.section_key][current_device].auto">
         </div>
         
@@ -66,7 +70,10 @@
             </div>
             <div class="text-center">
                 <Icon name="ArrowLeftIcon" class="h-5 w-5 inline" />
-                <Input type="number" :placeholder="trans('left')" v-model="props.modelValue[props.section_key][current_device].left" name="padding_left" />
+                <Input :type="
+              props.modelValue[props.section_key][current_device].use_custom_data ?? false
+                ? 'text'
+                : 'number' " :placeholder="trans('left')" v-model="props.modelValue[props.section_key][current_device].left" name="padding_left" />
             </div>
         </div>
 
@@ -154,6 +161,15 @@ const updateAutoPaddingDevices = (e) => {
 emitter.on("changeIframeSize", (size, height, device) => {
   current_device.value = device;
 });
+
+
+const resetValues = () => {
+  props.modelValue[props.section_key][current_device.value].auto = 0;
+  props.modelValue[props.section_key][current_device.value].top = '';
+  props.modelValue[props.section_key][current_device.value].left = '';
+  props.modelValue[props.section_key][current_device.value].right = '';
+  props.modelValue[props.section_key][current_device.value].bottom = '';
+}
 
 
 

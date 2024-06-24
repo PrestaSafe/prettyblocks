@@ -28,9 +28,13 @@ function onInput(event) {
 
 watch([() => props.modelValue, () => props.type], ([newValue, newType]) => {
   if (newType === 'number') {
-    const intValue = parseInt(newValue) || 0;
-    emit('update:modelValue', Math.min(Math.max(intValue, 0), 12));
-  }
+    if (newValue === null || newValue === '') {
+      emit('update:modelValue', '');
+    } else {
+      const intValue = parseInt(newValue) || 0;
+      emit('update:modelValue', Math.min(Math.max(intValue, 0), 12));
+    }
+  } 
 }, { immediate: true });
 
 

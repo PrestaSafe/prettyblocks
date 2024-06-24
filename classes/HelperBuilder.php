@@ -388,4 +388,84 @@ class HelperBuilder
 
         return $products_for_template;
     }
+
+    /**
+     * Generate css classes for blocks spacings
+     * classes are imported from tailwindcss with tw_ prefix by default
+     * ex: tw_xs_p-10 tw_md_p-20 tw_lg_p-30
+     * @see tailwindimport.tpl
+     * @param array $values
+     * @param string $type
+     *
+     * @return string
+     */
+    public static function generateBlocksSpacings($values, $type = 'paddings')
+    {
+        $cssClasses = '';
+        $stylesCss = '';
+        // mobile first : mobile / tablet / desktop
+        $devices = [
+            'mobile' => '',
+            'tablet' => 'lg:',
+            'desktop' => 'xl:'
+        ];
+        $sides = ['top', 'right', 'bottom', 'left'];
+
+        $alias = [
+            'paddings' => 'padding',
+            'margins' => 'margin'
+        ];
+        $classesPrefix = [];
+        $stylesArray = [];
+        foreach($devices as $device => $prefix) {
+            if(isset($values[$device]["use_custom_data"]) && $values[$device]['use_custom_data'] == true) {
+                //  generate styles
+                foreach($sides as $side) {
+                    $value = $values[$device][$side];
+                    if($value !== '') {
+                        if (!preg_match('/(px|rem|em|%|vh|vw|vmin|vmax)$/', $value)) {
+                            $value .= 'px';
+                        }
+                        $stylesArray[$device][$side] = $alias[$type] . '-' . $side . ':'. $value;
+                    }
+                }
+
+            } else {
+                // generate classes
+                foreach($sides as $side) {
+                    $value = $values[$device][$side];
+                    // return a format for tailwindcss prefixed with tw_ ex: _xs_t-10
+                    if($value !== '') {
+                        $classesPrefix[$device][$side] = $prefix . 'tw_' . substr($type, 0, 1) . substr($side, 0, 1).'-'. $value ;
+                    }
+                }
+            }
+        }
+
+
+        foreach ($devices as $breakpoint => $prefix) {
+            if (!empty($classesPrefix[$breakpoint])) {
+                $cssClasses .= implode(' ', $classesPrefix[$breakpoint]) . ' ';
+            }
+        }
+
+        foreach ($devices as $breakpoint => $prefix) {
+
+            if (!empty($stylesArray[$breakpoint])) {
+                $pfx = rtrim($prefix, ':');
+                if($pfx == '') {
+                    $pfx = 'sm';
+                }
+                $style = 'style-' . $pfx;
+                $stylesCss .= $style. '=' . implode(';', $stylesArray[$breakpoint]).' ' ;
+            }
+        }
+
+        return [
+            'classes' => rtrim($cssClasses),
+            'styles' => $stylesCss
+        ];
+
+    }
+
 }
