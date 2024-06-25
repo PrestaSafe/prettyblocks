@@ -26,7 +26,7 @@
 
         <Popover class="relative">
             <PopoverPanel static v-if="popover" class="z-10 bg-white border-blue-500 border rounded p-4">
-                {{ trans("section_help") }}
+                {{ trans(props.section_key+"_section_help") }}
             </PopoverPanel>
         </Popover>
         <hr class="my-2" />

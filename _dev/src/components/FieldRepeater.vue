@@ -16,7 +16,7 @@ import Button from './Button.vue'
 import FileUpload from './form/FileUpload.vue'
 import Choices from './form/Choices.vue'
 import Icon from './Icon.vue'
-import Slider from './Slider.vue'
+// import Slider from './Slider.vue'
 // tinyMCE 
 import Editor from '@tinymce/tinymce-vue'
 
@@ -34,7 +34,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 // Vue
 import { defineComponent, defineProps, ref, defineEmits, onMounted } from 'vue'
-let date = ref('2024/02/23')
+
 defineComponent({
   FormControl,
   Accordion,
@@ -145,11 +145,7 @@ const toolbarOptions = [
       <Title :title="f.label" />
       <VueDatePicker :model-value="formatDateFromString(f.value)" :enable-time-picker="false" @update:modelValue="f.value = $event" />
     </div>  
-<!-- 
-    <div class="my-4">
-      <Title title="Slider" />
-      <Slider />
-    </div> -->
+
   </div>
 </template>
 
