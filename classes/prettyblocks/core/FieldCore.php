@@ -39,6 +39,7 @@ class FieldCore
     public $allow_html = false;
     public $id_lang = 0;
     public $id_shop = 0;
+    public $options = [];
 
     /**
      * __construct
@@ -144,6 +145,9 @@ class FieldCore
         if ($this->force_default_value) {
             $data['force_default_value'] = $this->force_default_value;
         }
+        if($this->options) {
+            $data['options'] = $this->options;
+        }
 
         $data['value'] = $this->format();
 
@@ -196,7 +200,6 @@ class FieldCore
     public function format()
     {
         $method = 'formatField' . ucwords(str_replace('_', '', $this->type));
-
         if (method_exists($this, $method)) {
             return $this->{$method}();
         }
@@ -234,17 +237,23 @@ class FieldCore
      */
     public function formatFieldDatepicker()
     {
+        $format = 'Y-m-d';
+        // if(isset($this->options['dateFormat'])) {
+        //     $format = $this->options['dateFormat'];
+        // }
         // if value exists in DB and new_value is empty
         if (!is_null($this->value) && is_null($this->new_value)) {
-            return \DateTime::createFromFormat('Y-m-d', $this->value)->format('Y-m-d');
+            $date = \DateTime::createFromFormat($format, $this->value);
+            return $date ? $date->format($format) : date($format);
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && is_null($this->new_value)) {
-            return \DateTime::createFromFormat('Y-m-d', $this->default)->format('Y-m-d');
+            $date = \DateTime::createFromFormat($format, $this->default);
+            return $date ? $date->format($format) : date($format);
         }
-
-        // dump($this->new_value);
-        return \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $this->new_value)->format('Y-m-d');
+        // default format from vuedatepicker
+        $date = \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $this->new_value);
+        return $date ? $date->format($format) : date($format);
     }
 
     /**
