@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
-
+    // Apply the style on page load
+    applyAdaptiveStyle();
+    
     // faq 
     if (document.querySelectorAll('.prettyblocks-faq').length > 0) {
         const items = document.querySelectorAll(".prettyblocks-faq .accordion button");
@@ -40,3 +42,35 @@ document.addEventListener('DOMContentLoaded', function () {
         items.forEach(item => item.addEventListener('click', toggleAccordion));
     }
 });
+
+
+const applyAdaptiveStyle = () => {
+    var elements = document.querySelectorAll('[style-xl], [style-lg], [style-sm]');
+    var windowWidth = window.innerWidth;
+
+    elements.forEach(function (element) {
+        var currentStyle = '';
+
+        // Check the window width and set the style according to Tailwind CSS breakpoints
+        if (windowWidth >= 1280) { // xl
+            currentStyle = element.getAttribute('style-xl') || '';
+        } else if (windowWidth >= 768) { // md
+            currentStyle = element.getAttribute('style-lg') || '';
+        } else if (windowWidth <= 640) { // sm
+            currentStyle = element.getAttribute('style-sm') || '';
+        } 
+        
+
+        element.setAttribute('style', currentStyle);
+
+    });
+}
+
+
+
+
+let resizeTimeout;
+window.onresize = () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(applyAdaptiveStyle, 200);
+};

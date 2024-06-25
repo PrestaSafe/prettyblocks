@@ -236,6 +236,37 @@ class PrettyBlocksModel extends ObjectModel
         $block['id_lang'] = $this->id_lang;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
+
+        $paddings = (isset($block['settings']['default']['paddings'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['paddings'], 'paddings')['classes'] : '';
+        $margins = (isset($block['settings']['default']['margins'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['margins'], 'margins')['classes'] : '';
+
+        $paddingStyles = (isset($block['settings']['default']['paddings'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['paddings'], 'paddings')['styles'] : '';
+        $marginStyles = (isset($block['settings']['default']['margins'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['margins'], 'margins')['styles'] : '';
+        // if($block['id_prettyblocks'] == 51) {
+        //     dump(HelperBuilder::generateBlocksSpacings($block['settings']['default']['paddings'], 'paddings'));
+        //     dump(HelperBuilder::generateBlocksSpacings($block['settings']['default']['margins'], 'margins'));
+        //     die();
+        // }
+
+
+        $block['classes'] = '';
+        if($paddings !== '') {
+            $block['classes'] .= $paddings;
+        }
+        if($margins !== '') {
+            $block['classes'] .= ' '.$margins;
+        }
+
+        $block['styles'] = '';
+        if($paddingStyles !== '') {
+            $block['styles'] .= $paddingStyles;
+        }
+        if($marginStyles !== '') {
+            $block['styles'] .= ' '.$marginStyles;
+        }
+
+
+
         $block['settings_formatted'] = $this->_formatConfig($block, 'back');
 
         $block['repeater_db'] = $this->_formatRepeaterDb($states, $repeaterDefault);
@@ -594,6 +625,58 @@ class PrettyBlocksModel extends ObjectModel
             'load_ajax' => false,
             'is_cached' => false,
             'bg_color' => '',
+            'paddings' => [
+                'desktop' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'use_custom_data' => false,
+                    'left' => 0,
+                ],
+                'tablet' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'mobile' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+            ],
+            'margins' => [
+                'desktop' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'use_custom_data' => false,
+                    'left' => 0,
+                ],
+                'tablet' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'mobile' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+            ],
         ];
         $defaultParams = $this->getDefaultParams();
         if (!$defaultParams) {
@@ -708,6 +791,7 @@ class PrettyBlocksModel extends ObjectModel
     private static function formatBlock($block)
     {
         $formatted = [];
+
         $id = (isset($block['id_prettyblocks'])) ? '-' . $block['id_prettyblocks'] : '';
         $formatted['id'] = $block['code'] . $id;
         $formatted['id_prettyblocks'] = $block['id_prettyblocks'] ?? '';

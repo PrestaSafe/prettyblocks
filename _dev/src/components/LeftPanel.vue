@@ -251,6 +251,7 @@ const deleteAllBlocks = async () => {
         <SortableList :items="groups" group="menu-group">
           <template v-slot="{ element }">
             <!-- group of element (collapsable) -->
+
             <MenuGroup
               @changeState="loadStateConfig"
               @pushEmptyState="loadEmptyState(element)"
@@ -258,6 +259,7 @@ const deleteAllBlocks = async () => {
               :id_prettyblocks="element.id_prettyblocks"
               :title="element.title"
               :icon="element.icon"
+              :icon_path="element.icon_path"
               :config="true"
               :element="element"
               :is_parent="true"

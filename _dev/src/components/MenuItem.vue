@@ -11,6 +11,7 @@ const props = defineProps({
   id: String, // unique id for each block
   title: String,
   icon: String,
+  icon_path: String,
   config: Boolean,
   element: Object,
   is_child: Boolean
@@ -97,7 +98,8 @@ const highLightBlock = () => {
     <!-- icon and name of item -->
     <div :class="['flex items-center flex-grow pr-2', { disabled }]">
       <!-- {{ element }} -->
-      <Icon :name="icon" class="h-5 w-5 mr-2"></Icon>
+      <img :src="icon_path" class="h-7 mr-2" v-if="icon_path" />
+      <Icon :name="icon" v-else class="h-5 w-5 mr-2"></Icon>
       <p class="flex-grow w-0 text-ellipsis whitespace-nowrap overflow-hidden select-none">
         {{ title }}
       </p>

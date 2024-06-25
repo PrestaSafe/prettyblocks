@@ -33,46 +33,46 @@ class PrettyBlocksFeaturedProducts implements BlockInterface
     public function registerBlocks(): array
     {
         return [
-			'name' => $this->module->l('PrettyBlocks Featured products blocks'),
-			'description' => $this->module->l('Render featured block'),
-			'code' => 'prettyblocks_featured_product',
-			'tab' => 'general',
-			'icon' => 'GiftIcon',
-			'need_reload' => true,
-			'templates' => [
-				'default' => 'module:'.$this->module->name.'/views/templates/blocks/featured_products/default.tpl'
-			],
-			'config' => [
-				'fields' => [
-					'category' => [
-						'type' => 'selector',
-						'label' => 'Category',
-						'collection' => 'Category',
-						'default' =>  \HelperBuilder::getRandomCategory(Context::getContext()->language->id, Context::getContext()->shop->id),
-						'selector' => '{id} - {name}'
-					],
+            'name' => $this->module->l('PrettyBlocks Featured products blocks'),
+            'description' => $this->module->l('Render featured block'),
+            'code' => 'prettyblocks_featured_product',
+            'tab' => 'general',
+            'icon' => 'GiftIcon',
+            'need_reload' => true,
+            'templates' => [
+                'default' => 'module:' . $this->module->name . '/views/templates/blocks/featured_products/default.tpl',
+            ],
+            'config' => [
+                'fields' => [
+                    'category' => [
+                        'type' => 'selector',
+                        'label' => 'Category',
+                        'collection' => 'Category',
+                        'default' => HelperBuilder::getRandomCategory(Context::getContext()->language->id, Context::getContext()->shop->id),
+                        'selector' => '{id} - {name}',
+                    ],
                     'number' => [
                         'type' => 'text',
                         'label' => $this->module->l('Number of products'),
                         'default' => 8,
                     ],
-					'title' => [
-						'type' => 'text',
-						'default' => $this->module->l('Our products'),
-						'label' => 'Title to display'
-					],
-					'display_title' => [
-						'type' => 'checkbox',
-						'default' => true,
-						'label' => $this->module->l('Display title of block')
-					],
-					'display_link' => [
-						'type' => 'checkbox',
-						'default' => true,
-						'label' => $this->module->l('Display links to category')
-					]
-				],
-			],
-		];
+                    'title' => [
+                        'type' => 'text',
+                        'default' => $this->module->l('Our products'),
+                        'label' => 'Title to display',
+                    ],
+                    'display_title' => [
+                        'type' => 'checkbox',
+                        'default' => true,
+                        'label' => $this->module->l('Display title of block'),
+                    ],
+                    'display_link' => [
+                        'type' => 'checkbox',
+                        'default' => true,
+                        'label' => $this->module->l('Display links to category'),
+                    ],
+                ],
+            ],
+        ];
     }
 }

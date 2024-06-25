@@ -56,9 +56,9 @@ const globalSave = () => {
   emitter.emit('globalSave')
 }
 
-const changeIframeSize = (size, height) => {
+const changeIframeSize = (size, height, device = null) => {
   sizeSelected.value = size
-  emitter.emit('changeIframeSize', size, height)
+  emitter.emit('changeIframeSize', size, height, device)
 }
 
 let settingsEnabled = ref(true)
@@ -106,16 +106,16 @@ const adminURL = ajax_urls.adminURL
       <!-- header dropdown with demo parameters-->
       <!-- Copyright <a class="text-indigo" href="https://www.prestasafe.com">www.prestasafe.com</a> -->
       <div class="border-gray-200">
-        <ButtonLight @click="changeIframeSize('w-full', 'h-full')"
+        <ButtonLight @click="changeIframeSize('w-full', 'h-full', 'desktop')"
           :class="sizeSelected == 'w-full' ? 'bg-black bg-opacity-10' : ''" icon="ComputerDesktopIcon"
           class="p-2" />
-        <ButtonLight @click="changeIframeSize('w-5/6', 'h-5/6')"
+        <ButtonLight @click="changeIframeSize('w-5/6', 'h-5/6', 'tablet')"
           :class="sizeSelected == 'w-5/6' ? 'bg-black bg-opacity-10 -rotate-90' : '-rotate-90'" icon="DeviceTabletIcon"
           class="p-2" />
-        <ButtonLight @click="changeIframeSize('w-6/12', 'h-full')"
+        <ButtonLight @click="changeIframeSize('w-6/12', 'h-full' , 'tablet')"
           :class="sizeSelected == 'w-6/12' ? 'bg-black bg-opacity-10' : ''" icon="DeviceTabletIcon"
           class="p-2" />
-        <ButtonLight @click="changeIframeSize('w-4/12', 'h-full')"
+        <ButtonLight @click="changeIframeSize('w-4/12', 'h-full', 'mobile')"
           :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10' : ''" icon="DevicePhoneMobileIcon"
           class="p-2" />
         <!-- <ButtonLight @click="changeIframeSize('w-3/6', 'h-3/6')" :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10 -rotate-90' : '-rotate-90'" icon="DevicePhoneMobileIcon" class="p-2" /> -->
