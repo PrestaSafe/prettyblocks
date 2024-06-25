@@ -1,36 +1,57 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, defineProps, defineEmits, watch } from 'vue'
+const emit = defineEmits(['update:modelValue'])
 
-let value = ref(50)
 
-const updateValue = (event) => {
-  value.value = event.target.value
-}
-let type = ref('int')
-let step = ref(1)
 
 const props = defineProps({
-  value: {
-    type: Number,
-    required: true
-  },
-  type: {
-    type: String,
-    default: 'int',
-    validator: (value) => ['int', 'step'].includes(value)
+  modelValue: {
+    type: [Number, String],
+    required: true,
+    default: 0
   },
   step: {
     type: Number,
     default: 1
+  },
+  min: {
+    type: Number,
+    default: 0
+  },
+  max: {
+    type: Number,
+    default: 100
   }
 })
+
+const localValue = ref(props.modelValue)
+watch(() => props.modelValue, (newValue) => {
+  localValue.value = newValue
+})
+
+// Mettez à jour la valeur et émettez le changement
+const updateValue = (event) => {
+  const newValue = parseInt(event.target.value)
+  localValue.value = newValue
+  emit('update:modelValue', newValue)
+}
+
 
 </script>
 
 <template>
-  <div class="slider">
-    <input class="bg-indigo" type="range" step="2" min="4" max="8" v-model="value" @input="updateValue" />
-    <span>{{ value }}</span>
+  <div class="slider flex">
+    <input class="bg-indigo-500" type="range" 
+      :step="props.step" 
+      :min="props.min" 
+      :max="props.max" 
+      :value="localValue" 
+      @input="updateValue" 
+    />
+
+    <span class="pl-4">
+      {{ props.modelValue }} 
+    </span>
   </div>
 </template>
 

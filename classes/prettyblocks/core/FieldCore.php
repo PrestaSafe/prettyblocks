@@ -230,6 +230,26 @@ class FieldCore
         |
     */
 
+
+    /**
+     * formatFieldSlider
+     * use for display field type slider in PrettyBlocks
+     * @return Integer
+     */
+    public function formatFieldSlider()
+    {
+        // if value exists in DB and new_value is empty
+        if (!is_null($this->value) && is_null($this->new_value)) {
+            return (int) $this->value;
+        }
+        // if value doesn't exists in DB and new value is set
+        if ($this->force_default_value && is_null($this->new_value)) {
+            return (int) $this->default;
+        }
+
+        return (int) $this->new_value;
+    }
+
     /**
      * formatFieldDatePicker
      *
