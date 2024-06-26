@@ -621,7 +621,8 @@ class PrettyBlocksModel extends ObjectModel
     private function _getDefaultParams($block)
     {
         $options = [
-            'container' => true,
+            'container' => false,
+            'force_full_width' => false,
             'load_ajax' => false,
             'is_cached' => false,
             'bg_color' => '',
