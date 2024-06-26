@@ -786,6 +786,15 @@
   padding: 0 0.5em;
 }
 
+.container_force-full,
+._force-full{
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
+}
+
 .hover\:tw_bg-blue-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(29 78 216 / var(--tw-bg-opacity));

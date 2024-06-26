@@ -218,23 +218,17 @@ emitter.on("globalSave", () => {
       <hr class="my-2" />
       <!-- container -->
       <div class="my-2">
-        <!-- <Radio
-          v-model="config.default.container"
-          :title="trans('use_container')"
-          name="container"
-          value="container"
-        />
-        <Radio
-          v-model="config.default.container"
-          :title="trans('use_container')"
-          name="container"
-          value="full"
-        /> -->
         <Checkbox
           v-model="config.default.container"
           :title="trans('use_container')"
           name="container"
-          value="full"
+        />
+      </div>
+      <div class="my-2">
+        <Checkbox
+          v-model="config.default.force_full_width"
+          :title="trans('force_full_width')"
+          name="force_full_width"
         />
       </div>
       <!-- cache -->

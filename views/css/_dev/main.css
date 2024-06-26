@@ -160,3 +160,12 @@
     margin: 0.5em 0;
     padding: 0 0.5em;
   }
+
+.container_force-full,
+._force-full{
+    width: 100vw;             
+    position: relative;       
+    left: 50%;                
+    right: 50%;               
+    transform: translateX(-50%); 
+}

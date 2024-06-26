@@ -291,6 +291,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'auto_size_section' => $translator->trans('Auto sizing', [], 'Modules.Prettyblocks.Admin'),
                 'paddings_section_help' => $translator->trans('Padding is the space inside an element, between its content and its boundary', [], 'Modules.Prettyblocks.Admin'),
                 'margins_section_help' => $translator->trans('Margin refers to the space outside an element, separating it from other elements', [], 'Modules.Prettyblocks.Admin'),
+                'force_full_width' => $translator->trans('Stretch section to 100%', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),
