@@ -308,11 +308,13 @@ class HelperBuilder
     public static function zoneHasBlock($zone_name)
     {
         // Début de la sélection
+        $contextPS = Context::getContext();
         $query = new DbQuery();
         $query->select('COUNT(*)');
         $query->from('prettyblocks');
         $query->where('zone_name = "' . pSQL($zone_name) . '"');
-
+        $query->where('id_lang = '.(int)$contextPS->language->id);
+        $query->where('id_shop = '.(int)$contextPS->shop->id);
         $count = Db::getInstance()->getValue($query);
 
         // Fin de la sélection
@@ -435,7 +437,7 @@ class HelperBuilder
                 foreach($sides as $side) {
                     $value = $values[$device][$side];
                     // return a format for tailwindcss prefixed with tw_ ex: _xs_t-10
-                    if($value !== '') {
+                    if($value !== '' && $value !== null) {
                         $classesPrefix[$device][$side] = $prefix . 'tw_' . substr($type, 0, 1) . substr($side, 0, 1).'-'. $value ;
                     }
                 }
