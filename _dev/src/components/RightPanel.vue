@@ -126,7 +126,7 @@ const saveConfig = async (success = true) => {
 
 const getSubState = async (element) => {
   emitter.emit("hideSettings");
-  // state.value = []
+  state.value = []
   config.value = false;
 
   let currentBlock = await useStore();
