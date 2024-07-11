@@ -271,8 +271,12 @@ class FieldCore
             $date = \DateTime::createFromFormat($format, $this->default);
             return $date ? $date->format($format) : date($format);
         }
-        // default format from vuedatepicker
+
+        // Y-m-d\TH:i:s.u\Z is vuedatepicker default format
         $date = \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $this->new_value);
+        if (!$date) {
+            $date = \DateTime::createFromFormat($format, $this->new_value);
+        }
         return $date ? $date->format($format) : date($format);
     }
 
