@@ -143,7 +143,7 @@ const toolbarOptions = [
 
     <div class="my-4" v-if="f.type == 'datepicker'">
       <Title :title="f.label" />
-      <VueDatePicker :model-value="formatDateFromString(f.value)" :enable-time-picker="false" @update:modelValue="f.value = $event" />
+      <VueDatePicker :model-value="formatDateFromString(f.value)" :enable-time-picker="false" month-name-format="short" @update:modelValue="f.value = $event" />
     </div>  
 
       <div class="my-4" v-if="f.type == 'slider'">
