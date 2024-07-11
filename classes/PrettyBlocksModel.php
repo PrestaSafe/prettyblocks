@@ -632,8 +632,8 @@ class PrettyBlocksModel extends ObjectModel
                     'top' => null,
                     'right' => null,
                     'bottom' => null,
+                    'left' => null,
                     'use_custom_data' => false,
-                    'left' => 0,
                 ],
                 'tablet' => [
                     'auto' => 0,
@@ -658,8 +658,8 @@ class PrettyBlocksModel extends ObjectModel
                     'top' => null,
                     'right' => null,
                     'bottom' => null,
+                    'left' => null,
                     'use_custom_data' => false,
-                    'left' => 0,
                 ],
                 'tablet' => [
                     'auto' => 0,
