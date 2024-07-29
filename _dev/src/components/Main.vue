@@ -1,7 +1,7 @@
 <script>
 import RightColumn from "./RightColumn.vue"
 import LeftColumn from "./LeftColumn.vue"
-import emitter from 'tiny-emitter/instance';
+;
 
 export default {
   components: {
@@ -18,9 +18,7 @@ export default {
     this.iframe = document.getElementById('website-iframe');
 
     let that = this
-    emitter.on('show-right', function (arg1) {
-      that.showRight = arg1;
-    });
+  
   },
   methods: {
     successSaved: function () {

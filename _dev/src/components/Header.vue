@@ -1,15 +1,22 @@
 <script setup>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch, computed } from 'vue'
 import Icon from './Icon.vue';
 import Button from './Button.vue';
 import ButtonLight from './ButtonLight.vue';
 import HeaderDropdown from './HeaderDropdown.vue';
 import ZoneSelect from './form/ZoneSelect.vue';
 import ShopSelect from './form/ShopSelect.vue';
-import emitter from 'tiny-emitter/instance'
-import { contextShop } from '../store/currentBlock';
+
+import { usePrettyBlocksContext } from '../store/pinia';
+import { storeToRefs } from 'pinia';
+
+
+const rightPanel = computed(() => prettyBlocksContext.iframe.rightPanel)
+const leftPanel = computed(() => prettyBlocksContext.iframe.leftPanel)
+const saveContext = computed(() => prettyBlocksContext.saveContext)
 import { trans } from '../scripts/trans'
 
+let prettyBlocksContext = usePrettyBlocksContext() 
 defineComponent({
   Icon,
   Button,
@@ -19,56 +26,32 @@ defineComponent({
 })
 
 const sizeSelected = ref('w-full')
-let context = contextShop()
+let context = prettyBlocksContext.psContext
 const shop = ref({})
-context.$subscribe((mutation, state) => {
-  shop.value = state
-})
 
-// left panel show and extends
-let hideLeftPanel = ref(false)
-const hideLeftPanelAction = () => {
-  hideLeftPanel.value = !hideLeftPanel.value
-  emitter.emit('hideLeftPanelSize', hideLeftPanel.value)
-}
+watch(() => prettyBlocksContext.psContext, (newValue) => {
+  shop.value = newValue
+}, { deep: true })
 
-let extendLeftPanel = ref(false)
-const changeLeftPanelSize = () => {
-  extendLeftPanel.value = !extendLeftPanel.value
-  emitter.emit('changeLeftPanelSize', extendLeftPanel.value)
-}
-// right panel show and extends
-let hideRightPanel = ref(false)
-const hideRightPanelAction = () => {
-  hideRightPanel.value = !hideRightPanel.value
-  emitter.emit('hideRightPanelSize', hideRightPanel.value)
-}
-let extendRightPanel = ref(false)
-const changeRightPanelSize = () => {
-  extendRightPanel.value = !extendRightPanel.value
-  emitter.emit('changeRightPanelSize', extendRightPanel.value)
-}
+
 const state = ref({
   name: "displayHome"
 })
 
 const globalSave = () => {
-  emitter.emit('globalSave')
+  prettyBlocksContext.emitSaveContext()
 }
 
-const changeIframeSize = (size, height, device = null) => {
-  sizeSelected.value = size
-  emitter.emit('changeIframeSize', size, height, device)
+const changeIframeSize = (width, height, device = null) => {
+  sizeSelected.value = width
+  prettyBlocksContext.changeIframeSize(width, height, device)
 }
-
 let settingsEnabled = ref(true)
 const showSettings = () => {
-  settingsEnabled.value = !settingsEnabled.value
-  emitter.emit('showSettings', settingsEnabled.value)
+  // prettyBlocksContext.showSettings()
+  prettyBlocksContext.displaySettingsPanel()
 }
-emitter.on('hideSettings', () => {
-  settingsEnabled.value = false
-})
+
 const leaveApp = () => {
   window.open(domain, '_blank');
 }
@@ -78,8 +61,9 @@ const goBackEnd = () => {
 
 const domain = ajax_urls.current_domain
 const adminURL = ajax_urls.adminURL
-
-
+const reloadButton = () => {
+  prettyBlocksContext.reloadIframe()
+}
 </script>
 
 <template>
@@ -88,16 +72,16 @@ const adminURL = ajax_urls.adminURL
     <div class="flex items-center gap-2">
       <div class="border-r border-gray-200">
         <ButtonLight @click="goBackEnd" icon="BackspaceIcon" class="p-2" />
-        <ButtonLight @click="hideLeftPanelAction" :class="hideLeftPanel ? 'bg-black bg-opacity-10 rotate-180' : ''"
+        <ButtonLight @click="prettyBlocksContext.updatePanelState('left', leftPanel === 'hide' ? 'default' : 'hide')" :class="leftPanel === 'hide' ? 'bg-black bg-opacity-10 rotate-180' : ''"
           icon="ArrowLeftOnRectangleIcon" class="p-2" />
-        <ButtonLight @click="changeLeftPanelSize" :class="extendLeftPanel ? 'bg-black bg-opacity-10' : 'rotate-180'"
+        <ButtonLight @click="prettyBlocksContext.updatePanelState('left', leftPanel === 'extends' ? 'default' : 'extends')" :class="leftPanel === 'extends' ? 'bg-black bg-opacity-10' : 'rotate-180'"
           icon="ArrowLeftOnRectangleIcon" class="p-2" />
       </div>
       <span>
         <div class="flex items-center">
           <ShopSelect v-model="shop" /> 
           <!-- <Button class="ml-4">
-            <Icon  name="ArrowPathIcon" @click="emitter.emit('reloadIframe')"/>
+            <Icon name="ArrowPathIcon" @click="reloadButton"/>
           </Button> -->
         </div>
       </span>
@@ -122,21 +106,17 @@ const adminURL = ajax_urls.adminURL
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <div class="border-r">
-        <ButtonLight @click="changeRightPanelSize" :class="extendRightPanel ? 'bg-black bg-opacity-10' : 'rotate-180'"
+      <div class="border-r"> 
+        <ButtonLight @click="prettyBlocksContext.updatePanelState('right', rightPanel === 'extends' ? 'default' : 'extends')" :class="rightPanel === 'extends' ? 'bg-black bg-opacity-10' : 'rotate-180'"
           icon="ArrowRightOnRectangleIcon" class="p-2" />
-        <!-- <Icon class="h-5 w-5 inline -mt-[4px]" @click="changeRightPanelSize" name="ArrowRightOnRectangleIcon" /> -->
-        <ButtonLight @click="showSettings()" :class="settingsEnabled ? 'bg-black bg-opacity-10' : ''"
+        <ButtonLight @click="showSettings()" :class="saveContext === 'settings' ? 'bg-black bg-opacity-10' : ''"
           icon="WrenchScrewdriverIcon" class="p-2" />
-        <ButtonLight @click="hideRightPanelAction" :class="hideRightPanel ? 'bg-black bg-opacity-10 rotate-180' : ''"
+        <ButtonLight @click="prettyBlocksContext.updatePanelState('right', rightPanel === 'hide' ? 'default' : 'hide')" :class="rightPanel === 'hide' ? 'bg-black bg-opacity-10 rotate-180' : ''"
           icon="ArrowRightOnRectangleIcon" class="p-2" />
         <ButtonLight @click="leaveApp" icon="BuildingStorefrontIcon" class="p-2" />
       </div>
-      <!-- <div class="border-r border-gray-200">
-          <ButtonLight icon="ArrowUturnLeftIcon" class="p-2" />
-          <ButtonLight icon="ArrowUturnLeftIcon" class="transform -scale-x-100 p-2" />
-        </div> -->
-      <Button @click="globalSave()" type="primary">{{ trans('save') }}</button>
+
+      <Button @click="globalSave()" type="primary">{{ trans('save') }}</Button>
     </div>
   </header>
 </template>

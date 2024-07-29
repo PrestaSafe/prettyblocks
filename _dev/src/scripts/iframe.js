@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 import { HttpClient } from "../services/HttpClient";
-import emitter from 'tiny-emitter/instance'
 
-import { useStore, storedZones, contextShop, storedBlocks } from '../store/currentBlock'
+
+import { useStore, useStoredZones, contextShop, storedBlocks,usePrettyBlocksContext } from '../store/pinia'
 import Block from './block'
 
 
@@ -15,7 +15,8 @@ export default class Iframe {
     current_url = ref();
     id_lang = ref(0);
     id_shop = ref(0);
-    loader = ref(false)
+    loader = ref(false);
+    prettyBlocksContext = usePrettyBlocksContext()
     events = ['dragenter', 'dragover', 'dragleave', 'drop']
     preventDefaults = (e) => {
         e.preventDefault()
@@ -29,16 +30,16 @@ export default class Iframe {
         this.constructEvent()
     }
 
+    // reception build.js => to prettyblocks
     constructEvent() {
         // Définir l'eventHandler
         let eventHandler = async (event) => {
             if (event.data.type == 'zones') {
                 let zones = event.data.data
-                let piniazones = storedZones()
-                piniazones.$patch({
+               
+                this.prettyBlocksContext.$patch({
                     zones: zones
                 })
-                emitter.emit('loadZones', zones)
             }
             if(event.data.type == 'iframeInit')
             {
@@ -46,7 +47,7 @@ export default class Iframe {
             }
             if (event.data.type == 'loadStateConfig') {
                 let id_prettyblocks = event.data.data
-                emitter.emit('loadStateConfig', id_prettyblocks)
+                // emitter.emit('loadStateConfig', id_prettyblocks)
 
             }
             // test 
@@ -54,7 +55,7 @@ export default class Iframe {
             {  
                 let context = event.data.params.context
                 let custom_url = event.data.params.url
-                emitter.emit('changeUrl', context, custom_url)
+                // emitter.emit('changeUrl', context, custom_url)
             }
 
             if (event.data.type == 'updateTitleComponent') {
@@ -78,7 +79,7 @@ export default class Iframe {
                 }).then((response) => {
                     if (response.success) {
                         toaster.show(response.message);
-                        emitter.emit('initStates')
+                        // emitter.emit('initStates')
                     }
                 })
 
@@ -93,10 +94,10 @@ export default class Iframe {
                 let element = await piniaBlocks.find(b => {
                     return b.id_prettyblocks == id_prettyblocks
                 });
-                emitter.emit('selectZone', zone)
+                // emitter.emit('selectZone', zone)
 
-                emitter.emit('displayBlockConfig', element)
-                emitter.emit('setSelectedElement', element.formatted.id)
+                // emitter.emit('displayBlockConfig', element)
+                // emitter.emit('setSelectedElement', element.formatted.id)
             }
 
             if (event.data.type == 'setContext') {
@@ -112,7 +113,7 @@ export default class Iframe {
                 this.id_lang.value = iwindow.id_lang
                 this.id_shop.value = iwindow.id_shop
                 this.loader.value = false
-                emitter.emit('initStates')
+                // emitter.emit('initStates')
 
 
             }
@@ -163,7 +164,7 @@ export default class Iframe {
      */
     registerClickPopup(el) {
         let zone_name = el.target.getAttribute('data-zone-name')
-        emitter.emit('toggleModal', zone_name)
+        // emitter.emit('toggleModal', zone_name)
     }
 
 
@@ -185,7 +186,9 @@ export default class Iframe {
 
     registerClick(el) {
         let id_prettyblocks = el.getAttribute('data-id-prettyblocks')
-        emitter.emit('loadStateConfig', id_prettyblocks)
+        // emitter.emit('loadStateConfig', id_prettyblocks)
+
+
     }
 
     async getZones(document) {
@@ -200,7 +203,7 @@ export default class Iframe {
         })
 
 
-        let piniazones = storedZones()
+        let piniazones = useStoredZones()
         piniazones.$patch({
             zones: zones
         })
@@ -221,41 +224,41 @@ export default class Iframe {
         this.loader.value = true
         let iframe = await document.getElementById('website-iframe')
 
-        if (iframe) {
+        if (iframe) { 
             await iframe.addEventListener('load', (e) => {
 
                 this.sendPrettyBlocksEvents('initIframe')
                 this.sendPrettyBlocksEvents('getZones')
-                emitter.off('stateUpdated')
-                emitter.on('stateUpdated', (id_prettyblocks) => {
-                    let currentBlock = useStore()
-                    let html = this.getBlockRender(id_prettyblocks)
-                    // update module in iFrame !
-                    html.then((data) => {
-                        this.sendPrettyBlocksEvents('updateHTMLBlock', { id_prettyblocks: id_prettyblocks, html: data })
-                    })
+                // emitter.off('stateUpdated')
+                // emitter.on('stateUpdated', (id_prettyblocks) => {
+                //     let currentBlock = useStore()
+                //     let html = this.getBlockRender(id_prettyblocks)
+                //     // update module in iFrame !
+                //     html.then((data) => {
+                //         this.sendPrettyBlocksEvents('updateHTMLBlock', { id_prettyblocks: id_prettyblocks, html: data })
+                //     })
 
-                })
+                // })
 
                 // when iframe loaded, get blocks
-                emitter.off('scrollInIframe')
-                emitter.on('scrollInIframe', (id_prettyblocks) => {
-                    this.sendPrettyBlocksEvents('scrollInIframe', id_prettyblocks)
-                })
+                // emitter.off('scrollInIframe')
+                // emitter.on('scrollInIframe', (id_prettyblocks) => {
+                //     this.sendPrettyBlocksEvents('scrollInIframe', id_prettyblocks)
+                // })
 
 
-                emitter.off('focusOnZone')
-                emitter.on('focusOnZone', (zone_name) => {
-                    this.sendPrettyBlocksEvents('focusOnZone', zone_name)
+                // emitter.off('focusOnZone')
+                // emitter.on('focusOnZone', (zone_name) => {
+                //     this.sendPrettyBlocksEvents('focusOnZone', zone_name)
 
-                    emitter.emit('initStates')
+                //     emitter.emit('initStates')
 
-                })
+                // })
 
                 // check if block is already selected
                 let currentBlock = useStore()
                 if (currentBlock.subSelected) {
-                    emitter.emit('scrollInIframe', currentBlock.id_prettyblocks)
+                    // emitter.emit('scrollInIframe', currentBlock.id_prettyblocks)
                 }
                 this.loadContext(e)
 
@@ -314,11 +317,11 @@ export default class Iframe {
 
     destroy() {
         // 1. Remove global event listeners
-        emitter.off('triggerLoadedEvents');
-        emitter.off('stateUpdated');
-        emitter.off('scrollInIframe');
-        emitter.off('focusOnZone');
-        // 3. Reset object properties
+        // emitter.off('triggerLoadedEvents');
+        // emitter.off('stateUpdated');
+        // emitter.off('scrollInIframe');
+        // emitter.off('focusOnZone');
+        // // 3. Reset object properties
         this.current_url.value = null;
         this.id_lang.value = 0;
         this.id_shop.value = 0;

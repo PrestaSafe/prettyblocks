@@ -2,8 +2,8 @@
 import { defineComponent, ref, watch } from 'vue'
 import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { ChevronUpDownIcon } from '@heroicons/vue/24/solid'
-import { storedZones, currentZone } from '../../store/currentBlock'
-import emitter from 'tiny-emitter/instance'
+import { useStoredZones, useCurrentZone } from '../../store/pinia'
+
 import { trans } from '../../scripts/trans'
 
 defineComponent({
@@ -23,7 +23,7 @@ const props = defineProps({
 
 const changetItem = (item) => {
   props.modelValue.shop_name = item.name
-  emitter.emit('changeUrl', item)
+  // emitter.emit('changeUrl', item)
 }
 
 const emit = defineEmits(['update:modelValue.shop_name'])

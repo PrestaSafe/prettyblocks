@@ -359,7 +359,12 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         $state = new PrettyBlocksModel($id_block, $id_lang, $id_shop);
         $block = $state->mergeStateWithFields();
 
-        return exit(json_encode($block, true));
+        $block['render'] = $this->module->renderWidget(null, [
+            'action' => 'GetBlockRender',
+            'data' => $block,
+        ]);
+
+        return exit(json_encode($block));
     }
 
     public function displayAjaxupdateStateParentPosition()
@@ -454,6 +459,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         }
     }
 
+
     public function displayAjaxGetBlockRender()
     {
         $id_block = (int) Tools::getValue('id_prettyblocks');
@@ -470,7 +476,9 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
                 'html' => $html,
             ]
         ));
+
     }
+
 
     public function displayAjaxBlockRender()
     {

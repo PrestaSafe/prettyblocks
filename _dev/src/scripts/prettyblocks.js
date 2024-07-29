@@ -1,10 +1,11 @@
 import { toolbar } from './toolbar'
-import { getZoneDetailsByDom }  from './helper'
-import emitter from 'tiny-emitter/instance'
-window.hasEventListener = false;
-const unsubscribe = () => {
-    window.removeEventListener("message", eventHandler, false);
-}
+import { getZoneDetailsByDom, getBlockRender }  from './helper'
+
+
+// window.hasEventListener = false;
+// const unsubscribe = () => {
+//     window.removeEventListener("message", eventHandler, false);
+// }
 
 const getContext = () => {
      
@@ -16,7 +17,10 @@ const getContext = () => {
         href: window.location.href
     }
 }
+
+// received data from prettyblocks
 let eventHandler = (event) => {
+
     if(event.data.type == 'getContext')
     {
         let context = getContext()
@@ -25,25 +29,21 @@ let eventHandler = (event) => {
     }
 
     if (event.data.type == 'initIframe') {
-        // moveBlockToZone(event)
-        // register block click
-        // document.querySelectorAll('div[data-block]').forEach((div) => {
-
-        //     div.addEventListener('click', (el) => {
-        //         let id_prettyblocks = el.target.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
-        //         selectBlock(id_prettyblocks, event)
-        //         event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
-        //     })
-        // })
         event.source.postMessage({ type: 'iframeInit', data: null }, '*');
         return loadToolBar(event)
         
+    }
+    if(event.data.type == 'reloadBlock')
+    {
+        let id_prettyblocks = event.data
+        return reloadBlock(id_prettyblocks, event)
     }
     if(event.data.type == 'selectBlock')
     {
         let id_prettyblocks = event.data.data.id_prettyblocks
         return selectBlock(id_prettyblocks,event)
     }
+
     // focus on zone in iframe
     if (event.data.type == 'focusOnZone') {
         let zone_name = event.data.data
@@ -56,8 +56,15 @@ let eventHandler = (event) => {
         return el.scrollIntoView({
             alignToTop: true,
             behavior: 'smooth',
-            block: 'center'
+            // block: 'top'
         })
+
+    }
+
+    // focus on block in iframe
+    if (event.data.type == 'focusOnBlock') {
+        let id_prettyblocks = event.data.data
+        return focusBlock(id_prettyblocks)
 
     }
     // update HTML block
@@ -66,7 +73,11 @@ let eventHandler = (event) => {
         let data = event.data.data.html
         let domBlock = document.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
         domBlock.innerHTML = data
-        document.dispatchEvent(new CustomEvent('updatePrettyBlocks', { detail: id_prettyblocks }));
+        document.dispatchEvent(new CustomEvent('updatePrettyBlocks', { 
+            detail: { block: {
+                id_prettyblocks: id_prettyblocks
+             }}
+        }));
         return loadToolBar(event)
     }
 
@@ -90,12 +101,16 @@ let eventHandler = (event) => {
                 zones.push(current_zone)
             }
         })
+        console.log('zones on front', zones) 
         return event.source.postMessage({ type: 'zones', data: zones }, '*');
     }
     unsubscribe()
 
     
 }
+
+
+
 /**
  * Select block in pretty block interface
  * @param {*} id_prettyblocks 
@@ -115,6 +130,9 @@ const selectBlock = (id_prettyblocks, event) => {
         return event.source.postMessage({ type: 'focusBlock', data: params }, '*');
 
 }
+const reloadBlock = (id_prettyblocks, event) => {
+    return event.source.postMessage({ type: 'reloadBlock', data: id_prettyblocks }, '*');
+}
 const focusBlock = (id_prettyblocks) => {
     let doc = document
     let el = doc.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
@@ -123,7 +141,7 @@ const focusBlock = (id_prettyblocks) => {
         el.scrollIntoView({
             alignToTop: false,
             behavior: 'smooth',
-            block: 'center'
+            // block: 'center'
         })
         let tr = doc.querySelectorAll('[data-block]')
         tr.forEach(bl => {
@@ -197,10 +215,9 @@ const moveBlockToZone = (event) => {
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    if (!window.hasEventListener) {
-        window.addEventListener("message", eventHandler, false)
-        window.hasEventListener = true;
-    }
+
+    window.addEventListener("message", eventHandler, false)
+
     // Sélectionnez tous les liens de la page
     const links = document.querySelectorAll('a');
     
@@ -222,7 +239,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 
-  
 
 
-unsubscribe();
+
+// unsubscribe();
