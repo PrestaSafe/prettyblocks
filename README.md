@@ -3,6 +3,7 @@
 </p>
 
 # PrettyBlocks
+![Téléchargements](https://img.shields.io/github/downloads/PrestaSafe/prettyblocks/total)
 Le premier page builder open conçu pour PrestaShop ! 
 
 La documentation technique est disponible ici : [https://prettyblocks.io/](https://prettyblocks.io/): 
