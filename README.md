@@ -1,9 +1,10 @@
 <p align="center">
 <img src="https://user-images.githubusercontent.com/4788787/205036810-aa5dcd65-d7d4-4728-9284-1201a6067cb4.png" alt="PrettyBlocks logo">
 </p>
+![Téléchargements](https://img.shields.io/github/downloads/PrestaSafe/prettyblocks/total)
 
 # PrettyBlocks
-![Téléchargements](https://img.shields.io/github/downloads/PrestaSafe/prettyblocks/total)
+
 Le premier page builder open conçu pour PrestaShop ! 
 
 La documentation technique est disponible ici : [https://prettyblocks.io/](https://prettyblocks.io/): 
