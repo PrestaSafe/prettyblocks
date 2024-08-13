@@ -1,5 +1,5 @@
 <script setup>
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, computed } from 'vue'
 import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { ChevronUpDownIcon } from '@heroicons/vue/24/solid'
 import { usePrettyBlocksContext } from '../../store/pinia'
@@ -30,12 +30,17 @@ const changetItem = (item) => {
 
 }
 
+
 const emit = defineEmits(['update:modelValue'])
 const items = ref([]);
 let prettyBlocksContext = usePrettyBlocksContext()
+const idLang = computed(() => prettyBlocksContext.psContext.id_lang)
 let currentZone = false
 let priorityZone = ref(null)
 let presentZone = false
+
+
+
 watch(() => prettyBlocksContext.zones, (zonesState) => {
   items.value = zonesState
   presentZone = zonesState.find(zone => zone.name === prettyBlocksContext.currentZone.zoneToFocus) || false
@@ -46,7 +51,6 @@ watch(() => prettyBlocksContext.zones, (zonesState) => {
   }
   onInput(currentZone)
 })
-
 
 
 
