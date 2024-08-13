@@ -1,11 +1,9 @@
 import { toolbar } from './toolbar'
-import { getZoneDetailsByDom, getBlockRender }  from './helper'
+import { getZoneDetailsByDom }  from './helper'
 
-
-// window.hasEventListener = false;
-// const unsubscribe = () => {
-//     window.removeEventListener("message", eventHandler, false);
-// }
+/**
+ * THIS EVENT HANDLER IS THE CONTROLLER BETWEEN PRETTYBLOCKS AND THE PRESTASHOP BACKEND
+ */
 
 const getContext = () => {
      
@@ -67,6 +65,9 @@ let eventHandler = (event) => {
         return focusBlock(id_prettyblocks)
 
     }
+    if (event.data.type == 'getCurrentDocumentUrl') {
+        return event.source.postMessage({ type: 'currentDocumentUrl', data: document.location.href }, '*');
+    }
     // update HTML block
     if (event.data.type == 'updateHTMLBlock') {
         let id_prettyblocks = event.data.data.id_prettyblocks
@@ -101,10 +102,9 @@ let eventHandler = (event) => {
                 zones.push(current_zone)
             }
         })
-        console.log('zones on front', zones) 
         return event.source.postMessage({ type: 'zones', data: zones }, '*');
     }
-    unsubscribe()
+    // unsubscribe()
 
     
 }
@@ -193,29 +193,12 @@ const moveBlockToZone = (event) => {
 
     });
 
-    // zones.forEach(zone => {
-    //     zone.addEventListener('dragover', function (e) {
-    //         e.preventDefault();
-    //     });
-
-    //     zone.addEventListener('dragenter', function (e) {
-    //         e.preventDefault();
-    //     });
-    //     zone.addEventListener('drop', function (e) {
-    //         let zone_name = zone.getAttribute('data-prettyblocks-zone')
-    //         let id_prettyblocks = blockDragged.getAttribute('data-id-prettyblocks')
-    //         let params = {
-    //             id_prettyblocks: id_prettyblocks,
-    //             zone_name: zone_name
-    //         }
-    //         event.source.postMessage({ type: 'moveBlockToZone', params: params }, '*');
-    //         this.appendChild(blockDragged);
-    //     });
-    // });
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
 
+ 
+      
     window.addEventListener("message", eventHandler, false)
 
     // Sélectionnez tous les liens de la page
@@ -235,11 +218,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
             });
     });
-  
+        
+    window.navigation.addEventListener("navigate", (event) => {
+        let url = event.destination.url;
+        if (url !== 'about:blank') {
+            event.preventDefault(); // Empêche la navigation vers la nouvelle URL
+
+            let context = getContext();
+            let params = {
+                context: context,
+                url: url,
+            };
+            window.parent.postMessage({ type: 'setForceNewUrl', params: params }, '*');
+        }
+    });
 });
-
-
-
-
-
-// unsubscribe();
+   
