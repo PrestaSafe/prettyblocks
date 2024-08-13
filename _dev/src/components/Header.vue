@@ -14,6 +14,10 @@ import { storeToRefs } from 'pinia';
 const rightPanel = computed(() => prettyBlocksContext.iframe.rightPanel)
 const leftPanel = computed(() => prettyBlocksContext.iframe.leftPanel)
 const saveContext = computed(() => prettyBlocksContext.saveContext)
+const domain = computed(() => {
+  const href = prettyBlocksContext.psContext.href;
+  return href.replace('?prettyblocks=1', '');
+})
 import { trans } from '../scripts/trans'
 
 let prettyBlocksContext = usePrettyBlocksContext() 
@@ -42,6 +46,10 @@ const globalSave = () => {
   prettyBlocksContext.emitSaveContext()
 }
 
+const reloadIframe = () => {
+  window.location.reload()
+}
+
 const changeIframeSize = (width, height, device = null) => {
   sizeSelected.value = width
   prettyBlocksContext.changeIframeSize(width, height, device)
@@ -53,13 +61,13 @@ const showSettings = () => {
 }
 
 const leaveApp = () => {
-  window.open(domain, '_blank');
+  window.open(domain.value, '_blank');
 }
 const goBackEnd = () => {
-  window.open(adminURL, '_self');
+  window.open(adminURL, '_blank');
 }
 
-const domain = ajax_urls.current_domain
+
 const adminURL = ajax_urls.adminURL
 const reloadButton = () => {
   prettyBlocksContext.reloadIframe()
@@ -80,9 +88,6 @@ const reloadButton = () => {
       <span>
         <div class="flex items-center">
           <ShopSelect v-model="shop" /> 
-          <!-- <Button class="ml-4">
-            <Icon name="ArrowPathIcon" @click="reloadButton"/>
-          </Button> -->
         </div>
       </span>
     </div>
@@ -102,6 +107,9 @@ const reloadButton = () => {
         <ButtonLight @click="changeIframeSize('w-4/12', 'h-full', 'mobile')"
           :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10' : ''" icon="DevicePhoneMobileIcon"
           class="p-2" />
+        <ButtonLight @click="reloadIframe"
+          icon="ArrowPathIcon"
+          class="p-2" />
         <!-- <ButtonLight @click="changeIframeSize('w-3/6', 'h-3/6')" :class="sizeSelected == 'w-4/12' ? 'bg-black bg-opacity-10 -rotate-90' : '-rotate-90'" icon="DevicePhoneMobileIcon" class="p-2" /> -->
       </div>
     </div>
@@ -114,6 +122,7 @@ const reloadButton = () => {
         <ButtonLight @click="prettyBlocksContext.updatePanelState('right', rightPanel === 'hide' ? 'default' : 'hide')" :class="rightPanel === 'hide' ? 'bg-black bg-opacity-10 rotate-180' : ''"
           icon="ArrowRightOnRectangleIcon" class="p-2" />
         <ButtonLight @click="leaveApp" icon="BuildingStorefrontIcon" class="p-2" />
+  
       </div>
 
       <Button @click="globalSave()" type="primary">{{ trans('save') }}</Button>
