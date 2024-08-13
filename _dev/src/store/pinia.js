@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import Iframe from '../scripts/iframe'
-import { eventHandler, eventHandlerReceptor } from '../scripts/eventHandler'
+import { eventHandler } from '../scripts/eventHandler'
 import { createToaster } from "@meforma/vue-toaster";
 import { HttpClient } from '../services/HttpClient';
 const toaster = createToaster({
@@ -46,7 +45,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       id_shop: 1,
       shop_name: null,
       current_url: ajax_urls.startup_url + (ajax_urls.startup_url.includes('?prettyblocks=1') ? '' : '?prettyblocks=1'),
-      href: null,
+      href: ajax_urls.startup_url,
     },
     iframe: {
       domElement: ref(null),
@@ -150,6 +149,13 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
     displayMessage(message) {
       toaster.show(message)
     },
+    displayError(message) {
+      toaster.error(message, {
+        duration: 5000,
+        position: "top",
+        type: "error",
+      })
+    },
     listenIframe() {
       window.addEventListener("message", eventHandler);
       this.iframe.domElement.addEventListener('load', (e) => {
@@ -161,6 +167,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
         },100)
       })
     },
+
     sendPrettyBlocksEvents(eventType, data = []) {
       let message = { type: eventType, data: data };
       this.iframe.domElement.contentWindow.postMessage(message, "*");
@@ -172,7 +179,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       // Update the current window URL with startup_url parameter
       this.pushUrl(url)
       this.showLoader()
-      this.listenIframe()
+      this.setIframe()
 
     },
     showLoader() {
@@ -201,9 +208,13 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       }
       return url;
     },
-    reloadIframe() {
+    reloadIframe(currentSrc = false) {
       if (this.iframe.domElement) {
-        const currentSrc = this.iframe.domElement.src;
+        let url = this.iframe.domElement.src
+        if(currentSrc === false){
+          currentSrc = url
+        }
+        console.log('currentSrc', currentSrc)
         this.iframe.domElement.src = '';
         setTimeout(() => {
           this.iframe.domElement.src = currentSrc;
