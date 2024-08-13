@@ -32,3 +32,37 @@ export async function getBlockRender(id_prettyblocks) {
 
     return responseData;
 }
+
+export async function updateTitleComponent(newValue, id_block = null, field = null, index = null) {
+    if (!id_block) {
+        id_block = newValue.html.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
+    }
+    if (!field) {
+        field = newValue.html.getAttribute('data-field')
+    }
+    if (!index) {
+        index = null
+    }
+
+    let prettyBlocksContext = usePrettyBlocksContext()
+    let context = prettyBlocksContext.psContext
+    let data = {
+        id_prettyblocks: id_block,
+        element: newValue,
+        ctx_id_lang: context.id_lang,
+        ctx_id_shop: context.id_shop,
+        field: field,
+        ajax: true,
+        index: index,
+        action: 'updateTitleComponent',
+        ajax_token: security_app.ajax_token
+    }
+
+    try {
+        const response = await HttpClient.post(ajax_urls.api, data);
+        prettyBlocksContext.displayMessage(response.message);
+    } catch (error) {
+        console.error(error);
+    }
+
+}
