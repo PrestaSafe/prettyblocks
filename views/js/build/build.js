@@ -9073,35 +9073,57 @@ This will fail in production.`);
     return useStore;
   }
   __name(defineStore, "defineStore");
-  const HttpClient = {
-    async get(url, params = {}) {
-      const paramCharacter = url.includes("?") ? "&" : "?";
-      let urlWithParams = url;
-      if (Object.keys(params).length > 0) {
-        urlWithParams += `${paramCharacter}${new URLSearchParams(params)}`;
-      }
-      const response = await fetch(urlWithParams);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
-    },
-    async post(url, params = {}) {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(params)
+  const eventHandler$1 = /* @__PURE__ */ __name(async (event) => {
+    let prettyBlocksContext = usePrettyBlocksContext();
+    if (event.data.type == "zones") {
+      let zones = event.data.data;
+      prettyBlocksContext.$patch({
+        zones
       });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
     }
-  };
+    if (event.data.type == "setNewUrl" || event.data.type == "setForceNewUrl") {
+      let context = event.data.params.context;
+      let custom_url = event.data.params.url;
+      let force_reload = event.data.type == "setForceNewUrl" ? true : false;
+      prettyBlocksContext.$patch({
+        psContext: {
+          ...prettyBlocksContext.psContext,
+          ...context,
+          current_url: custom_url
+        }
+      });
+      if (force_reload) {
+        window.location.reload();
+      } else {
+        prettyBlocksContext.changeUrl(custom_url);
+      }
+    }
+    if (event.data.type == "updateTitleComponent") {
+      let params = event.data.data.params;
+      updateTitleComponent(JSON.parse(event.data.data.value), params.id_prettyblocks, params.field, params.index);
+    }
+    if (event.data.type == "reloadBlock") {
+      let id_prettyblocks = event.data.data.data.id_prettyblocks;
+      getBlockRender(id_prettyblocks).then((html) => {
+        prettyBlocksContext.sendPrettyBlocksEvents("updateHTMLBlock", {
+          id_prettyblocks,
+          html
+        });
+      });
+    }
+    if (event.data.type == "setContext") {
+      let iwindow = event.data.data.data;
+      await prettyBlocksContext.$patch({
+        psContext: {
+          id_lang: iwindow.id_lang,
+          id_shop: iwindow.id_shop,
+          shop_name: iwindow.shop_name,
+          // current_url: iwindow.current_url,
+          href: iwindow.href
+        }
+      });
+    }
+  }, "eventHandler$1");
   const removeElement = /* @__PURE__ */ __name((el) => {
     if (typeof el.remove !== "undefined") {
       el.remove();
@@ -9428,51 +9450,35 @@ This will fail in production.`);
     app.config.globalProperties.$toast = methods;
   }, "Plugin");
   Toaster.install = Plugin;
-  window.hasEventListener = false;
-  const eventHandler$1 = /* @__PURE__ */ __name(async (event) => {
-    let prettyBlocksContext = usePrettyBlocksContext();
-    if (event.data.type == "zones") {
-      let zones = event.data.data;
-      console.log("zones", zones);
-      prettyBlocksContext.$patch({
-        zones
+  const HttpClient = {
+    async get(url, params = {}) {
+      const paramCharacter = url.includes("?") ? "&" : "?";
+      let urlWithParams = url;
+      if (Object.keys(params).length > 0) {
+        urlWithParams += `${paramCharacter}${new URLSearchParams(params)}`;
+      }
+      const response = await fetch(urlWithParams);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    },
+    async post(url, params = {}) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(params)
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
     }
-    if (event.data.type == "setNewUrl") {
-      let context = event.data.params.context;
-      let custom_url = event.data.params.url;
-      console.log("setNewUrl", context, custom_url);
-      prettyBlocksContext.$patch({
-        psContext: {
-          ...prettyBlocksContext.psContext,
-          ...context,
-          current_url: custom_url
-        }
-      });
-      prettyBlocksContext.changeUrl(custom_url);
-    }
-    if (event.data.type == "reloadBlock") {
-      let id_prettyblocks = event.data.data.data.id_prettyblocks;
-      getBlockRender(id_prettyblocks).then((html) => {
-        prettyBlocksContext.sendPrettyBlocksEvents("updateHTMLBlock", {
-          id_prettyblocks,
-          html
-        });
-      });
-    }
-    if (event.data.type == "setContext") {
-      let iwindow = event.data.data.data;
-      await prettyBlocksContext.$patch({
-        psContext: {
-          id_lang: iwindow.id_lang,
-          id_shop: iwindow.id_shop,
-          shop_name: iwindow.shop_name,
-          // current_url: iwindow.current_url,
-          href: iwindow.href
-        }
-      });
-    }
-  }, "eventHandler$1");
+  };
   const toaster = Api({
     position: "top"
   });
@@ -9511,7 +9517,7 @@ This will fail in production.`);
         id_shop: 1,
         shop_name: null,
         current_url: ajax_urls.startup_url + (ajax_urls.startup_url.includes("?prettyblocks=1") ? "" : "?prettyblocks=1"),
-        href: null
+        href: ajax_urls.startup_url
       },
       iframe: {
         domElement: ref(null),
@@ -9609,6 +9615,13 @@ This will fail in production.`);
       displayMessage(message) {
         toaster.show(message);
       },
+      displayError(message) {
+        toaster.error(message, {
+          duration: 5e3,
+          position: "top",
+          type: "error"
+        });
+      },
       listenIframe() {
         window.addEventListener("message", eventHandler$1);
         this.iframe.domElement.addEventListener("load", (e) => {
@@ -9630,7 +9643,7 @@ This will fail in production.`);
         });
         this.pushUrl(url);
         this.showLoader();
-        this.listenIframe();
+        this.setIframe();
       },
       showLoader() {
         this.$patch((state) => {
@@ -9658,9 +9671,13 @@ This will fail in production.`);
         }
         return url;
       },
-      reloadIframe() {
+      reloadIframe(currentSrc = false) {
         if (this.iframe.domElement) {
-          const currentSrc = this.iframe.domElement.src;
+          let url = this.iframe.domElement.src;
+          if (currentSrc === false) {
+            currentSrc = url;
+          }
+          console.log("currentSrc", currentSrc);
           this.iframe.domElement.src = "";
           setTimeout(() => {
             this.iframe.domElement.src = currentSrc;
@@ -9881,6 +9898,37 @@ This will fail in production.`);
     return responseData;
   }
   __name(getBlockRender, "getBlockRender");
+  async function updateTitleComponent(newValue, id_block = null, field = null, index = null) {
+    if (!id_block) {
+      id_block = newValue.html.closest("[data-id-prettyblocks]").getAttribute("data-id-prettyblocks");
+    }
+    if (!field) {
+      field = newValue.html.getAttribute("data-field");
+    }
+    if (!index) {
+      index = null;
+    }
+    let prettyBlocksContext = usePrettyBlocksContext();
+    let context = prettyBlocksContext.psContext;
+    let data = {
+      id_prettyblocks: id_block,
+      element: newValue,
+      ctx_id_lang: context.id_lang,
+      ctx_id_shop: context.id_shop,
+      field,
+      ajax: true,
+      index,
+      action: "updateTitleComponent",
+      ajax_token: security_app.ajax_token
+    };
+    try {
+      const response = await HttpClient.post(ajax_urls.api, data);
+      prettyBlocksContext.displayMessage(response.message);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  __name(updateTitleComponent, "updateTitleComponent");
   const getContext = /* @__PURE__ */ __name(() => {
     return {
       id_lang: prestashop.language.id,
@@ -9927,6 +9975,9 @@ This will fail in production.`);
       let id_prettyblocks = event.data.data;
       return focusBlock(id_prettyblocks);
     }
+    if (event.data.type == "getCurrentDocumentUrl") {
+      return event.source.postMessage({ type: "currentDocumentUrl", data: document.location.href }, "*");
+    }
     if (event.data.type == "updateHTMLBlock") {
       let id_prettyblocks = event.data.data.id_prettyblocks;
       let data = event.data.data.html;
@@ -9957,10 +10008,8 @@ This will fail in production.`);
           zones.push(current_zone);
         }
       });
-      console.log("zones on front", zones);
       return event.source.postMessage({ type: "zones", data: zones }, "*");
     }
-    unsubscribe();
   }, "eventHandler");
   const selectBlock = /* @__PURE__ */ __name((id_prettyblocks, event) => {
     let el = focusBlock(id_prettyblocks);
@@ -10022,6 +10071,18 @@ This will fail in production.`);
           window.parent.postMessage({ type: "setNewUrl", params }, "*");
         }
       });
+    });
+    window.navigation.addEventListener("navigate", (event2) => {
+      let url = event2.destination.url;
+      if (url !== "about:blank") {
+        event2.preventDefault();
+        let context = getContext();
+        let params = {
+          context,
+          url
+        };
+        window.parent.postMessage({ type: "setForceNewUrl", params }, "*");
+      }
     });
   });
 })();
