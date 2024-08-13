@@ -106,6 +106,7 @@ const toolbarOptions = [
       placeholder="Entrez du texte" />
     <Checkbox class="my-4" v-if="f.type == 'checkbox' || f.type == 'radio'" :name="uuidv4()" v-model="f.value"
       :title="f.label" />
+    
     <div class="clearfix" v-if="f.type == 'editor' && f.provider == 'tinymce'">
       <Title :title="f.label" />
       <!--  TinyMCE -->
@@ -129,28 +130,31 @@ const toolbarOptions = [
         <QuillEditor  v-model:content="f.value"  contentType="html" theme="snow" :toolbar="toolbarOptions" />
       </div>
     </div>
-    <div v-if="f.type == 'select'">
+    <div class="my-4" v-if="f.type == 'select'">
       <Choices :choices="f.choices" v-model="f.value" :label="f.label" />
     </div>
     
-    <div v-if="f.type == 'multiselect'">
+    <div class="my-4" v-if="f.type == 'multiselect'">
       <MultiSelect v-model="f.value" :label="f.label" :options="f.choices" searchable="true" mode="tags"></MultiSelect>
     </div>
-    <FormControl class="my-4" :title="f.label" v-if="f.type == 'radio_group'">
-      <Radio v-for='(group, value, key) in f.choices' :key="group" v-model="f.value" :title="group"
+    <div class="my-4" v-if="f.type == 'radio_group'">
+      <FormControl class="my-4" :title="f.label">
+        <Radio v-for='(group, value, key) in f.choices' :key="group" v-model="f.value" :title="group"
         :name="'radio-group-' + key" :value="value" />
-    </FormControl>
+      </FormControl>
+    </div>
 
     <div class="my-4" v-if="f.type == 'datepicker'">
       <Title :title="f.label" />
       <VueDatePicker :model-value="formatDateFromString(f.value)" :enable-time-picker="false" month-name-format="short" @update:modelValue="f.value = $event" />
     </div>  
 
-      <div class="my-4" v-if="f.type == 'slider'">
+    <div class="my-4" v-if="f.type == 'slider'">
         <Title :title="f.label" />
         <Slider v-model="f.value" v-bind="f.options" />
     </div> 
 
+    <p class="text-gray-500 italic" v-if="f.legend">{{ f.legend }}</p>
   </div>
 </template>
 
