@@ -3,7 +3,6 @@ import { onMounted, onUnmounted, defineProps, ref, defineComponent, computed, wa
 
 import Loader from './Loader.vue'
 import Button from './Button.vue'
-import Iframe from '../scripts/iframe'
 import { contextShop, usePrettyBlocksContext } from '../store/pinia'
 import { storeToRefs } from 'pinia'
 
@@ -62,14 +61,15 @@ let filteredURL = ref(prettyBlocksContext.updateFilteredURL(ajax_urls.startup_ur
 watch(prettyBlocksContext.psContext, () => {
   filteredURL.value = prettyBlocksContext.updateFilteredURL(prettyBlocksContext.psContext.current_url)
 })
-
 </script>
 
 <template>
   <!-- animate-pulse classe to put -->
   <section class="w-full h-full">
     <!-- {{ filteredURL }} -->
-    <iframe id="website-iframe" :sandbox="iframe_sandbox"
+    <iframe id="website-iframe" 
+    allow="geolocation; microphone; camera; midi; encrypted-media"
+    :sandbox="iframe_sandbox"
       :class="[height, width, showLoader ? 'opacity-50' : '']" class="border-none h-full mx-auto rounded" :src="filteredURL"
       frameborder="0"></iframe>
     <Loader :visible="showLoader" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
