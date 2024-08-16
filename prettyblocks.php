@@ -566,13 +566,14 @@ class PrettyBlocks extends Module implements WidgetInterface
         $this->context->smarty->registerPlugin('function', 'magic_zone', [$this, 'renderZone']);
         $this->context->smarty->registerPlugin('function', 'prettyblocks_zone', [$this, 'renderZone']);
         $this->context->smarty->registerPlugin('function', 'prettyblocks_title', [$this, 'renderTitle']);
-        $this->context->smarty->registerPlugin('function', 'prettyblocks', [$this, 'renderBlocks']);
+        // $this->context->smarty->registerPlugin('function', 'prettyblocks', [$this, 'renderBlocks']);
     }
 
     /**
      * Render blocks
      * BUG with cache
      * $block.states is not defined
+     * Not used for now.
      */
     public function renderBlocks($params)
     {
