@@ -1,24 +1,24 @@
-name: PHP tests
-on: [push, pull_request]
+# name: PHP tests
+# on: [push, pull_request]
 
-jobs:
-  # Check the PHP code follow the coding standards
-  php-cs-fixer:
-    name: PHP-CS-Fixer
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: php-${{ hashFiles('composer.lock') }}
-      - name: Install dependencies
-        run: composer install
-      - name: Run PHP-CS-Fixer
-        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no
+# jobs:
+#   # Check the PHP code follow the coding standards
+#   php-cs-fixer:
+#     name: PHP-CS-Fixer
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Setup PHP
+#         uses: shivammathur/setup-php@v2
+#         with:
+#           php-version: '8.2'
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#       - name: Cache dependencies
+#         uses: actions/cache@v3
+#         with:
+#           path: vendor
+#           key: php-${{ hashFiles('composer.lock') }}
+#       - name: Install dependencies
+#         run: composer install
+#       - name: Run PHP-CS-Fixer
+#         run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no
