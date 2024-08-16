@@ -21,7 +21,7 @@
 
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
-
+use Symfony\Component\Dotenv\Dotenv;
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -143,7 +143,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         /** @var RowActionCollectionInterface $actionsCollection */
         $prettyblocksImg = HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png');
         $columnCollection = (new PrestaSafe\PrettyBlocks\Core\Grid\Column\Type\PrettyBlocksButtonColumn('edit2'))
-            ->setName($this->trans('Edit 2', [], 'Admin.Actions'))
+            ->setName($this->trans('Open in PrettyBlocks', [], 'Modules.Prettyblocks.Admin'))
             ->setOptions([
                 'route' => 'admin_prettyblocks',
                 'route_param_name' => 'id',
@@ -151,11 +151,6 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'icon' => $prettyblocksImg,
                 'field' => $field,
                 'endpoint' => $endpoint,
-                'attr' => [
-                    'action' => 'view',
-                    'class' => 'btn btn-prettyblocks text-white',
-                ],
-                // 'clickable_row' => true,
             ]);
 
         return $definition->getColumns()->add($columnCollection);
@@ -164,6 +159,21 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function isUsingNewTranslationSystem()
     {
         return true;
+    }
+
+    /**
+     * get .env parameters
+     * @return void
+     */
+    public function loadDotEnv()
+    {
+          // register .env
+          $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
+
+          if (file_exists($env_file)) {
+              $dotenv = new Dotenv();
+              $dotenv->load($env_file);
+          }
     }
 
     /**
@@ -314,6 +324,7 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     private function _addDynamicZones()
     {
+        $this->loadDotEnv();
         $smartyVars = $this->context->smarty->getTemplateVars();
 
         if ($this->context->controller->php_self == 'product') {
@@ -321,15 +332,15 @@ class PrettyBlocks extends Module implements WidgetInterface
             if (isset($smartyVars['product']['description'])) {
                 $product = $smartyVars['product'];
                 $zone_name = 'product-description-' . $smartyVars['product']['id_product'];
-                // si no blocks on this zone, feed product description
-                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                // if no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_PRODUCT_DESCRIPTION'))) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_product_description');
                 }
                 $description = $this->renderZone(
                     [
                         'zone_name' => $zone_name,
                         'priority' => true,
-                        'alias' => 'Description produit',
+                        'alias' => $this->l('Product description'),
                     ]
                 );
                 $product['description'] = $description;
@@ -340,15 +351,15 @@ class PrettyBlocks extends Module implements WidgetInterface
             if (isset($smartyVars['product']['description_short'])) {
                 $product = $smartyVars['product'];
                 $zone_name = 'product-description-short-' . $smartyVars['product']['id_product'];
-                // si no blocks on this zone, feed product description
-                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                // if no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_PRODUCT_DESCRIPTION_SHORT'))) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_product_description_short');
                 }
                 $description_short = $this->renderZone(
                     [
                         'zone_name' => $zone_name,
                         'priority' => false,
-                        'alias' => 'Description courte produit',
+                        'alias' => $this->l('Product description short'),
                     ]
                 );
                 $product['description_short'] = $description_short;
@@ -361,15 +372,15 @@ class PrettyBlocks extends Module implements WidgetInterface
             if (isset($smartyVars['category'])) {
                 $category = $smartyVars['category'];
                 $zone_name = 'category-description-' . $smartyVars['category']['id'];
-                // si no blocks on this zone, feed product description
-                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                // if no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_CATEGORY_DESCRIPTION'), FILTER_VALIDATE_BOOLEAN)) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_category_description');
                 }
                 $description = $this->renderZone(
                     [
                         'zone_name' => $zone_name,
                         'priority' => true,
-                        'alias' => 'Description catégorie',
+                        'alias' => $this->l('Category description'),
                     ]
                 );
                 $category['description'] = $description;
@@ -381,15 +392,15 @@ class PrettyBlocks extends Module implements WidgetInterface
             if (isset($smartyVars['cms'])) {
                 $cms = $smartyVars['cms'];
                 $zone_name = 'cms-description-' . $smartyVars['cms']['id'];
-                // si no blocks on this zone, feed product description
-                if (!HelperBuilder::zoneHasBlock($zone_name)) {
+                // if no blocks on this zone, feed product description
+                if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_CMS_CONTENT'))) {
                     $this->registerBlockToZone($zone_name, 'prettyblocks_cms_content');
                 }
                 $description = $this->renderZone(
                     [
                         'zone_name' => $zone_name,
                         'priority' => true,
-                        'alias' => 'Description CMS',
+                        'alias' => $this->l('CMS content'),
                     ]
                 );
                 $cms['content'] = $description;
@@ -398,6 +409,9 @@ class PrettyBlocks extends Module implements WidgetInterface
         }
     }
 
+    /**
+     * hook display Header
+     */
     public function hookdisplayHeader($params)
     {
         $this->_addDynamicZones();

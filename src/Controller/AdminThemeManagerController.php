@@ -22,7 +22,7 @@ namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use Symfony\Component\Dotenv\Dotenv;
+
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -226,12 +226,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             }
         }
         // register .env
-        $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
-
-        if (file_exists($env_file)) {
-            $dotenv = new Dotenv();
-            $dotenv->load($env_file);
-        }
+        $module->loadDotEnv();
 
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
@@ -240,9 +235,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'module_name' => $module->displayName,
             'shop_name' => $context->shop->name,
             'env' => [
-                'vitedev' => getenv('PRETTYBLOCKS_VITE_DEV') ?? false,
+                'vitedev' => filter_var(getenv('PRETTYBLOCKS_VITE_DEV'), FILTER_VALIDATE_BOOLEAN) ?? false,
                 'PRETTYBLOCKS_VITE_HOST' => getenv('PRETTYBLOCKS_VITE_HOST') ? getenv('PRETTYBLOCKS_VITE_HOST') : 'http://localhost:3002/',
-                'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-modals allow-forms allow-popups allow-scripts allow-presentation',
+                'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-top-navigation allow-pointer-lock allow-popups-to-escape-sandbox allow-modals allow-top-navigation-by-user-activation',
             ],
 
             'ajax_urls' => [
