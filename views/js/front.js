@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
     applyAdaptiveStyle();
     
     // faq 
+   runFaq();
+});
+document.addEventListener('updatePrettyBlocks', function () {
+    runFaq();
+});
+const runFaq = () => {
     if (document.querySelectorAll('.prettyblocks-faq').length > 0) {
         const items = document.querySelectorAll(".prettyblocks-faq .accordion button");
 
@@ -41,8 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         items.forEach(item => item.addEventListener('click', toggleAccordion));
     }
-});
-
+}
 
 const applyAdaptiveStyle = () => {
     var elements = document.querySelectorAll('[style-xl], [style-lg], [style-sm]');

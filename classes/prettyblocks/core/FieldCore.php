@@ -28,6 +28,7 @@ class FieldCore
     public $type;
     public $provider;
     public $label;
+    public $legend;
     public $path;
     public $collection;
     public $selector;
@@ -120,6 +121,9 @@ class FieldCore
         $data = [];
         if ($this->type) {
             $data['type'] = $this->type;
+        }
+        if ($this->legend) {
+            $data['legend'] = $this->legend;
         }
         if ($this->provider) {
             $data['provider'] = $this->provider;

@@ -22,7 +22,7 @@ namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use Symfony\Component\Dotenv\Dotenv;
+
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -226,12 +226,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             }
         }
         // register .env
-        $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
-
-        if (file_exists($env_file)) {
-            $dotenv = new Dotenv();
-            $dotenv->load($env_file);
-        }
+        $module->loadDotEnv();
 
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
@@ -240,9 +235,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'module_name' => $module->displayName,
             'shop_name' => $context->shop->name,
             'env' => [
-                'vitedev' => getenv('PRETTYBLOCKS_VITE_DEV') ?? false,
+                'vitedev' => filter_var(getenv('PRETTYBLOCKS_VITE_DEV'), FILTER_VALIDATE_BOOLEAN) ?? false,
                 'PRETTYBLOCKS_VITE_HOST' => getenv('PRETTYBLOCKS_VITE_HOST') ? getenv('PRETTYBLOCKS_VITE_HOST') : 'http://localhost:3002/',
-                'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-modals allow-forms allow-popups allow-scripts allow-presentation',
+                'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-top-navigation allow-pointer-lock allow-popups-to-escape-sandbox allow-modals allow-top-navigation-by-user-activation',
             ],
 
             'ajax_urls' => [
@@ -292,6 +287,11 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'paddings_section_help' => $translator->trans('Padding is the space inside an element, between its content and its boundary', [], 'Modules.Prettyblocks.Admin'),
                 'margins_section_help' => $translator->trans('Margin refers to the space outside an element, separating it from other elements', [], 'Modules.Prettyblocks.Admin'),
                 'force_full_width' => $translator->trans('Stretch section to 100%', [], 'Modules.Prettyblocks.Admin'),
+                'position_updated' => $translator->trans('Position updated successfully', [], 'Modules.Prettyblocks.Admin'),
+                'element_removed' => $translator->trans('Element removed successfully', [], 'Modules.Prettyblocks.Admin'),
+                'element_added' => $translator->trans('Element added successfully', [], 'Modules.Prettyblocks.Admin'),
+                'error_console' => $translator->trans('An error occurred while processing your request', [], 'Modules.Prettyblocks.Admin'),
+                'duplicate_state_error' => $translator->trans('An error occurred while duplicating the element', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),

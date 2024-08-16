@@ -1,5 +1,5 @@
 <script setup>
-import { defineComponent, onMounted, ref, reactive, watch } from "vue";
+import { defineComponent, onMounted, ref, reactive, watch, computed, toRaw, nextTick } from "vue";
 import Select from "./form/Select.vue";
 import SimpleSelect from "./form/SimpleSelect.vue";
 import HeaderDropdown from "./HeaderDropdown.vue";
@@ -12,8 +12,8 @@ import Button from "./Button.vue";
 import FileUpload from "./form/FileUpload.vue";
 import Icon from "./Icon.vue";
 import PanelThemeSettings from "./PanelThemeSettings.vue";
-import { useStore } from "../store/currentBlock";
-import emitter from "tiny-emitter/instance";
+import { usePrettyBlocksContext } from "../store/pinia";
+
 import Title from "./Title.vue";
 import Loader from "./Loader.vue";
 import Modal from "./Modal.vue";
@@ -25,7 +25,7 @@ import Block from "../scripts/block";
 import ColorInput from "vue-color-input";
 import FieldRepeater from "./FieldRepeater.vue";
 import { trans } from "../scripts/trans";
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+import { storeToRefs } from 'pinia'
 
 import SpacingSection from "./_partials/SpacingSection.vue";
 const toaster = createToaster({
@@ -54,12 +54,12 @@ defineComponent({
   FieldRepeater,
   Title,
 });
-let showPanel = ref(true);
 
-const displayThemePanel = (e) => {
-  showPanel.value = !showPanel.value;
-};
-
+let prettyBlocksContext = usePrettyBlocksContext() 
+const { currentBlock } = storeToRefs(prettyBlocksContext)
+const subSelected = computed(() => currentBlock.value.subSelected)
+const saveContext = computed(() => prettyBlocksContext.saveContext)
+const showPanel = computed(() => saveContext.value === 'settings');
 
 
 const state = ref(false);
@@ -68,25 +68,16 @@ const showLoader = ref(false);
 const blockLoaded = ref(false);
 
 
+// load block config in right panel
+watch(currentBlock, (newVal) => {
+  if (newVal.subSelected == null) {
+    loadBlockConfig(newVal)
+  }else{
+    getSubState(newVal)
+  }
+},{deep: true})
 
 
-
-
-
-
-
-
-
-emitter.on("displayBlockConfig", (element) => {
-  loadBlockConfig(element);
-});
-
-emitter.on("displaySubState", async (element) => {
-  // if (blockLoaded.value.id_prettyblocks !== element.id_prettyblocks){
-  blockLoaded.value = await Block.loadById(element.id_prettyblocks);
-  // }
-  getSubState(element);
-});
 
 
 
@@ -94,62 +85,52 @@ const loadBlock = async (element) => {
   let block = new Block(element);
   blockLoaded.value = block;
 };
+
+
 const loadBlockConfig = async (element) => {
-  emitter.emit("hideSettings");
   let block = new Block(element);
   blockLoaded.value = block;
   let res = await block.loadBlockConfig();
-  state.value = false;
-  hidePanelSettings();
   config.value = res.config;
-  emitter.emit("scrollInIframe", block.id);
+  prettyBlocksContext.$patch({
+      saveContext:ref('config')
+  })
 };
 
 const saveConfig = async (success = true) => {
-  let block = blockLoaded.value;
+  let block = currentBlock.value;
   if (!block) {
     return alert("No block loaded");
   }
 
-  let res = await block.saveConfig(config.value);
+  let res = await prettyBlocksContext.saveConfig(config.value);
+
   if (res.message) {
     if (success) {
-      toaster.show(res.message);
+      prettyBlocksContext.displayMessage(res.message);
     }
+    // state.value = false
   }
-  emitter.emit("stateUpdated", block.id_prettyblocks);
-
-  if (block.need_reload) {
-    emitter.emit("reloadIframe", block.id_prettyblocks);
-  }
+   if (block.need_reload) {
+      prettyBlocksContext.reloadIframe()
+    } else {
+       prettyBlocksContext.sendPrettyBlocksEvents('reloadBlock', {id_prettyblocks: block.id_prettyblocks})
+    }
+    prettyBlocksContext.initStates()
 };
 
 const getSubState = async (element) => {
-  emitter.emit("hideSettings");
   state.value = []
-  config.value = false;
-
-  let currentBlock = await useStore();
-  let currentID =
-    element != 0 ? element.id_prettyblocks : currentBlock.id_prettyblocks;
-
-  let block = blockLoaded.value;
-  if (!block) {
-    alert("no block found when gettings substates");
-    return false;
-  }
-  let key = block.getSubSelectedKey();
-  state.value = {
-    ...block.states[key],
-  };
-  hidePanelSettings();
-  showLoader.value = false;
-  block.focusOnIframe();
+  prettyBlocksContext.$patch({
+      saveContext: ref('subState')
+  })
+  let key =  prettyBlocksContext.currentBlock.subSelected.split('-')[1]
+  state.value = {...prettyBlocksContext.currentBlock.states[key]}
 };
 
 const hidePanelSettings = () => {
   showPanel.value = false;
-  emitter.emit("hideSettings");
+  // emitter.emit("hideSettings");
 };
 
 const showPanelSettings = () => {
@@ -157,43 +138,37 @@ const showPanelSettings = () => {
   config.value = false;
   showPanel.value = true;
 };
-emitter.off("showSettings");
-emitter.on("showSettings", (value) => {
-  if (value) {
-    showPanelSettings();
-  } else {
-    hidePanelSettings();
-  }
-});
 
-/**
+prettyBlocksContext.on('saveConfig', () => {
+  saveConfig()
+  prettyBlocksContext.initStates()
+})
+prettyBlocksContext.on('saveSubState', () => {
+  save()
+  prettyBlocksContext.initStates()
+})
+
+/*
  * Save the SubState in BD
  *
  */
 const save = async (success = true) => {
-  let block = blockLoaded.value;
-  let data = await block.updateSubSelectItem(state);
+  let block = currentBlock.value;
+  let data = await prettyBlocksContext.updateSubSelectItem(state);
   if (data.success) {
-    // update done and OK
     if (data.message && success) {
-      toaster.show(data.message);
+      prettyBlocksContext.displayMessage(data.message);
     }
-    emitter.emit("initStates");
     if (block.need_reload) {
-      emitter.emit("reloadIframe", block.id_prettyblocks);
+      prettyBlocksContext.reloadIframe()
     } else {
-      emitter.emit("stateUpdated", block.id_prettyblocks);
+       prettyBlocksContext.sendPrettyBlocksEvents('reloadBlock', {id_prettyblocks: block.id_prettyblocks})
     }
   }
+  prettyBlocksContext.initStates()
+  config.value = false
 };
-emitter.on("globalSave", () => {
-  if (config.value) {
-    saveConfig();
-  }
-  if (state.value) {
-    save();
-  }
-});
+
 </script>
 
 <template>
@@ -203,11 +178,15 @@ emitter.on("globalSave", () => {
 
     <!-- Config panel -->
     <div
-      v-if="config"
+      v-if="saveContext == 'config'"
       id="configPanel"
       class="absolute top-0 left-0 overflow-y-auto w-full h-full flex flex-col p-2 bg-slate-100"
       @keyup.enter="saveConfig()"
     >
+    
+     
+     <!-- config {{ config }} -->
+     
       <template v-for="f in config" :key="f">
         <FieldRepeater @updateUpload="saveConfig()" :field="f" />
       </template>
@@ -217,6 +196,7 @@ emitter.on("globalSave", () => {
       <Title :title="trans('default_settings')" />
       <hr class="my-2" />
       <!-- container -->
+
       <div class="my-2">
         <Checkbox
           v-model="config.default.container"
@@ -264,12 +244,16 @@ emitter.on("globalSave", () => {
     </div>
 
     <!-- State panel  -->
+   
     <div
-      v-if="state"
+      v-if="saveContext == 'subState'"
       id="statePanel"
       class="absolute top-0 left-0 overflow-y-auto w-full h-full flex flex-col p-2 bg-slate-100"
       @keyup.enter="save()"
     >
+
+    <!-- STATE {{ state }} -->
+
       <template v-for="f in state" :key="f">
         <FieldRepeater @updateUpload="save()" :field="f" />
       </template>
@@ -281,7 +265,8 @@ emitter.on("globalSave", () => {
       id="themeSettingsPanel"
       class="absolute top-0 left-0 overflow-y-auto w-full h-full bg-slate-100"
     >
-      <div @click="displayThemePanel()" class="bg-indigo text-white">
+
+      <div class="bg-indigo text-white">
         <h2 class="ml-4 p-3 text-center">
           <Icon name="CogIcon" class="h-5 w-5 inline" />
           {{ trans("theme_settings") }}

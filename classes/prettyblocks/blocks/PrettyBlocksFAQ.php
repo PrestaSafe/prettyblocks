@@ -38,7 +38,7 @@ class PrettyBlocksFAQ implements BlockInterface
             'code' => 'prettyblocks_faq',
             'tab' => 'sliders',
             'icon' => 'RectangleStackIcon',
-            'need_reload' => true,
+            'need_reload' => false,
             'insert_default_values' => true,
             'templates' => [
                 'default' => 'module:' . $this->module->name . '/views/templates/blocks/faq/default.tpl',

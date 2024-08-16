@@ -95,6 +95,15 @@ import ColorInput from "vue-color-input";
 import emitter from "tiny-emitter/instance";
 import { ref, defineProps, watch, defineEmits } from 'vue'
 import { safePaddingsAndMargins } from "../../scripts/typings";
+import { usePrettyBlocksContext } from "../../store/pinia";
+import { storeToRefs } from "pinia";
+
+const prettyBlocksContext = usePrettyBlocksContext()
+
+const current_device = ref(prettyBlocksContext.iframe.device);
+watch(() => prettyBlocksContext.iframe.device, (newValue) => {
+  current_device.value = newValue;
+});
 import {
     trans
 } from "../../scripts/trans";
@@ -143,7 +152,7 @@ watch(() => props.modelValue, (newValue) => {
 formatModelValue();
 
 const popover = ref(false);
-const current_device = ref("desktop");
+
 
 const changeDevice = (device) => {
   current_device.value = device;
@@ -158,9 +167,6 @@ const updateAutoPaddingDevices = (e) => {
 
 
 
-emitter.on("changeIframeSize", (size, height, device) => {
-  current_device.value = device;
-});
 
 
 const resetValues = () => {

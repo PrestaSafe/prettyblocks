@@ -18,7 +18,7 @@
  *}
 
 {if isset($category) && isset($category.description)}
-    {$category.description nofilter}
+    <div class="{$block.classes}" {$block.styles}>
+        {$category.description nofilter}
+    </div>
 {/if}
-
-<div class="_gap-9">Gap 9</div> 

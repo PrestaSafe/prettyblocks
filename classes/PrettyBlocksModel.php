@@ -1013,14 +1013,15 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function getThemeSettings($with_tabs = true, $context = 'front', $id_shop = null)
     {
-        $context = Context::getContext();
-        $id_shop = ($id_shop !== null) ? (int) $id_shop : $context->shop->id;
+        $contextPS = Context::getContext();
+        $id_shop = ($id_shop !== null) ? (int) $id_shop : $contextPS->shop->id;
         $theme_settings = HelperBuilder::hookToArray('ActionRegisterThemeSettings');
-        $settingsDB = PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $id_shop);
+        $settingsDB = PrettyBlocksSettingsModel::getSettings($contextPS->shop->theme_name, $id_shop);
         $res = [];
         $no_tabs = [];
 
         foreach ($theme_settings as $key => $settings) {
+
             if (isset($settings['private']) && $settings['private'] === true && $context == 'front') {
                 continue;
             }

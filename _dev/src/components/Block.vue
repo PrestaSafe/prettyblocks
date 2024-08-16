@@ -1,12 +1,15 @@
 <script setup>
 import { defineProps, ref, defineComponent } from "vue";
 import Icon from "./Icon.vue";
-import { currentZone } from "../store/currentBlock";
+import { useCurrentZone } from "../store/pinia";
 import Loader from "./Loader.vue";
 import emitter from "tiny-emitter/instance";
 import { createToaster } from "@meforma/vue-toaster";
-import { contextShop } from "../store/currentBlock";
+import { contextShop, usePrettyBlocksContext } from "../store/pinia";
 import { HttpClient } from "../services/HttpClient.js";
+import { trans } from "../scripts/trans";
+
+let prettyBlocksContext = usePrettyBlocksContext()
 
 const toaster = createToaster({
   position: "top",
@@ -37,28 +40,27 @@ defineComponent({
 let showLoader = ref(false);
 
 const AddOnZOne = async (code) => {
-  let current_zone = currentZone();
+  let current_zone = prettyBlocksContext.currentZone;
   showLoader.value = true;
-  let context = contextShop();
+
   const params = {
     action: "insertBlock",
     code: code,
     ajax: true,
     zone_name: current_zone.name,
-    ctx_id_lang: context.id_lang,
-    ctx_id_shop: context.id_shop,
+    ctx_id_lang: prettyBlocksContext.psContext.id_lang,
+    ctx_id_shop: prettyBlocksContext.psContext.id_shop,
     ajax_token: security_app.ajax_token,
   };
   let url = ajax_urls.block_action_urls;
+  console.log(url, params)
 let data = await HttpClient.get(url, params);
 
-  emitter.emit("toggleModal", current_zone.name);
-  emitter.emit("initStates");
-  toaster.show("Block inséré avec succès", {
-    position: "top",
-  });
+  prettyBlocksContext.emit("toggleModal");  
+  prettyBlocksContext.initStates();
+  prettyBlocksContext.displayMessage(trans('element_added'));
+  prettyBlocksContext.reloadIframe();
 
-  emitter.emit("reloadIframe", data.id_prettyblocks);
 };
 </script>
 

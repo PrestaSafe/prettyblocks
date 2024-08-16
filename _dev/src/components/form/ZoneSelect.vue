@@ -1,112 +1,84 @@
 <script setup>
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, computed } from 'vue'
 import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { ChevronUpDownIcon } from '@heroicons/vue/24/solid'
-import { storedZones, currentZone } from '../../store/currentBlock'
-import emitter from 'tiny-emitter/instance'
+import { usePrettyBlocksContext } from '../../store/pinia'
+import { storeToRefs } from 'pinia'
 import { trans } from '../../scripts/trans'
 
 defineComponent({
   Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions,
   ChevronUpDownIcon
 })
-let items = ref([]);
-let current_zone = currentZone()
-emitter.on('loadZones', (zonesState) => {
-  items.value = zonesState
-  if (zonesState.indexOf(currentZone().name) == -1) {
-    let priorityZone = zonesState[0];
-
-    // if prettyblocks already init (when reloading a simple page)
-    let isPresent = zonesState.find(zone => {
-      return zone.name === current_zone.zoneToFocus
-    }) || false
-   
-    if(current_zone.zoneToFocus !== ''  && isPresent)
-    {
-      priorityZone = current_zone
-    } else {
-
-      current_zone.$patch({
-        name: zonesState[0].name,
-        alias: zonesState[0].alias,
-        priority: zonesState[0].priority,
-        zoneToFocus: zonesState[0].name,
-      })
-      if (zonesState.some(zone => zone.name === props.modelValue.name)) {
-        priorityZone = zonesState.find(zone => zone.name === props.modelValue.name);
-      } else {
-        priorityZone = zonesState[0];
-      }
-  
-  
-      // check if there is a priority zone 
-      for (let zone of zonesState) {
-          if (zone.priority === true) {
-              priorityZone = zone;
-              break;
-          }
-      }
-    }
-
-    
-    props.modelValue.name = priorityZone.name
-    props.modelValue.alias = priorityZone.alias
-    props.modelValue.priority = priorityZone.priority
-    props.modelValue.zoneToFocus = priorityZone.name
-
-    onInput(priorityZone)
-  }
-})
-
-emitter.on('selectZone' , (zone) => {
-  props.modelValue = zone
-  onInput(zone)
-})
-
 const props = defineProps({
   title: String,
-  // api url to get the data
   modelValue: {
     type: Object,
-    default: {
+    default: () => ({
       name: 'displayHome',
       alias: '',
       priority: false
-    }
+    })
   }
-
 })
+
 
 const changetItem = (item) => {
   props.modelValue.name = item.name
   props.modelValue.alias = item.alias
-  // force reload on the last zone
   props.modelValue.priority = true
-}
 
+}
 
 
 const emit = defineEmits(['update:modelValue'])
+const items = ref([]);
+let prettyBlocksContext = usePrettyBlocksContext()
+const idLang = computed(() => prettyBlocksContext.psContext.id_lang)
+let currentZone = false
+let priorityZone = ref(null)
+let presentZone = false
+
+
+
+watch(() => prettyBlocksContext.zones, (zonesState) => {
+  items.value = zonesState
+  presentZone = zonesState.find(zone => zone.name === prettyBlocksContext.currentZone.zoneToFocus) || false
+  if(presentZone) {
+    currentZone = presentZone
+  } else {
+    currentZone = zonesState[0]
+  }
+  onInput(currentZone)
+})
+
+
+
+
 
 function onInput(zone) {
-  let current_zone = currentZone()
-  current_zone.$patch({ 
+  prettyBlocksContext.$patch({
+    currentZone: {
+      name: zone.name,
+      alias: zone.alias,
+      priority: zone.priority,
+      zoneToFocus: zone.name
+    }
+  })
+
+  prettyBlocksContext.sendPrettyBlocksEvents('focusOnZone', zone.name)
+
+  emit('update:modelValue', {
     name: zone.name,
     alias: zone.alias,
     priority: zone.priority,
-    zoneToFocus: zone.name,
+    zoneToFocus: zone.name
+
   })
 
-  emit('update:modelValue.name', zone.name)
-  emit('update:modelValue.alias', zone.alias)
-  emit('update:modelValue.priority', zone.priority)
-
-  emitter.emit('focusOnZone', zone.name) 
-  
 }
 
-watch(() => props.modelValue, onInput)
+// watch(() => props.modelValue, onInput)
 </script>
 
 <template>

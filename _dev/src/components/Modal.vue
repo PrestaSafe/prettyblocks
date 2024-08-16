@@ -1,16 +1,20 @@
 <script setup>
 import { ref, defineComponent, onMounted, onBeforeUnmount, computed } from 'vue'
-import emitter from 'tiny-emitter/instance'
+
 import { HttpClient } from "../services/HttpClient";
 import Block from './Block.vue'
-import { currentZone } from '../store/currentBlock'
+import { useCurrentZone, usePrettyBlocksContext } from '../store/pinia'
 import { trans } from '../scripts/trans'
-
+import { PresentationChartBarIcon } from '@heroicons/vue/24/solid';
+let prettyBlocksContext = usePrettyBlocksContext()
 defineComponent({
   Block
 })
 
 let showModal = ref(false)
+prettyBlocksContext.on('toggleModal', () => {
+  toggleModal()
+})
 let blocks = ref([])
 let search = ref('')
 let showSearch = ref(false)
@@ -35,13 +39,14 @@ const toggleModal = () => {
 }
 
 const handleEscape = (event) => {
-  if (event.key === 'Escape') {
-    toggleModal();
+  if (event.key === 'Escape' && showModal.value) {
+    showModal.value = false
   }
 }
 
 onMounted(() => {
   window.addEventListener('keydown', handleEscape)
+  getBlocksAvailable()
 })
 
 onBeforeUnmount(() => {
@@ -49,15 +54,7 @@ onBeforeUnmount(() => {
 })
 
 
-emitter.on('toggleModal', async (zone_name) => {
-  toggleModal()
-  getBlocksAvailable()
-  
-  let current_zone = currentZone()
-  await current_zone.$patch({
-    name: zone_name,
-  })
-})
+
 
 const getBlocksAvailable = () => {
   HttpClient.get(ajax_urls.blocks_available)
