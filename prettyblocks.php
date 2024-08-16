@@ -42,7 +42,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     public $form_trans = [];
     public $tabs = [
         [
-            'name' => 'Pretty Blocks', // One name for all langs
+            'name' => 'PrettyBlocks', // One name for all langs
             'class_name' => 'AdminThemeManagerController',
             'visible' => true,
             'parent_class_name' => 'IMPROVE',
@@ -80,7 +80,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $this->bootstrap = true;
         parent::__construct();
 
-        $this->displayName = $this->trans('Pretty Blocks', [], 'Modules.Prettyblocks.Admin');
+        $this->displayName = $this->trans('PrettyBlocks', [], 'Modules.Prettyblocks.Admin');
         $this->description = $this->trans('Configure your design easily', [], 'Modules.Prettyblocks.Admin');
         $this->controllers = ['ajax'];
 
