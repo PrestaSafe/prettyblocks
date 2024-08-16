@@ -292,6 +292,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'element_added' => $translator->trans('Element added successfully', [], 'Modules.Prettyblocks.Admin'),
                 'error_console' => $translator->trans('An error occurred while processing your request', [], 'Modules.Prettyblocks.Admin'),
                 'duplicate_state_error' => $translator->trans('An error occurred while duplicating the element', [], 'Modules.Prettyblocks.Admin'),
+                'get_pro' => $translator->trans('Get Pro Blocks', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),

@@ -282,7 +282,8 @@ const deleteAllBlocks = async () => {
         Made with ❤️ by
         <a class="text-indigo" href="https://www.prestasafe.com" target="_blank"
           >PrestaSafe</a
-        >
+        ><br />
+        <a href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
       </div>
     </div>
   </div>
