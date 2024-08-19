@@ -117,13 +117,24 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         ]);
     }
 
+
     private function getShops()
     {
         $shops = \Shop::getShops();
         $results = [];
+        $link = new \Link();
 
         foreach ($shops as $shop) {
             $shop['current_url'] = $this->buildShopUri($shop);
+            $shop['base_url'] = $link->getPageLink(
+                'index',
+                true,
+                (int) \Configuration::get('PS_LANG_DEFAULT', null, null, $shop['id_shop']),
+                [],
+                false,
+                $shop['id_shop'],
+                false
+            );
             $results[] = $shop;
         }
 
