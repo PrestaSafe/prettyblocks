@@ -459,7 +459,6 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
         }
     }
 
-
     public function displayAjaxGetBlockRender()
     {
         $id_block = (int) Tools::getValue('id_prettyblocks');
@@ -476,9 +475,7 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
                 'html' => $html,
             ]
         ));
-
     }
-
 
     public function displayAjaxBlockRender()
     {

@@ -313,8 +313,8 @@ class HelperBuilder
         $query->select('COUNT(*)');
         $query->from('prettyblocks');
         $query->where('zone_name = "' . pSQL($zone_name) . '"');
-        $query->where('id_lang = '.(int)$contextPS->language->id);
-        $query->where('id_shop = '.(int)$contextPS->shop->id);
+        $query->where('id_lang = ' . (int) $contextPS->language->id);
+        $query->where('id_shop = ' . (int) $contextPS->shop->id);
         $count = Db::getInstance()->getValue($query);
 
         // Fin de la sélection
@@ -395,7 +395,9 @@ class HelperBuilder
      * Generate css classes for blocks spacings
      * classes are imported from tailwindcss with tw_ prefix by default
      * ex: tw_xs_p-10 tw_md_p-20 tw_lg_p-30
+     *
      * @see tailwindimport.tpl
+     *
      * @param array $values
      * @param string $type
      *
@@ -409,41 +411,39 @@ class HelperBuilder
         $devices = [
             'mobile' => '',
             'tablet' => 'lg:',
-            'desktop' => 'xl:'
+            'desktop' => 'xl:',
         ];
         $sides = ['top', 'right', 'bottom', 'left'];
 
         $alias = [
             'paddings' => 'padding',
-            'margins' => 'margin'
+            'margins' => 'margin',
         ];
         $classesPrefix = [];
         $stylesArray = [];
-        foreach($devices as $device => $prefix) {
-            if(isset($values[$device]["use_custom_data"]) && $values[$device]['use_custom_data'] == true) {
+        foreach ($devices as $device => $prefix) {
+            if (isset($values[$device]['use_custom_data']) && $values[$device]['use_custom_data'] == true) {
                 //  generate styles
-                foreach($sides as $side) {
+                foreach ($sides as $side) {
                     $value = $values[$device][$side];
-                    if($value !== '') {
+                    if ($value !== '') {
                         if (!preg_match('/(px|rem|em|%|vh|vw|vmin|vmax)$/', $value)) {
                             $value .= 'px';
                         }
-                        $stylesArray[$device][$side] = $alias[$type] . '-' . $side . ':'. $value;
+                        $stylesArray[$device][$side] = $alias[$type] . '-' . $side . ':' . $value;
                     }
                 }
-
             } else {
                 // generate classes
-                foreach($sides as $side) {
+                foreach ($sides as $side) {
                     $value = $values[$device][$side];
                     // return a format for tailwindcss prefixed with tw_ ex: _xs_t-10
-                    if($value !== '' && $value !== null) {
-                        $classesPrefix[$device][$side] = $prefix . 'tw_' . substr($type, 0, 1) . substr($side, 0, 1).'-'. $value ;
+                    if ($value !== '' && $value !== null) {
+                        $classesPrefix[$device][$side] = $prefix . 'tw_' . substr($type, 0, 1) . substr($side, 0, 1) . '-' . $value;
                     }
                 }
             }
         }
-
 
         foreach ($devices as $breakpoint => $prefix) {
             if (!empty($classesPrefix[$breakpoint])) {
@@ -452,22 +452,19 @@ class HelperBuilder
         }
 
         foreach ($devices as $breakpoint => $prefix) {
-
             if (!empty($stylesArray[$breakpoint])) {
                 $pfx = rtrim($prefix, ':');
-                if($pfx == '') {
+                if ($pfx == '') {
                     $pfx = 'sm';
                 }
                 $style = 'style-' . $pfx;
-                $stylesCss .= $style. '=' . implode(';', $stylesArray[$breakpoint]).' ' ;
+                $stylesCss .= $style . '=' . implode(';', $stylesArray[$breakpoint]) . ' ';
             }
         }
 
         return [
             'classes' => rtrim($cssClasses),
-            'styles' => $stylesCss
+            'styles' => $stylesCss,
         ];
-
     }
-
 }

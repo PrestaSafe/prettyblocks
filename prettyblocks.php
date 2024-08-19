@@ -22,6 +22,7 @@
 use PrestaSafe\PrettyBlocks\Core\Components\Title;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use Symfony\Component\Dotenv\Dotenv;
+
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -163,17 +164,18 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     /**
      * get .env parameters
+     *
      * @return void
      */
     public function loadDotEnv()
     {
-          // register .env
-          $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
+        // register .env
+        $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
 
-          if (file_exists($env_file)) {
-              $dotenv = new Dotenv();
-              $dotenv->load($env_file);
-          }
+        if (file_exists($env_file)) {
+            $dotenv = new Dotenv();
+            $dotenv->load($env_file);
+        }
     }
 
     /**

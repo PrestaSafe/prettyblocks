@@ -248,24 +248,21 @@ class PrettyBlocksModel extends ObjectModel
         //     die();
         // }
 
-
         $block['classes'] = '';
-        if($paddings !== '') {
+        if ($paddings !== '') {
             $block['classes'] .= $paddings;
         }
-        if($margins !== '') {
-            $block['classes'] .= ' '.$margins;
+        if ($margins !== '') {
+            $block['classes'] .= ' ' . $margins;
         }
 
         $block['styles'] = '';
-        if($paddingStyles !== '') {
+        if ($paddingStyles !== '') {
             $block['styles'] .= $paddingStyles;
         }
-        if($marginStyles !== '') {
-            $block['styles'] .= ' '.$marginStyles;
+        if ($marginStyles !== '') {
+            $block['styles'] .= ' ' . $marginStyles;
         }
-
-
 
         $block['settings_formatted'] = $this->_formatConfig($block, 'back');
 
@@ -1021,7 +1018,6 @@ class PrettyBlocksModel extends ObjectModel
         $no_tabs = [];
 
         foreach ($theme_settings as $key => $settings) {
-
             if (isset($settings['private']) && $settings['private'] === true && $context == 'front') {
                 continue;
             }

@@ -22,7 +22,6 @@ namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,7 +115,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'message' => $message,
         ]);
     }
-
 
     private function getShops()
     {

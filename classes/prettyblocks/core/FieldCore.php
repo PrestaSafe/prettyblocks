@@ -149,7 +149,7 @@ class FieldCore
         if ($this->force_default_value) {
             $data['force_default_value'] = $this->force_default_value;
         }
-        if($this->options) {
+        if ($this->options) {
             $data['options'] = $this->options;
         }
 
@@ -234,11 +234,11 @@ class FieldCore
         |
     */
 
-
     /**
      * formatFieldSlider
      * use for display field type slider in PrettyBlocks
-     * @return Integer
+     *
+     * @return int
      */
     public function formatFieldSlider()
     {
@@ -268,11 +268,13 @@ class FieldCore
         // if value exists in DB and new_value is empty
         if (!is_null($this->value) && is_null($this->new_value)) {
             $date = \DateTime::createFromFormat($format, $this->value);
+
             return $date ? $date->format($format) : date($format);
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && is_null($this->new_value)) {
             $date = \DateTime::createFromFormat($format, $this->default);
+
             return $date ? $date->format($format) : date($format);
         }
 
@@ -281,6 +283,7 @@ class FieldCore
         if (!$date) {
             $date = \DateTime::createFromFormat($format, $this->new_value);
         }
+
         return $date ? $date->format($format) : date($format);
     }
 
