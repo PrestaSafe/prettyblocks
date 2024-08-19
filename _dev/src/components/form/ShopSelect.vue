@@ -2,8 +2,8 @@
 import { defineComponent, ref, watch } from 'vue'
 import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { ChevronUpDownIcon } from '@heroicons/vue/24/solid'
-import { storedZones, currentZone } from '../../store/currentBlock'
-import emitter from 'tiny-emitter/instance'
+import { usePrettyBlocksContext } from '../../store/pinia'
+
 import { trans } from '../../scripts/trans'
 
 defineComponent({
@@ -11,7 +11,7 @@ defineComponent({
   ChevronUpDownIcon
 })
 let items = ref(ajax_urls.shops);
-
+let prettyBlocksContext = usePrettyBlocksContext()
 
 const props = defineProps({
   // api url to get the data
@@ -23,7 +23,17 @@ const props = defineProps({
 
 const changetItem = (item) => {
   props.modelValue.shop_name = item.name
-  emitter.emit('changeUrl', item)
+
+  prettyBlocksContext.$patch({
+    psContext: {
+      id_lang: item.id_lang,
+      id_shop: item.id_shop,
+      shop_name: item.name,
+      current_url: item.base_url + (item.base_url.includes('?prettyblocks=1') ? '' : '?prettyblocks=1'),
+      href: item.base_url,
+    }
+  })
+  prettyBlocksContext.changeUrl(item.base_url)
 }
 
 const emit = defineEmits(['update:modelValue.shop_name'])

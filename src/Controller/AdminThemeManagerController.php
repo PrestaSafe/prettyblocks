@@ -120,9 +120,19 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     {
         $shops = \Shop::getShops();
         $results = [];
+        $link = new \Link();
 
         foreach ($shops as $shop) {
             $shop['current_url'] = $this->buildShopUri($shop);
+            $shop['base_url'] = $link->getPageLink(
+                'index',
+                true,
+                (int) \Configuration::get('PS_LANG_DEFAULT', null, null, $shop['id_shop']),
+                [],
+                false,
+                $shop['id_shop'],
+                false
+            );
             $results[] = $shop;
         }
 
@@ -168,7 +178,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $js_entry = '';
         if ($filesystem->exists($build_dir)) {
             // load manifest.json
-            $manifest = $build_dir . 'manifest.json';
+            $manifest = $build_dir . '.vite/manifest.json';
 
             if (!$filesystem->exists($manifest)) {
                 throw new \Exception('manifest.json not exist');
@@ -208,12 +218,37 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         // url to load at startup : provided url or shop home page
         $startup_url = \Tools::getValue('startup_url', $shop_url);
 
+        if (\Tools::getValue('endpoint')) {
+            switch (\Tools::getValue('endpoint')) {
+                case 'product':
+                    $startup_url = $link->getProductLink((int) \Tools::getValue('id'));
+                    break;
+                case 'category':
+                    $startup_url = $link->getCategoryLink((int) \Tools::getValue('id'));
+                    break;
+                case 'cms':
+                    $startup_url = $link->getCMSLink((int) \Tools::getValue('id'));
+                    break;
+                case 'custom':
+                    $startup_url = $startup_url;
+                    break;
+            }
+        }
+        // register .env
+        $module->loadDotEnv();
+
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
             'base_url' => $link->getBaseLink(),
             'favicon_url' => \Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
             'module_name' => $module->displayName,
             'shop_name' => $context->shop->name,
+            'env' => [
+                'vitedev' => filter_var(getenv('PRETTYBLOCKS_VITE_DEV'), FILTER_VALIDATE_BOOLEAN) ?? false,
+                'PRETTYBLOCKS_VITE_HOST' => getenv('PRETTYBLOCKS_VITE_HOST') ? getenv('PRETTYBLOCKS_VITE_HOST') : 'http://localhost:3002/',
+                'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-top-navigation allow-pointer-lock allow-popups-to-escape-sandbox allow-modals allow-top-navigation-by-user-activation',
+            ],
+
             'ajax_urls' => [
                 'shops' => $shops,
                 'simulate_home' => $symfonyUrl,
@@ -231,6 +266,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'block_action_urls' => $blockUrl,
                 'theme_settings' => $settingsUrls,
                 'startup_url' => $startup_url,
+                'prettyblocks_route_generator' => $this->getSFUrl('prettyblocks_route_generator'),
             ],
             'trans_app' => [
                 'current_shop' => $translator->trans('Shop in modification', [], 'Modules.Prettyblocks.Admin'),
@@ -247,6 +283,25 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'ex_color' => $translator->trans('Add a color ex: #123456', [], 'Modules.Prettyblocks.Admin'),
                 'theme_settings' => $translator->trans('Theme settings', [], 'Modules.Prettyblocks.Admin'),
                 'type_search_here' => $translator->trans('Type your search here', [], 'Modules.Prettyblocks.Admin'),
+                'search_blocks' => $translator->trans('Search blocks', [], 'Modules.Prettyblocks.Admin'),
+                'is_cached' => $translator->trans('Enable cache', [], 'Modules.Prettyblocks.Admin'),
+                'paddings' => $translator->trans('Paddings', [], 'Modules.Prettyblocks.Admin'),
+                'top' => $translator->trans('Top', [], 'Modules.Prettyblocks.Admin'),
+                'right' => $translator->trans('Right', [], 'Modules.Prettyblocks.Admin'),
+                'bottom' => $translator->trans('Bottom', [], 'Modules.Prettyblocks.Admin'),
+                'left' => $translator->trans('Left', [], 'Modules.Prettyblocks.Admin'),
+                'margins' => $translator->trans('Margins', [], 'Modules.Prettyblocks.Admin'),
+                'use_custom_entry' => $translator->trans('Use custom entries (px, rem etc..)', [], 'Modules.Prettyblocks.Admin'),
+                'auto_size_section' => $translator->trans('Auto sizing', [], 'Modules.Prettyblocks.Admin'),
+                'paddings_section_help' => $translator->trans('Padding is the space inside an element, between its content and its boundary', [], 'Modules.Prettyblocks.Admin'),
+                'margins_section_help' => $translator->trans('Margin refers to the space outside an element, separating it from other elements', [], 'Modules.Prettyblocks.Admin'),
+                'force_full_width' => $translator->trans('Stretch section to 100%', [], 'Modules.Prettyblocks.Admin'),
+                'position_updated' => $translator->trans('Position updated successfully', [], 'Modules.Prettyblocks.Admin'),
+                'element_removed' => $translator->trans('Element removed successfully', [], 'Modules.Prettyblocks.Admin'),
+                'element_added' => $translator->trans('Element added successfully', [], 'Modules.Prettyblocks.Admin'),
+                'error_console' => $translator->trans('An error occurred while processing your request', [], 'Modules.Prettyblocks.Admin'),
+                'duplicate_state_error' => $translator->trans('An error occurred while duplicating the element', [], 'Modules.Prettyblocks.Admin'),
+                'get_pro' => $translator->trans('Get Pro Blocks', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),
@@ -594,7 +649,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
      *
      * @return string
      */
-    protected function getLangLink($idLang = null, \Context $context = null, $idShop = null)
+    protected function getLangLink($idLang = null, ?\Context $context = null, $idShop = null)
     {
         static $psRewritingSettings = null;
         if ($psRewritingSettings === null) {
@@ -614,5 +669,27 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         }
 
         return \Language::getIsoById($idLang) . '/';
+    }
+
+    /**
+     * Generate URL for PrettyBlocks
+     */
+    public function routeGeneratorAction(Request $request)
+    {
+        $posts = json_decode($request->getContent(), true);
+        $endpoint = $posts['endpoint'];
+        $id = (int) $posts['id'];
+        $startup_url = $posts['startup_url'] ?? '';
+
+        $router = $this->get('router');
+        $url = $router->generate('admin_prettyblocks', [
+            'endpoint' => $endpoint,
+            'id' => $id,
+            'startup_url' => $startup_url,
+        ]);
+
+        return (new JsonResponse())->setData([
+            'url' => $url,
+        ]);
     }
 }

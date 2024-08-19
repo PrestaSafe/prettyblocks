@@ -95,6 +95,7 @@ const removeImg = () => {
       <div class="dz-message" data-dz-message>
         <div class="flex flex-col items-center">
           <Icon name="UploadIcon" class="h-10 w-10 mb-2" />
+
           <template v-if="props.modelValue.url">
             <div v-if="props.modelValue.mediatype == 'image'">
               <img
@@ -104,7 +105,8 @@ const removeImg = () => {
               />
             </div>
             <div v-else>
-              <a :src="props.modelValue.url">{{ props.modelValue.filename }}</a>
+              <a v-if="props.modelValue.filename" :src="props.modelValue.url">{{ props.modelValue.filename }}</a>
+              <img v-else :src="props.modelValue.url" />
             </div>
           </template>
           <div v-if="!props.modelValue.url">Upload a file</div>

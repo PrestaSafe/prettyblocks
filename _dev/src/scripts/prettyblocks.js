@@ -1,8 +1,9 @@
-import { toolbar } from '../../_dev/src/scripts/toolbar'
-window.hasEventListener = false;
-const unsubscribe = () => {
-    window.removeEventListener("message", eventHandler, false);
-}
+import { toolbar } from './toolbar'
+import { getZoneDetailsByDom }  from './helper'
+
+/**
+ * THIS EVENT HANDLER IS THE CONTROLLER BETWEEN PRETTYBLOCKS AND THE PRESTASHOP BACKEND
+ */
 
 const getContext = () => {
      
@@ -14,7 +15,10 @@ const getContext = () => {
         href: window.location.href
     }
 }
+
+// received data from prettyblocks
 let eventHandler = (event) => {
+
     if(event.data.type == 'getContext')
     {
         let context = getContext()
@@ -23,25 +27,21 @@ let eventHandler = (event) => {
     }
 
     if (event.data.type == 'initIframe') {
-        // moveBlockToZone(event)
-        // register block click
-        // document.querySelectorAll('div[data-block]').forEach((div) => {
-
-        //     div.addEventListener('click', (el) => {
-        //         let id_prettyblocks = el.target.closest('[data-id-prettyblocks]').getAttribute('data-id-prettyblocks')
-        //         selectBlock(id_prettyblocks, event)
-        //         event.source.postMessage({ type: 'loadStateConfig', data: id_prettyblocks }, '*');
-        //     })
-        // })
         event.source.postMessage({ type: 'iframeInit', data: null }, '*');
         return loadToolBar(event)
         
+    }
+    if(event.data.type == 'reloadBlock')
+    {
+        let id_prettyblocks = event.data
+        return reloadBlock(id_prettyblocks, event)
     }
     if(event.data.type == 'selectBlock')
     {
         let id_prettyblocks = event.data.data.id_prettyblocks
         return selectBlock(id_prettyblocks,event)
     }
+
     // focus on zone in iframe
     if (event.data.type == 'focusOnZone') {
         let zone_name = event.data.data
@@ -54,9 +54,19 @@ let eventHandler = (event) => {
         return el.scrollIntoView({
             alignToTop: true,
             behavior: 'smooth',
-            block: 'center'
+            // block: 'top'
         })
 
+    }
+
+    // focus on block in iframe
+    if (event.data.type == 'focusOnBlock') {
+        let id_prettyblocks = event.data.data
+        return focusBlock(id_prettyblocks)
+
+    }
+    if (event.data.type == 'getCurrentDocumentUrl') {
+        return event.source.postMessage({ type: 'currentDocumentUrl', data: document.location.href }, '*');
     }
     // update HTML block
     if (event.data.type == 'updateHTMLBlock') {
@@ -64,6 +74,11 @@ let eventHandler = (event) => {
         let data = event.data.data.html
         let domBlock = document.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
         domBlock.innerHTML = data
+        document.dispatchEvent(new CustomEvent('updatePrettyBlocks', { 
+            detail: { block: {
+                id_prettyblocks: id_prettyblocks
+             }}
+        }));
         return loadToolBar(event)
     }
 
@@ -73,19 +88,29 @@ let eventHandler = (event) => {
     if (event.data.type == 'getZones') {
         let els = document.querySelectorAll('[data-zone-name]')
         let zones = []
+        let zone_name = ''
 
         els.forEach((el) => {
-            let zone_name = el.getAttribute('data-zone-name')
-            if (zones.indexOf(zone_name) == -1) {
-                zones.push(zone_name)
+            zone_name = el.getAttribute('data-zone-name')
+            let current_zone = {
+                name: el.getAttribute('data-zone-name'),
+                alias: el.getAttribute('data-zone-alias') || '',
+                priority: el.getAttribute('data-zone-priority') || 'false',
+            }
+
+            if (!zones.some(zone => zone.name === zone_name)) {
+                zones.push(current_zone)
             }
         })
         return event.source.postMessage({ type: 'zones', data: zones }, '*');
     }
-    unsubscribe()
+    // unsubscribe()
 
     
 }
+
+
+
 /**
  * Select block in pretty block interface
  * @param {*} id_prettyblocks 
@@ -95,22 +120,28 @@ let eventHandler = (event) => {
  */
 const selectBlock = (id_prettyblocks, event) => {
         let el = focusBlock(id_prettyblocks)
+
         let zone_name = el.closest('[data-prettyblocks-zone]').getAttribute('data-prettyblocks-zone')
+        let zoneElement = getZoneDetailsByDom(document.getQuerySelector('[data-zone-name="' + zone_name + '"]'))
         let params = {
             id_prettyblocks: id_prettyblocks,
-            zone_name: zone_name
+            zone: zoneElement
         }
         return event.source.postMessage({ type: 'focusBlock', data: params }, '*');
 
 }
+const reloadBlock = (id_prettyblocks, event) => {
+    return event.source.postMessage({ type: 'reloadBlock', data: id_prettyblocks }, '*');
+}
 const focusBlock = (id_prettyblocks) => {
     let doc = document
     let el = doc.querySelector('[data-id-prettyblocks="' + id_prettyblocks + '"]')
+
     if (doc.body.contains(el) && !el.classList.contains('border-dotted')) {
         el.scrollIntoView({
             alignToTop: false,
             behavior: 'smooth',
-            block: 'center'
+            // block: 'center'
         })
         let tr = doc.querySelectorAll('[data-block]')
         tr.forEach(bl => {
@@ -162,56 +193,44 @@ const moveBlockToZone = (event) => {
 
     });
 
-    // zones.forEach(zone => {
-    //     zone.addEventListener('dragover', function (e) {
-    //         e.preventDefault();
-    //     });
-
-    //     zone.addEventListener('dragenter', function (e) {
-    //         e.preventDefault();
-    //     });
-    //     zone.addEventListener('drop', function (e) {
-    //         let zone_name = zone.getAttribute('data-prettyblocks-zone')
-    //         let id_prettyblocks = blockDragged.getAttribute('data-id-prettyblocks')
-    //         let params = {
-    //             id_prettyblocks: id_prettyblocks,
-    //             zone_name: zone_name
-    //         }
-    //         event.source.postMessage({ type: 'moveBlockToZone', params: params }, '*');
-    //         this.appendChild(blockDragged);
-    //     });
-    // });
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    if (!window.hasEventListener) {
-        window.addEventListener("message", eventHandler, false)
-        window.hasEventListener = true;
-    }
+
+ 
+      
+    window.addEventListener("message", eventHandler, false)
+
     // Sélectionnez tous les liens de la page
     const links = document.querySelectorAll('a');
-  
+    
     links.forEach(link => {
-      link.addEventListener('click', function(e) {
-        // Empêchez la navigation
-        e.preventDefault();
-  
-        // Récupérez l'URL du lien
-        const url = e.currentTarget.href;
-        let context = getContext()
-        let params = {
-            context: context,
-            url: url,
-        }
-
-        window.parent.postMessage({ type: 'setNewUrl', params: params }, '*');
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            let href = link.getAttribute('href')
+            if (href && href !== '#' && (href.includes('http') || href.includes('https'))) {
+              let context = getContext()
+              let params = {
+                context: context,
+                url: href,
+              }
+              window.parent.postMessage({ type: 'setNewUrl', params: params }, '*');
+            }
+            });
+    });
         
-        // À ce stade, vous pouvez faire ce que vous voulez avec l'URL récupérée
-      });
+    window.navigation.addEventListener("navigate", (event) => {
+        let url = event.destination.url;
+        if (url !== 'about:blank') {
+            event.preventDefault(); // Empêche la navigation vers la nouvelle URL
+
+            let context = getContext();
+            let params = {
+                context: context,
+                url: url,
+            };
+            window.parent.postMessage({ type: 'setForceNewUrl', params: params }, '*');
+        }
     });
 });
-
-  
-
-
-unsubscribe();
+   

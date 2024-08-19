@@ -3,6 +3,10 @@
 </p>
 
 # PrettyBlocks
+<br>
+
+![Téléchargements](https://img.shields.io/github/downloads/PrestaSafe/prettyblocks/total)
+
 Le premier page builder open conçu pour PrestaShop ! 
 
 La documentation technique est disponible ici : [https://prettyblocks.io/](https://prettyblocks.io/): 
@@ -67,12 +71,10 @@ You can also add our module ClassicBlocks for having 4 blocks to use [Download C
 Discover our [PrestaShop SEO / Performance and Mobile Optimized Theme: CartZilla](https://www.prestasafe.com/product/theme-prestashop-cartzilla) compatible PrettyBlocks !
 
 ## Top contributors 
-Thanks to [Micka FDZ](https://github.com/micka-fdz) and [JF Viguier](https://github.com/jf-viguier) from the team [Creabilis](https://www.creabilis.com/)
-![logo_creabilis](https://github.com/PrestaSafe/prettyblocks/assets/4788787/bbde201e-f70f-4f78-8794-8bcaba661f57)
-
-## Sponsors
-Thanks to our sponsor(s): 
-![devle__or_3](https://github.com/PrestaSafe/prettyblocks/assets/4788787/c2ee2b6e-b963-4969-bfd4-133fcdc7f3c2)
+<p>Thanks to</p>
+<a href="https://github.com/PrestaSafe/prettyblocks/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=PrestaSafe/prettyblocks" />
+</a>
 
 
 ## License

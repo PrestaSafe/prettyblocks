@@ -1,5 +1,5 @@
-import emitter from 'tiny-emitter/instance'
-import { contextShop, useStore } from '../store/currentBlock'
+
+import { contextShop, useStore, usePrettyBlocksContext } from '../store/pinia'
 import { HttpClient } from "../services/HttpClient";
 import { ref } from 'vue'
 export default class Block {
@@ -11,10 +11,11 @@ export default class Block {
     states = ref([])
     id_shop = 0;
     id_lang = 0;
+    render = ''
 
       
     constructor(element) {
-        let context = contextShop()
+        let context = usePrettyBlocksContext().psContext
         this.id_prettyblocks = element.id_prettyblocks
         this.instance_id = element.instance_id
         this.code = element.code 
@@ -22,6 +23,7 @@ export default class Block {
         this.need_reload = element.need_reload 
         this.id_shop = context.id_shop
         this.id_lang = context.id_lang
+        this.render = element.render
 
     }
 
@@ -47,7 +49,7 @@ export default class Block {
 
     getCurrentBlock()
     {
-        return useStore()
+        return usePrettyBlocksContext().currentBlock
     }
 
     async saveConfig(configState) {
@@ -86,7 +88,17 @@ export default class Block {
     {
         let key_formatted = 0
         this.subSelected = this.getCurrentBlock().subSelected
-        key_formatted = this.subSelected.split('-')[1]
+        if(typeof this.subSelected !== 'undefined'){
+            key_formatted = this.subSelected.split('-')[1]
+        } else {
+            let maxKey = 0
+            if(this.states.length == 0){
+                let keys = Object.keys(this.states).map(Number);
+                maxKey = Math.max(...keys); 
+            }
+            maxKey = maxKey + 1
+            key_formatted = this.id_prettyblocks + '-' + maxKey;
+        }
         return key_formatted
     }
 
@@ -127,6 +139,11 @@ export default class Block {
         emitter.emit('displayStates')
     }
 
+    focusOnBlock()
+    {
+        emitter.emit('focusOnBlock', this.id_prettyblocks)
+    }
+
     focusOnIframe()
     {
         emitter.emit('scrollInIframe', this.id_prettyblocks)
@@ -150,6 +167,13 @@ export default class Block {
         let block = new Block(data)
         block.loadStates(data.repeater_db)
         return block
+    }
+
+
+    async reloadBlock()
+    {
+        let block = await Block.loadById(this.id_prettyblocks);
+
     }
 
 } 

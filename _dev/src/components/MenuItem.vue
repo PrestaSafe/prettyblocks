@@ -3,14 +3,16 @@ import { ref, computed } from "vue"
 import { useLeftPanelStore } from '../store/index'
 import Icon from './Icon.vue'
 import ButtonLight from './ButtonLight.vue';
-import emitter from 'tiny-emitter/instance'
-import { contextShop, useStore } from '../store/currentBlock'
+import { contextShop, useStore, usePrettyBlocksContext } from '../store/pinia'
 import { HttpClient } from "../services/HttpClient";
+import { trans } from "../scripts/trans";
 
+let prettyBlocksContext = usePrettyBlocksContext()
 const props = defineProps({
   id: String, // unique id for each block
   title: String,
   icon: String,
+  icon_path: String,
   config: Boolean,
   element: Object,
   is_child: Boolean
@@ -20,7 +22,7 @@ let languages = security_app.available_language_ids;
 // used to get selected element in panel
 const store = useStore()
 const removeSubState = () => {
-  let context = contextShop()
+  let context = prettyBlocksContext.psContext
   const params = {
     formattedID: props.id,
     action: 'removeSubState',
@@ -32,12 +34,14 @@ const removeSubState = () => {
   HttpClient.get(ajax_urls.state, params)
   .then((data) => {
     if (props.element.need_reload) {
-      emitter.emit('reloadIframe', props.element.id_prettyblocks)
+      prettyBlocksContext.reloadIframe()
     }
-    emitter.emit('stateUpdated', props.element.id_prettyblocks)
-    emitter.emit('initStates')
-    emitter.emit('displayState', props.element)
-    emitter.emit('forceSave', props.element.id_prettyblocks)
+      prettyBlocksContext.sendPrettyBlocksEvents('reloadBlock', {
+        id_prettyblocks: props.element.id_prettyblocks
+      })
+      prettyBlocksContext.initStates()
+      prettyBlocksContext.displayMessage(trans('element_removed'))
+ 
   })
   .catch(error => console.error(error));
 
@@ -45,18 +49,19 @@ const removeSubState = () => {
 
 const removeState = async () => {
   if (confirm('Voulez vous supprimer l\'element ?')) {
-  const params = {
-    id_prettyblocks: props.element.id_prettyblocks,
-    action: 'removeState',
-    ajax: true,
-    ajax_token: security_app.ajax_token
+    const params = {
+      id_prettyblocks: props.element.id_prettyblocks,
+      action: 'removeState',
+      ajax: true,
+      ajax_token: security_app.ajax_token
+    }
+    let data = await HttpClient.get(ajax_urls.state, params)
+    // emitter.emit('initStates')
+    // emitter.emit('reloadIframe', null)
+    prettyBlocksContext.initStates()
+    prettyBlocksContext.reloadIframe()
+    prettyBlocksContext.displayMessage(trans('element_removed'))
   }
-  let data = await HttpClient.get(ajax_urls.state, params)
-  emitter.emit('initStates')
-  emitter.emit('reloadIframe', null)
-}
-
-  // emitter.emit('reloadIframe', null)
 }
 
 // when we select a element in list
@@ -66,15 +71,32 @@ function select(instance) {
 
 function setSelectedElement(notFormattedId) {
   let id = notFormattedId
-  store.$patch({
-    id_prettyblocks: parseInt(id.split('-')[0]),
-    subSelected: id
-  })
+  let prettyBlocksId = parseInt(id.split('-')[0])
+  let block = prettyBlocksContext.blocks.find(b => b.id_prettyblocks === prettyBlocksId)
+  let patchData = {
+    currentBlock: {
+      id_prettyblocks: prettyBlocksId,
+      subSelected: id
+    }
+  }
+  // set the repeater_db to the states
+  if (block && block.repeater_db) {
+    patchData.currentBlock.states = {...block.repeater_db}
+  }
+  prettyBlocksContext.$patch(patchData)
+
 }
 
-emitter.on('setSelectedElement', (notFormattedId) => setSelectedElement(notFormattedId))
 
-const isSelected = computed(() => props.id == store.subSelected)
+
+const isSelected = computed(() =>
+{
+  if(!props.is_child)
+  {
+    return props.element.id_prettyblocks == prettyBlocksContext.currentBlock.id_prettyblocks
+  }
+    return props.id == prettyBlocksContext.currentBlock.subSelected
+}) 
 
 // when we click on the eye icon to disable element
 const disabled = ref(false)
@@ -91,13 +113,14 @@ const highLightBlock = () => {
 <template>
   <div
     :class="['menu-item flex items-center px-2 py-1 mb-1 rounded-md hover:bg-gray-100 border-2 border-transparent cursor-pointer', { 'selected': isSelected }]"
-    @click="select" @mouseover="highLightBlock">
+    @click="select" @mouseover="highLightBlock"> 
     <!-- this slot is used to add extra action on the left, for example the collapse icon -->
     <slot></slot>
     <!-- icon and name of item -->
     <div :class="['flex items-center flex-grow pr-2', { disabled }]">
       <!-- {{ element }} -->
-      <Icon :name="icon" class="h-5 w-5 mr-2"></Icon>
+      <img :src="icon_path" class="h-7 mr-2" v-if="icon_path" />
+      <Icon :name="icon" v-else class="h-5 w-5 mr-2"></Icon>
       <p class="flex-grow w-0 text-ellipsis whitespace-nowrap overflow-hidden select-none">
         {{ title }}
       </p>
@@ -105,10 +128,11 @@ const highLightBlock = () => {
     <!-- extra actions : eye and drag buttons -->
     <div class="menu-item-actions w-0 overflow-hidden flex justify-end items-center">
       <!-- {{ props.is_child }} -->
+      
       <ButtonLight class="handle" v-if="props.config" icon="CogIcon" />
       <ButtonLight class="handle" v-if="props.is_child" @click.prevent="removeSubState" icon="TrashIcon" />
       <ButtonLight class="handle" v-if="!props.is_child" @click.prevent="removeState" icon="TrashIcon" />
-      <ButtonLight class="handle cursor-move" @click="openModal" icon="DocumentDuplicateIcon" />
+      <ButtonLight v-if="!props.is_child" class="handle cursor-move" @click="openModal" icon="DocumentDuplicateIcon" />
       <LanguageModal v-if="showModal" :id_prettyblocks="props.element.id_prettyblocks" :languages="languages" @closeModal="closeModal" @selectLanguages="selectLanguages" />
       <!-- <ButtonLight @click="disabled = !disabled" :icon="disabled ? 'EyeOffIcon' : 'EyeIcon'" /> -->
       <ButtonLight class="handle cursor-move" icon="ArrowsUpDownIcon" />

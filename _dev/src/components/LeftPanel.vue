@@ -8,10 +8,11 @@ import Button from "./Button.vue";
 import { HttpClient } from "../services/HttpClient";
 import Block from "../scripts/block";
 import ZoneSelect from "./form/ZoneSelect.vue";
+import { storeToRefs } from 'pinia'
 /* Demo data */
 // import { v4 as uuidv4 } from 'uuid'
 import emitter from "tiny-emitter/instance";
-import { useStore, currentZone, contextShop, storedBlocks } from "../store/currentBlock";
+import { useStore, useCurrentZone, contextShop, storedBlocks, usePrettyBlocksContext } from "../store/pinia";
 import { trans } from "../scripts/trans";
 
 import { createToaster } from "@meforma/vue-toaster";
@@ -27,82 +28,59 @@ defineComponent({
   Button,
   ZoneSelect,
 });
-const prettyblocks_version = ref(security_app.prettyblocks_version);
-const loadStateConfig = async (e) => {
-  let currentBlock = useStore();
-  // set store cuurent block name
-  await currentBlock.$patch({
-    // code: e.id,
-    need_reload: e.need_reload,
-    id_prettyblocks: e.id_prettyblocks,
-    // instance_id: e.instance_id
-  });
+ let prettyBlocksContext = usePrettyBlocksContext();
+watch(() => prettyBlocksContext.currentZone, (currentZone) => {
+  displayZoneName.value = currentZone.name
+  initStates()
+}, { deep: true })
 
-  emitter.emit("displayBlockConfig", e);
+
+const prettyblocks_version = ref(security_app.prettyblocks_version);
+/**
+ * Load block config
+ */
+const loadStateConfig = async (e) => {
+  prettyBlocksContext.$patch({
+    currentBlock: {
+      id_prettyblocks: e.id_prettyblocks,
+      instance_id: e.instance_id,
+      code: e.code,
+      subSelected: null,
+      need_reload: e.need_reload,
+      states: e.children
+    }
+  })
 };
-// emitter.on('loadStateConfig', async (id_prettyblocks) => {
-//   let block = await Block.loadById(id_prettyblocks)
-//   console.log('block', block.id_prettyblocks)
-//   loadStateConfig(block)
-//   const store = useStore()
-//      store.$patch({
-//         id_prettyblocks: block.id_prettyblocks,
-//         subSelected: block.code+'_'+block.id_prettyblocks
-//     })
-// })
+
 
 let displayZoneName = ref();
 const loadSubState = async (e) => {
-  let currentBlock = useStore();
   // set store cuurent block name
-  await currentBlock.$patch({
-    need_reload: e.need_reload,
-    id_prettyblocks: e.id_prettyblocks,
-    subSelected: e.id,
+  prettyBlocksContext.$patch({
+    currentBlock: {
+      need_reload: e.need_reload,
+      id_prettyblocks: e.id_prettyblocks,
+      subSelected: e.id,
+    }
   });
-  emitter.emit("displaySubState", e);
 };
 
-let groups = ref([]);
 
-emitter.on("initStates", () => {
-  initStates();
-});
+const { blocksFormatted } = storeToRefs(prettyBlocksContext);
+let groups = blocksFormatted; 
+
 const initStates = async () => {
-  let contextStore = contextShop();
-  let context = await contextStore.getContext();
-  let current_zone = currentZone().name;
-  let piniaStored = storedBlocks();
-  displayZoneName.value = current_zone;
-  const params = {
-    ajax: true,
-    action: "GetStates",
-    zone: current_zone,
-    ctx_id_lang: context.id_lang,
-    ctx_id_shop: context.id_shop,
-    ajax_token: security_app.ajax_token,
-  };
-  // groups.value = []
-  HttpClient.get(ajax_urls.state, params)
-    .then((data) => {
-      groups.value = Object.entries(data.blocks).map(([key, value] = block) => {
-        return value.formatted;
-      });
-
-      piniaStored.$patch({
-        blocks: data.blocks,
-      });
-    })
-    .catch((error) => console.error(error));
+  prettyBlocksContext.initStates()
+  
 };
 /**
  * Push an empty State (repeater)
  */
-const loadEmptyState = (e) => {
+const loadEmptyState = async (e) => {
   let element = {
     id_prettyblocks: e.id_prettyblocks,
   };
-  let context = contextShop();
+  let context = prettyBlocksContext.psContext
   loadSubState(element);
   const params = {
     id_prettyblocks: e.id_prettyblocks,
@@ -116,9 +94,12 @@ const loadEmptyState = (e) => {
     .then((data) => {
       initStates();
       if (e.need_reload) {
-        emitter.emit("reloadIframe", e.id_prettyblocks);
+        // emitter.emit("reloadIframe", e.id_prettyblocks);
+        prettyBlocksContext.reloadIframe()
       }
-      emitter.emit("stateUpdated", e.id_prettyblocks);
+      // get html block data
+        prettyBlocksContext.sendPrettyBlocksEvents('reloadBlock', {id_prettyblocks: e.id_prettyblocks})
+      
     })
     .catch((error) => console.error(error));
 };
@@ -249,6 +230,7 @@ const deleteAllBlocks = async () => {
       <div class="overflow-y-auto flex-grow p-2 border-b border-gray-200">
         <!-- sortable component is used to sort by drag and drop -->
         <SortableList :items="groups" group="menu-group">
+          
           <template v-slot="{ element }">
             <!-- group of element (collapsable) -->
             <MenuGroup
@@ -258,6 +240,7 @@ const deleteAllBlocks = async () => {
               :id_prettyblocks="element.id_prettyblocks"
               :title="element.title"
               :icon="element.icon"
+              :icon_path="element.icon_path"
               :config="true"
               :element="element"
               :is_parent="true"
@@ -273,6 +256,7 @@ const deleteAllBlocks = async () => {
                     :id="element.id.toString()"
                     :title="element.title"
                     :icon="element.icon"
+                    :id_prettyblocks="element.id_prettyblocks"
                     :element="element"
                     :is_child="true"
                     @click="loadSubState(element)"
@@ -285,7 +269,7 @@ const deleteAllBlocks = async () => {
         </SortableList>
         <ButtonLight
           icon="ArrowDownOnSquareStackIcon"
-          @click="emitter.emit('toggleModal', displayZoneName)"
+          @click="prettyBlocksContext.emit('toggleModal')"
           class="bg-slate-200 p-2 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo"
         >
           {{ trans("add_new_element") }}
@@ -298,7 +282,8 @@ const deleteAllBlocks = async () => {
         Made with ❤️ by
         <a class="text-indigo" href="https://www.prestasafe.com" target="_blank"
           >PrestaSafe</a
-        >
+        ><br />
+        <a href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
       </div>
     </div>
   </div>

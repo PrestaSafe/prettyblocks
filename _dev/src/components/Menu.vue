@@ -1,5 +1,5 @@
 <script>
-import emitter from 'tiny-emitter/instance';
+;
 
 export default {
   mounted() {
