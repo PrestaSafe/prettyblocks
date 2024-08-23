@@ -113,9 +113,8 @@ const state = ref({
   * Copy current zone
   */
 const copyZone = async () => {
-  let contextStore = contextShop();
-  let context = await contextStore.getContext();
-  let current_zone = currentZone().name;
+  let context = await prettyBlocksContext.psContext;
+  let current_zone = prettyBlocksContext.currentZone.name;
   const params = {
     action: "CopyZone",
     zone: current_zone,
@@ -135,7 +134,7 @@ const copyZone = async () => {
  * Paste current zone
  */
 const pasteZone = async () => {
-  let current_zone = currentZone().name;
+  let current_zone = prettyBlocksContext.currentZone.name;
   const clipboardData = await navigator.clipboard.readText();
   const data = JSON.parse(clipboardData);
   if (data.hasOwnProperty('zone')) {
@@ -149,7 +148,6 @@ const pasteZone = async () => {
 
             if (response.success) {
               toaster.show(response.message)
-              emitter.emit('reloadIframe')
               // clear clipboard if zone is pasted
              navigator.clipboard.writeText('').then(function() {
                 checkClipboardContent()
@@ -157,6 +155,8 @@ const pasteZone = async () => {
                 console.error('Could not empty clipboard: ', err);
                 checkClipboardContent()
               });
+              prettyBlocksContext.reloadIframe()
+              prettyBlocksContext.initStates()
             }
       })
       .catch(error => console.error(error));
@@ -183,9 +183,8 @@ const deleteAllBlocks = async () => {
   if(confirm('Warning: This will delete all blocks in this zone. Are you sure?') == false) {
     return;
   }
-  let current_zone = currentZone().name;
-  let contextStore = contextShop();
-  let context = await contextStore.getContext();
+  let current_zone = prettyBlocksContext.currentZone.name;  
+  let context = await prettyBlocksContext.psContext;
   const params = {
     action: "DeleteAllBlocks",
     zone: current_zone,
@@ -198,7 +197,7 @@ const deleteAllBlocks = async () => {
 
           if (response.success) {
             toaster.show(response.message)
-            emitter.emit('reloadIframe')
+            prettyBlocksContext.reloadIframe()
           }
     })
     .catch(error => console.error(error));
