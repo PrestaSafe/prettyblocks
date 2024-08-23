@@ -164,6 +164,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
           this.sendPrettyBlocksEvents('getContext')
           this.sendPrettyBlocksEvents('getZones')
           this.hideLoader()
+          this.emit('iframeLoaded')
         },100)
       })
     },
@@ -180,6 +181,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       this.pushUrl(url)
       this.showLoader()
       this.setIframe()
+      this.emit('urlChanged', url)
 
     },
     showLoader() {
@@ -214,7 +216,6 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
         if(currentSrc === false){
           currentSrc = url
         }
-        console.log('currentSrc', currentSrc)
         this.iframe.domElement.src = '';
         setTimeout(() => {
           this.iframe.domElement.src = currentSrc;

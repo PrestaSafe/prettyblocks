@@ -108,17 +108,16 @@ let currentBlock = useStore();
 const state = ref({
   name: "displayHome",
 });
+
+
 onMounted(() => {
   document.addEventListener('DOMContentLoaded', async () => {
-    const clipboardData = await navigator.clipboard.readText();
-    try {
-      const data = JSON.parse(clipboardData);
-      showCopyZone.value = data.hasOwnProperty('zone');
-    } catch (error) {
-      showCopyZone.value = false;
-    }
+    setTimeout(async () => {
+      checkClipboardContent();
+    }, 500);
   });
 })
+
 /**
   * Copy current zone
   */
@@ -213,7 +212,12 @@ const deleteAllBlocks = async () => {
     .catch(error => console.error(error));
 }
 
+prettyBlocksContext.on('iframeLoaded', () => {
+  setTimeout(() => {
+    checkClipboardContent();
+  }, 1000);
 
+});
 </script>
 
 <template>
