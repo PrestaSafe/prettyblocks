@@ -22,6 +22,8 @@ import Editor from '@tinymce/tinymce-vue'
 
 // vue quill or tinymce
 import { QuillEditor } from '@vueup/vue-quill'
+import htmlEditButton from "quill-html-edit-button";
+
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import '@vueup/vue-quill/dist/vue-quill.bubble.css';
 
@@ -53,6 +55,12 @@ defineComponent({
   Choices,
   MultiSelect
 })
+
+const VueQuillHTMLEditButton = {
+        name: 'htmlEditButton',
+        module: htmlEditButton,
+}
+  
 const formatDateFromString = (date) => {
   return new Date(date)
 }
@@ -77,7 +85,7 @@ const removeTinyNotifications = () => {
 }
 let tinymce_api_key = ref(window.security_app.tinymce_api_key)
 const toolbarOptions = [
-  ['bold', 'italic', 'underline', 'strike',{ 'color': [] }, { 'background': [] }, 'link', 'video'],        // toggled buttons
+  ['bold','italic', 'underline', 'strike',{ 'color': [] }, { 'background': [] }, 'link', 'video'],        // toggled buttons
   [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
   [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
   [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -127,7 +135,7 @@ const toolbarOptions = [
     <div v-else-if="f.type == 'editor' && (f.provider !== 'tinymce' || f.provider == 'vuequill')" class="clearfix">
       <Title :title="f.label" />
       <div class="bg-white">
-        <QuillEditor  v-model:content="f.value"  contentType="html" theme="snow" :toolbar="toolbarOptions" />
+        <QuillEditor :modules="VueQuillHTMLEditButton" v-model:content="f.value"  contentType="html" theme="snow" :toolbar="toolbarOptions" />
       </div>
     </div>
     <div class="my-4" v-if="f.type == 'select'">
