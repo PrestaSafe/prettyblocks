@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="admin-dev" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
+    <body>
+      <trans-unit id="9d2680138cc4698f7fc3440496ffaa68">
+        <source>Product description</source>
+        <target>Description produit</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c796c4b9fc65e140acb0287fec596ae0">
+        <source>Product description short</source>
+        <target>Description produit (courte)</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="9b3d7ea6e0cf99ae03d7e80054bf65c9">
+        <source>Category description</source>
+        <target>Descrtiption catégorie</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="bbfdbbf61a22c160c5498b6ae08cb356">
+        <source>CMS content</source>
+        <target>Contenu CMS</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="ecd409ff734c47f6d969f8a07c46bd40">
+        <source>TinyMCE api key</source>
+        <target>Clé API TinyMCE</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="41a1e99d97ca699537050cf66d866ab7">
+        <source>Add your TinyMCE api key (free) https://www.tiny.cloud/pricing/</source>
+        <target>Ajoutez la clé TinyMCE (gratuit) https://www.tiny.cloud/pricing/</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="b8f631891d35702b15b6695491e42131">
+        <source>Remove default blocks (if you using yours custom blocks)</source>
+        <target>Ne pas charger les blocks par défaut (si vous utilisez vos propres blocks)</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="a4f62e5ec3fb99861de9c273079c8079">
+        <source>PrettyBlocks Featured products blocks</source>
+        <target>PrettyBlocks Block produits phares</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="807b0f8a593424e4c269aec7ded14265">
+        <source>Render featured block</source>
+        <target>Affiche un block de produits phares</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="990fc90e39367377c314f1d61522ae61">
+        <source>Number of products</source>
+        <target>Nombre de produits</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="17fc44c6b4e984f0d90b7631fc2f6bd0">
+        <source>Our products</source>
+        <target>Nos produits</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="f15fd52a9a7ca56132fd9cf434ca407a">
+        <source>Display title of block</source>
+        <target>Affichez le titre du block</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c70d8845a50099b314dad108835121a4">
+        <source>Display links to category</source>
+        <target>Afficher le lien de le catégorie</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="96b8b21acca60e8b27fa6f8e1e68a844">
+        <source>PrettyBlocks FAQ Block</source>
+        <target>PrettyBlocks Block FAQ</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="4397ad77a9e8a60d85233fd8260ce74a">
+        <source>Render a simple faq</source>
+        <target>Affichez une FAQ</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="b78a3223503896721cca1303f776159b">
+        <source>Title</source>
+        <target>Titre</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="a97ea56b0e00b2379736ae60869ff66a">
+        <source>Question</source>
+        <target>Question</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="3751695c17afed4055a7a5ad5d46f6f5">
+        <source>Answer</source>
+        <target>Réponse</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="68da39b1cc2429360691fe653fa3dadf">
+        <source>PrettyBlocks Tiny Slider</source>
+        <target>PrettyBlocks Tiny Slider</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="5bcd2ee5f17f71dd9bc96fa6d5deae60">
+        <source>Render a simple and nice slider</source>
+        <target>Afficher un slider simple</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c4265549c1f4d79aea1e279149a6a084">
+        <source>File upload</source>
+        <target>Telechargement</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="44d8a9fab519f42901780f09b962a231">
+        <source>Image Alt</source>
+        <target>Alt de l'image</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="881a27661991bb48334e66e5b29c1f76">
+        <source>PrettyBlocks Render Module</source>
+        <target>PrettyBlocks Render Module</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="b5810f21921538208fc0f7fa62b00a04">
+        <source>Render any module</source>
+        <target>Afficher n'importe quel module</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="800576567a8c54d00a7db239281dbd84">
+        <source>Module to render</source>
+        <target>Module à executer</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="1bd5424698476beaeec16ee1760ede21">
+        <source>PrettyBlocks Cms content block</source>
+        <target>PrettyBlocks Block contenu CMS</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="18f4b54db0683d2cae583ed6dcbb049d">
+        <source>Render CMS description in a block</source>
+        <target>Afficher une description CMS</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="9b96e53b308b6d53db056569fbc24925">
+        <source>PrettyBlocks Product description short block</source>
+        <target>PrettyBlocks Block Description courte produit </target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c6592bf7a20b2dddfdbdf690ebe3615d">
+        <source>Render product description short in a block</source>
+        <target>Affichez une description produit courte dans le block</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="633f3b94efd1a6b895d8db58b5c34071">
+        <source>PrettyBlocks Custom Image Block</source>
+        <target>PrettyBlocks Block Image personnalisée</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="bff7f560d0fd378f29b5c6b8cb673582">
+        <source>Display custom text anywhere</source>
+        <target>Affichez un text personnalisé ou vous le souhaitez</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="6329a696863998e75f3175afccbe4c69">
+        <source>Image first banner</source>
+        <target>Image de la 1ere bannière</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="b7decd4864d4b96e97d72384e3f625e0">
+        <source>Choose alignment</source>
+        <target>Choisir l'alignement</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="e46cdd382c8230a9cfb967f6550ab2a8">
+        <source>PrettyBlocks Category description block</source>
+        <target>PrettyBlocks Block description catégorie</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="76b4a16532130744b5a6e0b8a13d866b">
+        <source>Render category description in a block</source>
+        <target>Afficher une description catégorie dans un block</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="1bba9ccf760b98b3cc12365c109186cb">
+        <source>PrettyBlocks Product description block</source>
+        <target>PrettyBlocks Block description produit</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="70a42f4cbe0eb3981771d1420d33f948">
+        <source>Render product description in a block</source>
+        <target>Afficher une description produit dans un block</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="d4822a72551bd65321d998a9c4e912b7">
+        <source>PrettyBlocks custom text</source>
+        <target>PrettyBlocks Custom Text</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c69746ff53c2e8723e31b2284f3248af">
+        <source>Render a simple custom text block</source>
+        <target>Affiche un texte personnalisé</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="f15c1cae7882448b3fb0404682e17e61">
+        <source>Content</source>
+        <target>Contenu</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="137b69194d52a1a18254f6be395dc6cc">
+        <source>PrettyBlocks Render Hook</source>
+        <target>PrettyBlocks Render Hook</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="81b27a2747840fc4178a46d576af51ba">
+        <source>Render any hook</source>
+        <target>Executer n'importe quel hook</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="9587693661b7bcc077b8a917d1c01202">
+        <source>Hook to render</source>
+        <target>Hook à éxecuter</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="87553edfc25c14e02f2e8f6576c1bb99">
+        <source>PrettyBlocks Title blocks</source>
+        <target>PrettyBlocks Title</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="b5c885ca1d8eeef22f25b71aeb7ae633">
+        <source>Render title block</source>
+        <target>Block Title</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="f916b8ffe4647c2bc6f7896e9e8a6f7c">
+        <source>Choose a tag</source>
+        <target>Choisir un tag</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="273324ccef0b112ea366981970f67155">
+        <source>Your title</source>
+        <target>Votre titre</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="747d953e88ddd43ec1e1568a616e0dbb">
+        <source>You can use HTML tags to customize your title.</source>
+        <target>You pouvez utilisez des tags HTML</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="4f9d283a9f474a89af2afc42817de628">
+        <source>Add classes to your title</source>
+        <target>Ajoutez une classe sur le titre</target>
+        <note>Line: </note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
