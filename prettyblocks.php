@@ -271,21 +271,18 @@ class PrettyBlocks extends Module implements WidgetInterface
     /**
      * hook display BackOfficeHeader
      */
-public function hookdisplayBackOfficeHeader($params)
-{
-    if (version_compare(_PS_VERSION_, '8.0.0', '<')) {
-       
-        $route = (new Link())->getAdminLink('AdminThemeManagerControllerRouteGenerator');
-    Media::addJsDef([
-        'prettyblocks_route_generator' => $route,
-        'prettyblocks_logo' => HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png'),
-        ]);
+    public function hookdisplayBackOfficeHeader($params)
+    {
+        if (version_compare(_PS_VERSION_, '8.0.0', '<')) {
+            $route = (new Link())->getAdminLink('AdminThemeManagerControllerRouteGenerator');
+            Media::addJsDef([
+                'prettyblocks_route_generator' => $route,
+                'prettyblocks_logo' => HelperBuilder::pathFormattedToUrl('$/modules/prettyblocks/logo.png'),
+            ]);
 
-        $this->context->controller->addJS($this->_path . 'views/js/back.js');
+            $this->context->controller->addJS($this->_path . 'views/js/back.js');
+        }
     }
-
-
-}
 
     public function install()
     {
