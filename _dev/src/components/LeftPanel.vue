@@ -20,6 +20,8 @@ const toaster = createToaster({
   position: "top",
 });
 
+const prettyblocks_env = ref(window.prettyblocks_env.PRETTYBLOCKS_REMOVE_ADS);
+
 defineComponent({
   SortableList,
   MenuGroup,
@@ -109,73 +111,70 @@ const state = ref({
   name: "displayHome",
 });
 
+
+onMounted(() => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    setTimeout(async () => {
+      checkClipboardContent();
+    }, 500);
+  });
+})
+
 /**
   * Copy current zone
   */
 const copyZone = async () => {
-  let contextStore = contextShop();
-  let context = await contextStore.getContext();
-  let current_zone = currentZone().name;
+  let context = await prettyBlocksContext.psContext;
+  let current_zone = prettyBlocksContext.currentZone.name;
   const params = {
     action: "CopyZone",
     zone: current_zone,
     ctx_id_lang: context.id_lang,
     ctx_id_shop: context.id_shop,
   };
-  navigator.clipboard.writeText(JSON.stringify(params)).then(function() {
-    console.log('Copying to clipboard was successful!' );
-   
-  }, function(err) {
-    console.error('Could not copy text: ', err);
-  });
-  checkClipboardContent()
+  localStorage.setItem('prettyblocks_clipboard', JSON.stringify(params));
+  checkClipboardContent();
 }
 
-/**
- * Paste current zone
- */
 const pasteZone = async () => {
-  let current_zone = currentZone().name;
-  const clipboardData = await navigator.clipboard.readText();
-  const data = JSON.parse(clipboardData);
-  if (data.hasOwnProperty('zone')) {
-    let params = {
-      ...data,
-      zone_name_to_paste: current_zone,
-      ajax_token: security_app.ajax_token,
-      ajax: true,
-    };
-    HttpClient.post(ajax_urls.state, params).then((response) => {
-
-            if (response.success) {
-              toaster.show(response.message)
-              emitter.emit('reloadIframe')
-              // clear clipboard if zone is pasted
-             navigator.clipboard.writeText('').then(function() {
-                checkClipboardContent()
-              }, function(err) {
-                console.error('Could not empty clipboard: ', err);
-                checkClipboardContent()
-              });
-            }
-      })
-      .catch(error => console.error(error));
+  let current_zone = prettyBlocksContext.currentZone.name;
+  const storedData = localStorage.getItem('prettyblocks_clipboard');
+  if (storedData) {
+    const data = JSON.parse(storedData);
+    if (data.hasOwnProperty('zone')) {
+      let params = {
+        ...data,
+        zone_name_to_paste: current_zone,
+        ajax_token: security_app.ajax_token,
+        ajax: true,
+      };
+      HttpClient.post(ajax_urls.state, params).then((response) => {
+        if (response.success) {
+          toaster.show(response.message);
+          localStorage.removeItem('prettyblocks_clipboard');
+          checkClipboardContent();
+          prettyBlocksContext.reloadIframe();
+          prettyBlocksContext.initStates();
+        }
+      }).catch(error => console.error(error));
     }
-
+  }
 }
 
 let showCopyZone = ref(false);
 const checkClipboardContent = async () => {
-    try {
-        const clipboardData = await navigator.clipboard.readText();
-        const data = JSON.parse(clipboardData);
-        showCopyZone.value = data.hasOwnProperty('zone');
-        window.blur();
-    } catch (error) {
-        showCopyZone.value = false;
+  try {
+    const storedData = localStorage.getItem('prettyblocks_clipboard');
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      showCopyZone.value = data.hasOwnProperty('zone');
+    } else {
+      showCopyZone.value = false;
     }
+  } catch (error) {
+    showCopyZone.value = false;
+  }
 };
-
 /**
  * Delete all blocks in current zone
  */
@@ -183,9 +182,8 @@ const deleteAllBlocks = async () => {
   if(confirm('Warning: This will delete all blocks in this zone. Are you sure?') == false) {
     return;
   }
-  let current_zone = currentZone().name;
-  let contextStore = contextShop();
-  let context = await contextStore.getContext();
+  let current_zone = prettyBlocksContext.currentZone.name;  
+  let context = await prettyBlocksContext.psContext;
   const params = {
     action: "DeleteAllBlocks",
     zone: current_zone,
@@ -198,13 +196,18 @@ const deleteAllBlocks = async () => {
 
           if (response.success) {
             toaster.show(response.message)
-            emitter.emit('reloadIframe')
+            prettyBlocksContext.reloadIframe()
           }
     })
     .catch(error => console.error(error));
 }
 
+prettyBlocksContext.on('iframeLoaded', () => {
+  setTimeout(() => {
+    checkClipboardContent();
+  }, 1000);
 
+});
 </script>
 
 <template>
@@ -215,7 +218,7 @@ const deleteAllBlocks = async () => {
           <div>
             <ZoneSelect v-model="state" />
           </div>
-          <div class="pl-2 mt-[6px]" v-if="!showCopyZone">
+          <div class="pl-2 mt-[6px]">
             <ButtonLight type="secondary" icon="TrashIcon" @click="deleteAllBlocks" size="6"/>
           </div>
           <div class="mt-[6px]">
@@ -283,7 +286,7 @@ const deleteAllBlocks = async () => {
         <a class="text-indigo" href="https://www.prestasafe.com" target="_blank"
           >PrestaSafe</a
         ><br />
-        <a href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
+        <a v-if="!prettyblocks_env" href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
       </div>
     </div>
   </div>

@@ -871,6 +871,7 @@ class PrettyBlocksModel extends ObjectModel
         $contextPS = Context::getContext();
         $id_lang = ($id_lang !== null) ? (int) $id_lang : $contextPS->language->id;
         $id_shop = ($id_shop !== null) ? (int) $id_shop : $contextPS->shop->id;
+        $maxPosition = self::getMaxPositionByZone($zone_name, $id_lang, $id_shop);
 
         $model = new PrettyBlocksModel(null, $id_lang, $id_shop);
         $model->zone_name = $zone_name;
@@ -880,6 +881,7 @@ class PrettyBlocksModel extends ObjectModel
         $model->state = json_encode($array, true);
         $model->instance_id = uniqid();
         $model->id_shop = $id_shop;
+        $model->position = $maxPosition + 1;
         $model->save();
 
         $block = $model->mergeStateWithFields();
@@ -897,6 +899,28 @@ class PrettyBlocksModel extends ObjectModel
         }
 
         return $block;
+    }
+
+    /**
+     * getMaxPositionByZone
+     * get the max position of a zone
+     *
+     * @param $zone_name string
+     * @param $id_lang int
+     * @param $id_shop int
+     *
+     * @return int
+     */
+    public static function getMaxPositionByZone($zone_name, $id_lang, $id_shop)
+    {
+        $query = new DbQuery();
+        $query->select('MAX(position)')
+            ->from('prettyblocks')
+            ->where('`zone_name` = \'' . $zone_name . '\'')
+            ->where('`id_lang` = ' . (int) $id_lang)
+            ->where('`id_shop` = ' . (int) $id_shop);
+
+        return (int) DB::getInstance()->getValue($query);
     }
 
     /**

@@ -65,7 +65,7 @@ const getBlocksAvailable = () => {
     .catch(error => console.error(error));
 
 }
-
+const prettyblocks_env = ref(window.prettyblocks_env.PRETTYBLOCKS_REMOVE_ADS);
 </script>
 
 <template>
@@ -86,7 +86,7 @@ const getBlocksAvailable = () => {
       </div>
       <!-- Footer -->
       <div class="flex items-center justify-between p-5 border-t border-solid border-slate-200">
-        <a href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
+        <a v-if="!prettyblocks_env" href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
         <button
           class="text-indigo bg-transparent border border-solid border-indigo hover:bg-indigo hover:text-white active:bg-indigo font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
           type="button" v-on:click="toggleModal()">
