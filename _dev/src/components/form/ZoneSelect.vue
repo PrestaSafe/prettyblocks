@@ -89,7 +89,13 @@ function onInput(zone) {
         class="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo focus:border-indigo sm:text-sm">
         <span class="flex items-center break-all">
           <!-- display the name of selected element -->
-          <span class="block line-clamp-1 truncate max-w-48"> {{ trans('current_zone') }}: {{ props.modelValue.alias !== '' ? props.modelValue.alias : props.modelValue.name }}</span>
+          <!-- {{ props.modelValue }} -->
+          <span class="block line-clamp-1 truncate max-w-48" v-if="typeof props.modelValue.alias === 'undefined'">
+            {{ trans('search_zone') }}
+          </span>
+          <span class="block line-clamp-1 truncate max-w-48" v-else>
+            {{ props.modelValue.alias || props.modelValue.name }}
+          </span>
         </span>
         <span class="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
           <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />

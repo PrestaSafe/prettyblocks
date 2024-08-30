@@ -247,6 +247,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'vitedev' => filter_var(getenv('PRETTYBLOCKS_VITE_DEV'), FILTER_VALIDATE_BOOLEAN) ?? false,
                 'PRETTYBLOCKS_VITE_HOST' => getenv('PRETTYBLOCKS_VITE_HOST') ? getenv('PRETTYBLOCKS_VITE_HOST') : 'http://localhost:3002/',
                 'iframe_sandbox' => getenv('PRETTYBLOCKS_IFRAME_SANDBOX') ? getenv('PRETTYBLOCKS_IFRAME_SANDBOX') : 'allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-top-navigation allow-pointer-lock allow-popups-to-escape-sandbox allow-modals allow-top-navigation-by-user-activation',
+                'PRETTYBLOCKS_REMOVE_ADS' => \filter_var(\Configuration::get('PRETTYBLOCKS_REMOVE_ADS'), FILTER_VALIDATE_BOOLEAN) ? true : \filter_var(getenv('PRETTYBLOCKS_REMOVE_ADS'), FILTER_VALIDATE_BOOLEAN) ?? false,
             ],
 
             'ajax_urls' => [
@@ -302,6 +303,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'error_console' => $translator->trans('An error occurred while processing your request', [], 'Modules.Prettyblocks.Admin'),
                 'duplicate_state_error' => $translator->trans('An error occurred while duplicating the element', [], 'Modules.Prettyblocks.Admin'),
                 'get_pro' => $translator->trans('Get Pro Blocks', [], 'Modules.Prettyblocks.Admin'),
+                'search_zone' => $translator->trans('Search zone', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),

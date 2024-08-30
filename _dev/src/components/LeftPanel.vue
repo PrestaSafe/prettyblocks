@@ -20,6 +20,8 @@ const toaster = createToaster({
   position: "top",
 });
 
+const prettyblocks_env = ref(window.prettyblocks_env.PRETTYBLOCKS_REMOVE_ADS);
+
 defineComponent({
   SortableList,
   MenuGroup,
@@ -216,7 +218,7 @@ prettyBlocksContext.on('iframeLoaded', () => {
           <div>
             <ZoneSelect v-model="state" />
           </div>
-          <div class="pl-2 mt-[6px]" v-if="!showCopyZone">
+          <div class="pl-2 mt-[6px]">
             <ButtonLight type="secondary" icon="TrashIcon" @click="deleteAllBlocks" size="6"/>
           </div>
           <div class="mt-[6px]">
@@ -284,7 +286,7 @@ prettyBlocksContext.on('iframeLoaded', () => {
         <a class="text-indigo" href="https://www.prestasafe.com" target="_blank"
           >PrestaSafe</a
         ><br />
-        <a href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
+        <a v-if="!prettyblocks_env" href="https://prettyblocks.io/pro" class="text-red-500" target="_blank">{{ trans('get_pro') }}</a>
       </div>
     </div>
   </div>
