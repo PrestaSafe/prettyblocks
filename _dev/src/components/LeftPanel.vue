@@ -130,61 +130,49 @@ const copyZone = async () => {
     ctx_id_lang: context.id_lang,
     ctx_id_shop: context.id_shop,
   };
-  navigator.clipboard.writeText(JSON.stringify(params)).then(function() {
-    console.log('Copying to clipboard was successful!' );
-   
-  }, function(err) {
-    console.error('Could not copy text: ', err);
-  });
-  checkClipboardContent()
+  localStorage.setItem('prettyblocks_clipboard', JSON.stringify(params));
+  checkClipboardContent();
 }
 
-/**
- * Paste current zone
- */
 const pasteZone = async () => {
   let current_zone = prettyBlocksContext.currentZone.name;
-  const clipboardData = await navigator.clipboard.readText();
-  const data = JSON.parse(clipboardData);
-  if (data.hasOwnProperty('zone')) {
-    let params = {
-      ...data,
-      zone_name_to_paste: current_zone,
-      ajax_token: security_app.ajax_token,
-      ajax: true,
-    };
-    HttpClient.post(ajax_urls.state, params).then((response) => {
-
-            if (response.success) {
-              toaster.show(response.message)
-              // clear clipboard if zone is pasted
-             navigator.clipboard.writeText('').then(function() {
-                checkClipboardContent()
-              }, function(err) {
-                console.error('Could not empty clipboard: ', err);
-                checkClipboardContent()
-              });
-              prettyBlocksContext.reloadIframe()
-              prettyBlocksContext.initStates()
-            }
-      })
-      .catch(error => console.error(error));
+  const storedData = localStorage.getItem('prettyblocks_clipboard');
+  if (storedData) {
+    const data = JSON.parse(storedData);
+    if (data.hasOwnProperty('zone')) {
+      let params = {
+        ...data,
+        zone_name_to_paste: current_zone,
+        ajax_token: security_app.ajax_token,
+        ajax: true,
+      };
+      HttpClient.post(ajax_urls.state, params).then((response) => {
+        if (response.success) {
+          toaster.show(response.message);
+          localStorage.removeItem('prettyblocks_clipboard');
+          checkClipboardContent();
+          prettyBlocksContext.reloadIframe();
+          prettyBlocksContext.initStates();
+        }
+      }).catch(error => console.error(error));
     }
-
+  }
 }
 
 let showCopyZone = ref(false);
 const checkClipboardContent = async () => {
-    try {
-        const clipboardData = await navigator.clipboard.readText();
-        const data = JSON.parse(clipboardData);
-        showCopyZone.value = data.hasOwnProperty('zone');
-        window.blur();
-    } catch (error) {
-        showCopyZone.value = false;
+  try {
+    const storedData = localStorage.getItem('prettyblocks_clipboard');
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      showCopyZone.value = data.hasOwnProperty('zone');
+    } else {
+      showCopyZone.value = false;
     }
+  } catch (error) {
+    showCopyZone.value = false;
+  }
 };
-
 /**
  * Delete all blocks in current zone
  */
