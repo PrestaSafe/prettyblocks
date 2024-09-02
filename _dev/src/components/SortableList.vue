@@ -2,8 +2,11 @@
 import draggable from "vuedraggable";
 import { HttpClient } from "../services/HttpClient";
 import emitter from "tiny-emitter/instance";
-import { contextShop, useStore } from "../store/currentBlock";
+import { contextShop, useStore, usePrettyBlocksContext } from "../store/pinia";
 import { createToaster } from "@meforma/vue-toaster";
+import { trans } from "../scripts/trans";
+
+const prettyBlocksContext = usePrettyBlocksContext()
 
 const toaster = createToaster({
   position: "top",
@@ -24,9 +27,11 @@ defineProps({
  */
 const onStart = async (evt, group) => {
   let id_prettyblocks = group[evt.oldDraggableIndex].id_prettyblocks;
-  let currentBlock = useStore();
-  await currentBlock.$patch({
-    id_prettyblocks: id_prettyblocks,
+
+  await prettyBlocksContext.$patch({
+    currentBlock: {
+      id_prettyblocks: id_prettyblocks,
+    }
   });
   // emitter.emit('displayState', id_prettyblocks)
 };
@@ -35,7 +40,7 @@ const onStart = async (evt, group) => {
  * Save positions in DB after
  */
 const onEnd = async (event, items) => {
-  let context = contextShop();
+  let context = prettyBlocksContext.psContext
   if (items[0].is_child) {
     const params = {
       items: items,
@@ -46,11 +51,12 @@ const onEnd = async (event, items) => {
       ajax_token: security_app.ajax_token,
     };
     await HttpClient.post(ajax_urls.state, params);
-    emitter.emit("initStates");
-    emitter.emit("displayBlockConfig", items[0]);
-    emitter.emit("stateUpdated", items[0].id_prettyblocks);
+    // emitter.emit("initStates");
+    await prettyBlocksContext.initStates()
     if (items[0].need_reload) {
-      emitter.emit("reloadIframe", items[0].id_prettyblocks);
+      prettyBlocksContext.reloadIframe()
+    }else{
+      prettyBlocksContext.sendPrettyBlocksEvents('reloadBlock', {id_prettyblocks: items[0].id_prettyblocks})
     }
   }
 
@@ -62,14 +68,10 @@ const onEnd = async (event, items) => {
       ajax_token: security_app.ajax_token,
     };
     await HttpClient.post(ajax_urls.state, params);
-    emitter.emit("initStates");
-    console.log('items 0', items[0].id_prettyblocks)
-    emitter.emit("reloadIframe", items[0].id_prettyblocks);
+    prettyBlocksContext.reloadIframe()
   }
 
-  toaster.show("Position modifiée avec succèss", {
-    position: "top",
-  });
+  prettyBlocksContext.displayMessage(trans('position_updated'));
 };
 </script>
 

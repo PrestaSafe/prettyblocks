@@ -3,6 +3,7 @@ build/
 vendor/
 node_modules/
 **/node_modules
+**node_modules**
 .vscode/
 .idea/
 views/images/*
@@ -11,3 +12,5 @@ views/images/*
 test.php
 .php-cs-fixer.cache
 _dev/yarn.lock
+.env
+!views/js/build

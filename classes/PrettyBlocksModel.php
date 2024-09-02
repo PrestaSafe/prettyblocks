@@ -236,6 +236,34 @@ class PrettyBlocksModel extends ObjectModel
         $block['id_lang'] = $this->id_lang;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
+
+        $paddings = (isset($block['settings']['default']['paddings'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['paddings'], 'paddings')['classes'] : '';
+        $margins = (isset($block['settings']['default']['margins'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['margins'], 'margins')['classes'] : '';
+
+        $paddingStyles = (isset($block['settings']['default']['paddings'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['paddings'], 'paddings')['styles'] : '';
+        $marginStyles = (isset($block['settings']['default']['margins'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['margins'], 'margins')['styles'] : '';
+        // if($block['id_prettyblocks'] == 51) {
+        //     dump(HelperBuilder::generateBlocksSpacings($block['settings']['default']['paddings'], 'paddings'));
+        //     dump(HelperBuilder::generateBlocksSpacings($block['settings']['default']['margins'], 'margins'));
+        //     die();
+        // }
+
+        $block['classes'] = '';
+        if ($paddings !== '') {
+            $block['classes'] .= $paddings;
+        }
+        if ($margins !== '') {
+            $block['classes'] .= ' ' . $margins;
+        }
+
+        $block['styles'] = '';
+        if ($paddingStyles !== '') {
+            $block['styles'] .= $paddingStyles;
+        }
+        if ($marginStyles !== '') {
+            $block['styles'] .= ' ' . $marginStyles;
+        }
+
         $block['settings_formatted'] = $this->_formatConfig($block, 'back');
 
         $block['repeater_db'] = $this->_formatRepeaterDb($states, $repeaterDefault);
@@ -251,10 +279,15 @@ class PrettyBlocksModel extends ObjectModel
             'settings' => $block['settings'],
         ], null, true);
         $res = [];
+
         if (is_array($extraContent)) {
             foreach ($extraContent as $moduleName => $additionnalFormFields) {
                 $res = $additionnalFormFields;
             }
+        }
+        if (isset($res['config'])) {
+            HelperBuilder::mergeArraysRecursively($block['config'], $res['config']);
+            $block['settings_formatted'] = $this->_formatConfig($block, 'back');
         }
 
         $block['extra'] = $res;
@@ -272,6 +305,7 @@ class PrettyBlocksModel extends ObjectModel
         foreach ($this->configFields as $name => $field) {
             $formatted[$name] = (new FieldCore($field))->compile();
         }
+
         // is settings_formatted section block
         $formatted['templates'] = $this->_getBlockTemplate($block);
         $formatted['templateSelected'] = $this->_getTemplateSelected($block);
@@ -584,9 +618,63 @@ class PrettyBlocksModel extends ObjectModel
     private function _getDefaultParams($block)
     {
         $options = [
-            'container' => true,
+            'container' => false,
+            'force_full_width' => false,
             'load_ajax' => false,
+            'is_cached' => false,
             'bg_color' => '',
+            'paddings' => [
+                'desktop' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'tablet' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'mobile' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+            ],
+            'margins' => [
+                'desktop' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'tablet' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+                'mobile' => [
+                    'auto' => 0,
+                    'top' => null,
+                    'right' => null,
+                    'bottom' => null,
+                    'left' => null,
+                    'use_custom_data' => false,
+                ],
+            ],
         ];
         $defaultParams = $this->getDefaultParams();
         if (!$defaultParams) {
@@ -701,6 +789,7 @@ class PrettyBlocksModel extends ObjectModel
     private static function formatBlock($block)
     {
         $formatted = [];
+
         $id = (isset($block['id_prettyblocks'])) ? '-' . $block['id_prettyblocks'] : '';
         $formatted['id'] = $block['code'] . $id;
         $formatted['id_prettyblocks'] = $block['id_prettyblocks'] ?? '';
@@ -782,6 +871,7 @@ class PrettyBlocksModel extends ObjectModel
         $contextPS = Context::getContext();
         $id_lang = ($id_lang !== null) ? (int) $id_lang : $contextPS->language->id;
         $id_shop = ($id_shop !== null) ? (int) $id_shop : $contextPS->shop->id;
+        $maxPosition = self::getMaxPositionByZone($zone_name, $id_lang, $id_shop);
 
         $model = new PrettyBlocksModel(null, $id_lang, $id_shop);
         $model->zone_name = $zone_name;
@@ -791,6 +881,7 @@ class PrettyBlocksModel extends ObjectModel
         $model->state = json_encode($array, true);
         $model->instance_id = uniqid();
         $model->id_shop = $id_shop;
+        $model->position = $maxPosition + 1;
         $model->save();
 
         $block = $model->mergeStateWithFields();
@@ -808,6 +899,28 @@ class PrettyBlocksModel extends ObjectModel
         }
 
         return $block;
+    }
+
+    /**
+     * getMaxPositionByZone
+     * get the max position of a zone
+     *
+     * @param $zone_name string
+     * @param $id_lang int
+     * @param $id_shop int
+     *
+     * @return int
+     */
+    public static function getMaxPositionByZone($zone_name, $id_lang, $id_shop)
+    {
+        $query = new DbQuery();
+        $query->select('MAX(position)')
+            ->from('prettyblocks')
+            ->where('`zone_name` = \'' . $zone_name . '\'')
+            ->where('`id_lang` = ' . (int) $id_lang)
+            ->where('`id_shop` = ' . (int) $id_shop);
+
+        return (int) DB::getInstance()->getValue($query);
     }
 
     /**
@@ -921,13 +1034,18 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function getThemeSettings($with_tabs = true, $context = 'front', $id_shop = null)
     {
-        $context = Context::getContext();
-        $id_shop = ($id_shop !== null) ? (int) $id_shop : $context->shop->id;
+        $contextPS = Context::getContext();
+        $id_shop = ($id_shop !== null) ? (int) $id_shop : $contextPS->shop->id;
         $theme_settings = HelperBuilder::hookToArray('ActionRegisterThemeSettings');
-        $settingsDB = PrettyBlocksSettingsModel::getSettings($context->shop->theme_name, $id_shop);
+        $settingsDB = PrettyBlocksSettingsModel::getSettings($contextPS->shop->theme_name, $id_shop);
         $res = [];
         $no_tabs = [];
+
         foreach ($theme_settings as $key => $settings) {
+            if (isset($settings['private']) && $settings['private'] === true && $context == 'front') {
+                continue;
+            }
+
             $tab = $settings['tab'] ?? 'general';
             $fieldCore = (new FieldCore($settings));
             if (isset($settingsDB[$key]['value'])) {

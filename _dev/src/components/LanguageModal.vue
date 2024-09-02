@@ -14,9 +14,10 @@
 
 <script>
 import Checkbox from '../components/form/Checkbox.vue';
-import { contextShop } from '../store/currentBlock'
+import { usePrettyBlocksContext } from '../store/pinia'
 import { HttpClient } from '../services/HttpClient';
 import { createToaster } from "@meforma/vue-toaster";
+import { trans } from '../scripts/trans'
 const toaster = createToaster({
   position: "top",
 });
@@ -45,7 +46,8 @@ export default {
           .filter((key) => this.selectedLanguages[key])
           .map(Number);
 
-      const {id_shop} = contextShop();
+      const prettyBlocksContext = usePrettyBlocksContext();
+      const id_shop = prettyBlocksContext.psContext.id_shop;
 
       const params = {
         action: 'duplicateState',
@@ -58,11 +60,13 @@ export default {
 
       HttpClient.get(ajax_urls.state, params)
           .then((response) => {
-            toaster.show(response.message);
+            prettyBlocksContext.displayMessage(response.message);
+            prettyBlocksContext.reloadIframe()
+            prettyBlocksContext.initStates();
           })
           .catch((error) => {
-            console.error('Erreur lors de la requête :', error);
-            toaster.error('Une erreur s\'est produite lors de la duplication.');
+            console.error(trans('error_console'), error);
+            prettyBlocksContext.displayError(trans('duplicate_state_error'));
           });
 
       this.closeModal();

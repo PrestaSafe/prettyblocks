@@ -22,8 +22,8 @@ class TplSettings
     public static function getSettings($key, $default = '')
     {
         $smarty_vars = self::getVars();
-        $result = (isset($smarty_vars['prettyblocks']['theme_settings'][$key]))
-            ? $smarty_vars['prettyblocks']['theme_settings'][$key]
+        $result = (isset($smarty_vars[$key]))
+            ? $smarty_vars[$key]
             : $default;
 
         return $result;
@@ -33,9 +33,7 @@ class TplSettings
     {
         $cache_id = 'PrettyBlocks::getVars';
         if (!Cache::isStored($cache_id)) {
-            // $smarty_vars = Context::getContext()->smarty->getTemplateVars();
-            $smarty_vars = Hook::exec('ActionFrontControllerSetVariables', [], null, true);
-            // dump($smarty_vars);
+            $smarty_vars = PrettyBlocksModel::getThemeSettings(false);
             Cache::store($cache_id, $smarty_vars);
         }
 

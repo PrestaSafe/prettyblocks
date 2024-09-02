@@ -4,7 +4,7 @@ import Collapsable from './Collapsable.vue';
 import MenuItem from './MenuItem.vue';
 import ButtonLight from './ButtonLight.vue';
 import { defineEmits } from 'vue'
-import emitter from 'tiny-emitter/instance'
+
 import { trans } from '../scripts/trans'
 
 defineProps({
@@ -12,6 +12,7 @@ defineProps({
   id_prettyblocks: Number,
   title: String,
   icon: String,
+  icon_path: String,
   config: Boolean,
   element: Object,
   is_parent: Boolean,
@@ -34,7 +35,7 @@ const emit = defineEmits(['pushEmptyState', 'changeState'])
     <template v-slot:header="props">
       <!-- has the collapse button is inside the menu item, need to pass by a slot -->
       <MenuItem @click="changeState(element)" class="w-full" :id="id" :element="element" :config="config" :title="title"
-        :icon="icon">
+        :icon="icon" :icon_path="icon_path">
       <div class="cursor-pointer mr-2" @click="props.collapse" v-if="element.can_repeat">
         <Icon name="ChevronRightIcon" v-if="props.isCollapsed" />
         <Icon name="ChevronDownIcon" v-else />

@@ -3,11 +3,11 @@ import Accordion from './Accordion.vue'
 import { HttpClient } from '../services/HttpClient'
 import FieldRepeater from './FieldRepeater.vue'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
-import emitter from 'tiny-emitter/instance'
+
 import { createToaster } from "@meforma/vue-toaster";
 
-import { contextShop } from "../store/currentBlock";
-
+import { usePrettyBlocksContext } from "../store/pinia";
+const prettyBlocksContext = usePrettyBlocksContext()
 const toaster = createToaster({
   position: 'top',
 });
@@ -24,27 +24,21 @@ onUnmounted(() => {
 })
 onMounted(()=> {
    getSettings()
-  // console.log('mounted PanelSettings')
 })
-emitter.on('globalSave', () => {
-  if (canSave.value) {
-    saveThemeSettings()
-  }
-})
+
 
 const canSave = ref(false)
 const settings = ref(false)
 
-const getInputs = () => {
-  emitter.on('initStates', async () => {
-   getSettings()
-  })
-
-}
+prettyBlocksContext.on('saveSettings', () => {
+  if(canSave.value){
+    saveThemeSettings()
+  }
+})
 
 const getSettings = async () => {
-   let contextStore = contextShop();
-    let context = await contextStore.getContext();
+   
+    let context = await prettyBlocksContext.getContext();
     const params = {
       ajax: true,
       ctx_id_lang: context.id_lang,
@@ -60,17 +54,14 @@ const getSettings = async () => {
 }
 
 
-getInputs()
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 const saveThemeSettings = async () => {
-  let contextStore = contextShop();
-  let context = await contextStore.getContext();
-  // console.log('save context', context)
-  // console.log('urls', ajax_urls.state)
+ 
+  let context = await prettyBlocksContext.getContext();
   const params = {
     action: 'updateThemeSettings',
     ajax: true,
@@ -84,8 +75,8 @@ HttpClient.post(ajax_urls.state, params)
   .then((data) => {
     // console.log('data', data)
     if (data.message) {
-      toaster.show(data.message)
-      emitter.emit('reloadIframe')
+     prettyBlocksContext.displayMessage(data.message)
+      prettyBlocksContext.reloadIframe()
     }
   })
   .catch(error => console.error(error));
@@ -93,7 +84,7 @@ HttpClient.post(ajax_urls.state, params)
 </script>
 
 <template>
-  <div>
+  <div @keyup.enter="saveThemeSettings()">
     <Accordion v-for="(form, tab) in settings" :key="form" :title="capitalizeFirstLetter(tab)">
       <div v-for="f in form" :key="f">
         <FieldRepeater @updateUpload="saveThemeSettings()" :field="f" />

@@ -26,7 +26,9 @@ use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
 class FieldCore
 {
     public $type;
+    public $provider;
     public $label;
+    public $legend;
     public $path;
     public $collection;
     public $selector;
@@ -38,6 +40,7 @@ class FieldCore
     public $allow_html = false;
     public $id_lang = 0;
     public $id_shop = 0;
+    public $options = [];
 
     /**
      * __construct
@@ -119,6 +122,12 @@ class FieldCore
         if ($this->type) {
             $data['type'] = $this->type;
         }
+        if ($this->legend) {
+            $data['legend'] = $this->legend;
+        }
+        if ($this->provider) {
+            $data['provider'] = $this->provider;
+        }
         if ($this->label) {
             $data['label'] = $this->label;
         }
@@ -139,6 +148,9 @@ class FieldCore
         }
         if ($this->force_default_value) {
             $data['force_default_value'] = $this->force_default_value;
+        }
+        if ($this->options) {
+            $data['options'] = $this->options;
         }
 
         $data['value'] = $this->format();
@@ -192,7 +204,6 @@ class FieldCore
     public function format()
     {
         $method = 'formatField' . ucwords(str_replace('_', '', $this->type));
-
         if (method_exists($this, $method)) {
             return $this->{$method}();
         }
@@ -222,6 +233,59 @@ class FieldCore
         |--------------------------------------------------------------------------
         |
     */
+
+    /**
+     * formatFieldSlider
+     * use for display field type slider in PrettyBlocks
+     *
+     * @return int
+     */
+    public function formatFieldSlider()
+    {
+        // if value exists in DB and new_value is empty
+        if (!is_null($this->value) && is_null($this->new_value)) {
+            return (int) $this->value;
+        }
+        // if value doesn't exists in DB and new value is set
+        if ($this->force_default_value && is_null($this->new_value)) {
+            return (int) $this->default;
+        }
+
+        return (int) $this->new_value;
+    }
+
+    /**
+     * formatFieldDatePicker
+     *
+     * @return DateTime
+     */
+    public function formatFieldDatepicker()
+    {
+        $format = 'Y-m-d';
+        // if(isset($this->options['dateFormat'])) {
+        //     $format = $this->options['dateFormat'];
+        // }
+        // if value exists in DB and new_value is empty
+        if (!is_null($this->value) && is_null($this->new_value)) {
+            $date = \DateTime::createFromFormat($format, $this->value);
+
+            return $date ? $date->format($format) : date($format);
+        }
+        // if value doesn't exists in DB and new value is set
+        if ($this->force_default_value && is_null($this->new_value)) {
+            $date = \DateTime::createFromFormat($format, $this->default);
+
+            return $date ? $date->format($format) : date($format);
+        }
+
+        // Y-m-d\TH:i:s.u\Z is vuedatepicker default format
+        $date = \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $this->new_value);
+        if (!$date) {
+            $date = \DateTime::createFromFormat($format, $this->new_value);
+        }
+
+        return $date ? $date->format($format) : date($format);
+    }
 
     /**
      * formatFieldTitle

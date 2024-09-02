@@ -33,6 +33,8 @@ class BlockPresenter implements PresenterInterface
             'id_prettyblocks' => $block['id_prettyblocks'],
             'templateSelected' => $block['templateSelected'],
             'templates' => $block['templates'],
+            'classes' => $block['classes'],
+            'styles' => $block['styles'],
         ];
 
         return $present;

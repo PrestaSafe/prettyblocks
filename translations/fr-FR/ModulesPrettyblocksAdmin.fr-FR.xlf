@@ -2,14 +2,19 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="admin-dev" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
     <body>
-      <trans-unit id="71dc0789c3f89e946566aff04a31c9f2">
-        <source>Pretty Blocks</source>
-        <target>Pretty Blocks</target>
+      <trans-unit id="8290adcd899d3ef604fb3a6c291a0046">
+        <source>PrettyBlocks</source>
+        <target>PrettyBlocks</target>
         <note>Line: </note>
       </trans-unit>
       <trans-unit id="3b2b2aa89e913995b344890c0201a691">
         <source>Configure your design easily</source>
         <target>Créez votre boutique à votre goût facilement</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="1d5dfca1cc4f52158d36f7bca322c23a">
+        <source>Open in PrettyBlocks</source>
+        <target>Ouvrir dans PrettyBlocks</target>
         <note>Line: </note>
       </trans-unit>
       <trans-unit id="58920020539a1da022c32e3c98670679">
@@ -150,6 +155,107 @@
       <trans-unit id="6ee6c7b6f69bd2af8e5fb2358243c0fe">
         <source>Type your search here</source>
         <target>Tapez votre recherche ici</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="27bc3d91f30bd0aaa0437801e92893b8">
+        <source>Search blocks</source>
+        <target>Rechercher des blocks</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="09cdd6a7321c64bae05b8cca859f1461">
+        <source>Enable cache</source>
+        <target>Activer le cache</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="720dfb7a8e7a721af3abf221e2e22a51">
+        <source>Paddings</source>
+        <target>Marges internes</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="a4ffdcf0dc1f31b9acaf295d75b51d00">
+        <source>Top</source>
+        <target>Haut</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="92b09c7c48c520c3c55e497875da437c">
+        <source>Right</source>
+        <target>Droit</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="2ad9d63b69c4a10a5cc9cad923133bc4">
+        <source>Bottom</source>
+        <target>Bas</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="945d5e233cf7d6240f6b783b36a374ff">
+        <source>Left</source>
+        <target>Gauche</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="bd32648160fec8b96d24f7f2e1d4f1f1">
+        <source>Margins</source>
+        <target>Marges externes</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="fae9f214a0396bd4e9282f0a8849dceb">
+        <source>Use custom entries (px, rem etc..)</source>
+        <target>Utilisez des valeures personnalisées (pm, rem,etc..)</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="e3dad3921a768171ca477acf6f1c07a7">
+        <source>Auto sizing</source>
+        <target>Taille automatique</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="26f383c0f115a3f8030e3b04b1d339ae">
+        <source>Padding is the space inside an element, between its content and its boundary</source>
+        <target>Le remplissage (padding) est l'espace à l'intérieur d'un élément, entre son contenu et sa bordure.
+</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="c091b86ae0ced11a102ebf41c3216f6c">
+        <source>Margin refers to the space outside an element, separating it from other elements</source>
+        <target>La marge désigne l'espace à l'extérieur d'un élément, le séparant des autres éléments.</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="f21e72a7f522ba021980f7439dae745c">
+        <source>Stretch section to 100%</source>
+        <target>Etirer à 100%</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="a83b274f3a991e345adc00b2b2c85607">
+        <source>Position updated successfully</source>
+        <target>Position mise à jour</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="4a677fcbda4300dcdda4e8c8094da47e">
+        <source>Element removed successfully</source>
+        <target>Element supprimé avec succès</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="0caf15274729de842e25855c3946a744">
+        <source>Element added successfully</source>
+        <target>Element ajouté avec succès</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="7351ff9366da4b5cdb0e4fef9bebecc6">
+        <source>An error occurred while processing your request</source>
+        <target>Une erreur est survenue</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="78f64fb6001594502a6102c2f0c69b5c">
+        <source>An error occurred while duplicating the element</source>
+        <target>Une erreur est survenue lors de la dupplication de l'élément</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="25f0c15ef7dd97b9d346b4759d9b9da7">
+        <source>Get Pro Blocks</source>
+        <target>Obtenir les blocks pro</target>
+        <note>Line: </note>
+      </trans-unit>
+      <trans-unit id="cd208133859ae70cdceebef3a3b42988">
+        <source>Search zone</source>
+        <target>Recherche de zones</target>
         <note>Line: </note>
       </trans-unit>
     </body>
