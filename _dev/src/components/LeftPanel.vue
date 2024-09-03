@@ -196,7 +196,7 @@ const deleteAllBlocks = async () => {
 
           if (response.success) {
             toaster.show(response.message)
-            prettyBlocksContext.reloadIframe()
+            window.location.reload()
           }
     })
     .catch(error => console.error(error));
