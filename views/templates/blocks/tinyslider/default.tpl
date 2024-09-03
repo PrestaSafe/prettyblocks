@@ -16,7 +16,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-<div class="prettyblocks-tns">
+<div class="prettyblocks-tns"> 
     {foreach from=$block.states item=state}
         <div>
             <img src="{$state.image.url}" alt="{$state.alt_image}" />

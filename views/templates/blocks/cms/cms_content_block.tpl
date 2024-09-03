@@ -16,6 +16,8 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-{if isset($cms) && isset($cms.content)}
-    {$cms.content nofilter}
-{/if}
+<div class="{$block.classes} prettyblocks-cms-content {if $block.settings.default.container}container{/if}{if $block.settings.default.force_full_width}_force-full{/if}" {$block.styles}> 
+    {if isset($cms) && isset($cms.content)}
+        {$cms.content nofilter}
+    {/if}
+</div>

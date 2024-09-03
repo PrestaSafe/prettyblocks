@@ -18,7 +18,7 @@
  *}
 
 {if isset($category) && isset($category.description)}
-    <div class="{$block.classes}" {$block.styles}>
+    <div class="{$block.classes} {if $block.settings.default.container}container{/if}{if $block.settings.default.force_full_width}_force-full{/if}" {$block.styles}>
         {$category.description nofilter}
     </div>
 {/if}

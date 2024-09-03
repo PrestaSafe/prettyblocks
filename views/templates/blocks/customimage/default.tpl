@@ -17,7 +17,7 @@
  * International Registered Trademark & Property of PrestaSafe
  *}
 {if $block.settings.image} 
-<div class="{if $block.settings.alignment}text-sm-{$block.settings.alignment}{/if} d-block w-full">
+<div class="{if $block.settings.alignment}text-sm-{$block.settings.alignment}{/if} d-block w-full {if $block.settings.default.container}container{/if}{if $block.settings.default.force_full_width}_force-full{/if}" {$block.styles}> 
     <img class="img-flexible" src="{$block.settings.image.url}" />
 </div>
 {/if}

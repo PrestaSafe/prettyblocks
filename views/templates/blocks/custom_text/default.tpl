@@ -17,7 +17,7 @@
  * International Registered Trademark & Property of PrestaSafe
  *}
 {if $block.settings.content}
-<div class="{if $block.settings.default.container}container{else}_force-full{/if}">
+<div class="{$block.classes} {if $block.settings.default.container}container{/if}{if $block.settings.default.force_full_width}_force-full{/if}" {$block.styles}> 
     {$block.settings.content nofilter}
 </div>
 {/if}
