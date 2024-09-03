@@ -72,7 +72,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.1.0';
+        $this->version = '3.1.1';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -443,7 +443,8 @@ class PrettyBlocks extends Module implements WidgetInterface
             // todo register css and js on iframe only from Hook
         }
         // load default blocks styles
-        if (!TplSettings::getSettings('remove_default_blocks')) {
+
+        if (!TplSettings::getSettings('remove_default_blocks', false)) {
             $this->context->controller->registerStylesheet(
                 'tiny-slider-css',
                 'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css',
