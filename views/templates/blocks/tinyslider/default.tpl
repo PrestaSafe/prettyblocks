@@ -16,10 +16,12 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaSafe
  *}
-<div class="prettyblocks-tns"> 
-    {foreach from=$block.states item=state}
-        <div>
-            <img src="{$state.image.url}" alt="{$state.alt_image}" />
+<div class="{$block.classes} {if $block.settings.default.container}container{/if}{if $block.settings.default.force_full_width}_force-full{/if}" {$block.styles}>
+    <div class="prettyblocks-tns slider-container">
+      {foreach from=$block.states item=state}
+        <div class="slider-item">
+          <img src="{$state.image.url}" alt="{$state.alt_image}" />
         </div>
-    {/foreach}
-</div>
+      {/foreach}
+    </div>
+  </div>

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     if (document.querySelectorAll('.prettyblocks-tns').length > 0) {
         var sliders = document.querySelectorAll('.prettyblocks-tns');
-
+    
         sliders.forEach(function (slider) {
             tns({
                 container: slider,
@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 controls: false,
                 loop: true,
                 gutter: 10,
-                autoWidth: true,
-                center: true,
-                autoHeight: true,
+                autoWidth: false,
+                center: false,
+                autoHeight: false,
                 responsive: {
                     640: {
                         items: 1
