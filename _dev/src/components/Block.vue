@@ -53,7 +53,6 @@ const AddOnZOne = async (code) => {
     ajax_token: security_app.ajax_token,
   };
   let url = ajax_urls.block_action_urls;
-  console.log(url, params)
 let data = await HttpClient.get(url, params);
 
   prettyBlocksContext.emit("toggleModal");  
