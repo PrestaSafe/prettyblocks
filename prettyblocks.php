@@ -678,7 +678,6 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'description' => $this->l('Remove default blocks (if you using yours custom blocks)'), // description to display
                 'tab' => 'Settings',
                 'default' => false, // default value (Boolean)
-                'private' => true,
             ],
         ];
     }
@@ -695,8 +694,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             new PrettyBlocksCmsContentBlock($this),
             new PrettyBlocksCategoryDescriptionBlock($this),
         ];
-
-        if (!TplSettings::getSettings('remove_default_blocks')) {
+        if (!TplSettings::getSettings('remove_default_blocks', false)) {
             $defaultsBlocks[] = new PrettyBlocksTinySlider($this);
             $defaultsBlocks[] = new PrettyBlocksCustomImage($this);
             $defaultsBlocks[] = new PrettyBlocksFAQ($this);
