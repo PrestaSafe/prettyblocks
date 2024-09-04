@@ -283,7 +283,6 @@ class PrettyBlocks extends Module implements WidgetInterface
             $this->context->controller->addJS($this->_path . 'views/js/back.js');
         }
         $this->context->controller->addCSS($this->_path . 'views/css/back.css');
-
     }
 
     public function install()
