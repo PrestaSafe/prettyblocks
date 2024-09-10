@@ -974,7 +974,7 @@ class PrettyBlocksModel extends ObjectModel
         $results = $db->executeS($query);
         $result = true;
         $lastPosition = self::getLastPosition($zone_name, $id_lang, $id_shop);
-   
+
         foreach ($results as $row) {
             $model = new PrettyBlocksModel(null, $id_lang, $id_shop);
             $model->zone_name = $zone_name_to_paste;
@@ -988,7 +988,7 @@ class PrettyBlocksModel extends ObjectModel
             $model->id_shop = (int) $id_shop;
             $model->id_lang = (int) $id_lang;
             $model->position = $row['position'] + $lastPosition;
-            $lastPosition++;
+            ++$lastPosition;
             if (!$model->save()) {
                 $errors[] = $model;
             }
