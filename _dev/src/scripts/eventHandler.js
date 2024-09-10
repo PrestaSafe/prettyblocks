@@ -33,10 +33,9 @@ export const eventHandler = async (event) => {
                         current_url: custom_url
                     }
                 });
+                prettyBlocksContext.changeUrl(custom_url)
                 if(force_reload) {
                     window.location.reload()
-                }else{
-                    prettyBlocksContext.changeUrl(custom_url)
                 }
             }
           

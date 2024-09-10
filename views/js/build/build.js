@@ -9092,10 +9092,11 @@ This will fail in production.`);
           current_url: custom_url
         }
       });
+      console.log("changeUrl", custom_url);
+      console.log("force_reload", force_reload);
+      prettyBlocksContext.changeUrl(custom_url);
       if (force_reload) {
         window.location.reload();
-      } else {
-        prettyBlocksContext.changeUrl(custom_url);
       }
     }
     if (event.data.type == "updateTitleComponent") {
@@ -9630,6 +9631,7 @@ This will fail in production.`);
             this.sendPrettyBlocksEvents("getContext");
             this.sendPrettyBlocksEvents("getZones");
             this.hideLoader();
+            this.emit("iframeLoaded");
           }, 100);
         });
       },
@@ -9644,6 +9646,7 @@ This will fail in production.`);
         this.pushUrl(url);
         this.showLoader();
         this.setIframe();
+        this.emit("urlChanged", url);
       },
       showLoader() {
         this.$patch((state) => {
@@ -9657,6 +9660,8 @@ This will fail in production.`);
       },
       pushUrl(url) {
         const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete("id");
+        currentUrl.searchParams.delete("endpoint");
         currentUrl.searchParams.set("startup_url", this.updateFilteredURL(url));
         window.history.replaceState({}, "", currentUrl.toString());
       },
@@ -9677,7 +9682,6 @@ This will fail in production.`);
           if (currentSrc === false) {
             currentSrc = url;
           }
-          console.log("currentSrc", currentSrc);
           this.iframe.domElement.src = "";
           setTimeout(() => {
             this.iframe.domElement.src = currentSrc;

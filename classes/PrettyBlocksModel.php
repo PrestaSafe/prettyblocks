@@ -970,8 +970,10 @@ class PrettyBlocksModel extends ObjectModel
         $query->where('zone_name = \'' . $zone_name . '\'');
         $query->where('id_lang = ' . (int) $id_lang);
         $query->where('id_shop = ' . (int) $id_shop);
+        $query->orderBy('position ASC');
         $results = $db->executeS($query);
         $result = true;
+        $lastPosition = self::getLastPosition($zone_name, $id_lang, $id_shop);
 
         foreach ($results as $row) {
             $model = new PrettyBlocksModel(null, $id_lang, $id_shop);
@@ -985,12 +987,27 @@ class PrettyBlocksModel extends ObjectModel
             $model->instance_id = $row['instance_id'];
             $model->id_shop = (int) $id_shop;
             $model->id_lang = (int) $id_lang;
+            $model->position = $row['position'] + $lastPosition;
+            ++$lastPosition;
             if (!$model->save()) {
                 $errors[] = $model;
             }
         }
 
         return $errors;
+    }
+
+    public static function getLastPosition($zone_name, $id_lang, $id_shop)
+    {
+        $db = Db::getInstance();
+        $query = new DbQuery();
+        $query->select('MAX(position)')
+            ->from('prettyblocks')
+            ->where('zone_name = \'' . $zone_name . '\'')
+            ->where('id_lang = ' . (int) $id_lang)
+            ->where('id_shop = ' . (int) $id_shop);
+
+        return (int) $db->getValue($query);
     }
 
     /**
