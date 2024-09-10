@@ -196,6 +196,11 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
     },  
     pushUrl(url) {
       const currentUrl = new URL(window.location.href);
+      
+      // Remove 'id' and 'endpoint' parameters if they exist
+      currentUrl.searchParams.delete('id');
+      currentUrl.searchParams.delete('endpoint');
+      
       currentUrl.searchParams.set('startup_url', this.updateFilteredURL(url));
       window.history.replaceState({}, '', currentUrl.toString());
     },
@@ -208,6 +213,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       } else if (!url.includes('prettyblocks')) {
           url += '&prettyblocks=1';
       }
+      
       return url;
     },
     reloadIframe(currentSrc = false) {

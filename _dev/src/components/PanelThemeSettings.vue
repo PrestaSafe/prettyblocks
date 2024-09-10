@@ -77,6 +77,7 @@ HttpClient.post(ajax_urls.state, params)
     if (data.message) {
      prettyBlocksContext.displayMessage(data.message)
       prettyBlocksContext.reloadIframe()
+      prettyBlocksContext.emit('afterSaveSettings')
     }
   })
   .catch(error => console.error(error));

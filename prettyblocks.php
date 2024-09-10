@@ -72,7 +72,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.1.0';
+        $this->version = '3.1.1';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -283,7 +283,6 @@ class PrettyBlocks extends Module implements WidgetInterface
             $this->context->controller->addJS($this->_path . 'views/js/back.js');
         }
         $this->context->controller->addCSS($this->_path . 'views/css/back.css');
-
     }
 
     public function install()
@@ -443,7 +442,8 @@ class PrettyBlocks extends Module implements WidgetInterface
             // todo register css and js on iframe only from Hook
         }
         // load default blocks styles
-        if (!TplSettings::getSettings('remove_default_blocks')) {
+
+        if (!TplSettings::getSettings('remove_default_blocks', false)) {
             $this->context->controller->registerStylesheet(
                 'tiny-slider-css',
                 'https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css',
@@ -677,7 +677,6 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'description' => $this->l('Remove default blocks (if you using yours custom blocks)'), // description to display
                 'tab' => 'Settings',
                 'default' => false, // default value (Boolean)
-                'private' => true,
             ],
         ];
     }
@@ -694,8 +693,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             new PrettyBlocksCmsContentBlock($this),
             new PrettyBlocksCategoryDescriptionBlock($this),
         ];
-
-        if (!TplSettings::getSettings('remove_default_blocks')) {
+        if (!TplSettings::getSettings('remove_default_blocks', false)) {
             $defaultsBlocks[] = new PrettyBlocksTinySlider($this);
             $defaultsBlocks[] = new PrettyBlocksCustomImage($this);
             $defaultsBlocks[] = new PrettyBlocksFAQ($this);

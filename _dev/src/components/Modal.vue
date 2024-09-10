@@ -54,7 +54,12 @@ onBeforeUnmount(() => {
 })
 
 
-
+/**
+ * reload blocks after save settings
+ */
+prettyBlocksContext.on('afterSaveSettings', () => {
+  getBlocksAvailable()
+})
 
 const getBlocksAvailable = () => {
   HttpClient.get(ajax_urls.blocks_available)
