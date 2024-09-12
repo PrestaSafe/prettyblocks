@@ -5,6 +5,7 @@ node_modules/
 **/node_modules
 **node_modules**
 .vscode/
+.idea/
 views/images/*
 !views/images/favicon.ico
 **.DS_Store**
