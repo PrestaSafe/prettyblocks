@@ -448,26 +448,28 @@ class FieldCore
     {
         $value = $this->formatFieldFileupload();
 
+        $path = $value['url'];
         $size = 0;
         $width = 0;
         $height = 0;
 
         if (!empty($value['url'])) {
-            $path = \HelperBuilder::pathFormattedFromUrl($value['url']);
+            if (str_contains($value['url'], $_SERVER["HTTP_HOST"])) {
+                $path = \HelperBuilder::pathFormattedFromUrl($value['url']);
 
-            if (file_exists($path)) {
-                $size = filesize($path);
+                if (file_exists($path)) {
+                    $size = filesize($path);
 
-                // if file is an image, we return width and height
-                if ($value['mediatype'] == 'image') {
-                    list($width, $height) = getimagesize($path);
+                    // if file is an image, we return width and height
+                    if ($value['mediatype'] == 'image') {
+                        list($width, $height) = getimagesize($path);
+                    }
                 }
+                $value['size'] = (int) $size;
+                $value['width'] = (int) $width;
+                $value['height'] = (int) $height;
             }
         }
-
-        $value['size'] = (int) $size;
-        $value['width'] = (int) $width;
-        $value['height'] = (int) $height;
 
         return $value;
     }
