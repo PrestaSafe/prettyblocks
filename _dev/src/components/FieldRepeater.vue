@@ -76,13 +76,6 @@ const emit = defineEmits(['updateUpload'])
 const updateUpload = () => {
   emit('updateUpload')
 }
-const removeTinyNotifications = () => {
-  setTimeout(() => {
-    document.querySelectorAll('.tox-notifications-container').forEach((el) => {
-      el.querySelector('button.tox-notification__dismiss').click()
-    })
-  }, 300)
-}
 let tinymce_api_key = ref(window.security_app.tinymce_api_key)
 const toolbarOptions = [
   ['bold','italic', 'underline', 'strike',{ 'color': [] }, { 'background': [] }, 'link', 'video'],        // toggled buttons
@@ -121,7 +114,6 @@ const toolbarOptions = [
       <Editor
         v-model="f.value"
         :api-key="tinymce_api_key"
-        @init="removeTinyNotifications()"
         :init="{
           height: 500,
           menubar: 'edit view format',
