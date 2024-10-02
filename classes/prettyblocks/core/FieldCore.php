@@ -669,7 +669,7 @@ class FieldCore
             return $this->_getCollection($idCollection, $this->collection);
         }
         // if value doesn't exists in DB and new value is set
-        if ($this->force_default_value && $this->new_value == '') {
+        if ($this->force_default_value && isset($this->default['show']['id']) && $this->new_value == '') {
             $idCollection = (int) $this->default['show']['id'];
 
             return $this->_getCollection($idCollection, $this->collection);
