@@ -66,6 +66,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         'ActionCmsPageGridDefinitionModifier',
         'BeforeRenderingPrettyblocksFeaturedProduct',
         'BeforeRenderingPrettyBlocksRenderModule',
+        'moduleRoutes',
     ];
 
     public function __construct()
@@ -209,8 +210,24 @@ class PrettyBlocks extends Module implements WidgetInterface
             $isOk &= Db::getInstance()->execute($sql);
         }
         $isOk &= $this->makeSettingsTable();
+        $isOk &= $this->makeConnectedEmployee();
+
 
         return $isOk;
+    }
+
+    public function makeConnectedEmployee()
+    {
+        // Creating a table to store editors of the page
+        $sql = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'prettyblocks_connected_employee` (
+            `id_edit` int(11) NOT NULL AUTO_INCREMENT,
+            `id_user` int(11) NOT NULL,
+            `session_id` varchar(255) NOT NULL UNIQUE,
+            `last_update` TIMESTAMP NOT NULL,
+            PRIMARY KEY (`id_edit`)
+            ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+        return Db::getInstance()->execute($sql);
     }
 
     public function makeSettingsTable()
@@ -238,6 +255,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks`';
         $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks_lang`';
         $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks_settings`';
+        $db[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'prettyblocks_connected_employee`';
 
         $isOk = true;
         foreach ($db as $sql) {

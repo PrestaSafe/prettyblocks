@@ -21,6 +21,8 @@
 namespace PrestaSafe\PrettyBlocks\Controller;
 
 // use Doctrine\Common\Cache\CacheProvider;
+use PrestaSafe\PrettyBlocks\DataPersister\ConnectedEmployeeDataPersister;
+use PrestaSafe\PrettyBlocks\DataProvider\ConnectedEmployeeDataProvider;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -166,6 +168,15 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     {
         $context = $this->get('prestashop.adapter.legacy.context')->getContext();
 
+        $id_user       = $context->employee->id;
+        $session_token = $context->cookie->session_token;
+
+        // Insert to new employee
+        ConnectedEmployeeDataPersister::insert($id_user, $session_token);
+
+        // get number of editor
+        $number_of_editors = ConnectedEmployeeDataProvider::get();
+
         $shop = $context->shop;
         $domain = \Tools::getShopDomainSsl(true);
 
@@ -208,7 +219,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $uploadUrl = $this->getSFUrl('prettyblocks_upload');
         $collectionURL = $this->getSFUrl('prettyblocks_collection');
         $link = new \Link();
-        $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
+        $blockUrl = $link->getModuleLink('PrettyBlocks', 'ajax');
+        $ajax_editing_url = $link->getModuleLink('prettyblocks', 'connectedEmployee');
         $blockAvailableUrls = $this->getSFUrl('prettyblocks_api_get_blocks_available');
         $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings');
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
@@ -268,6 +280,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'theme_settings' => $settingsUrls,
                 'startup_url' => $startup_url,
                 'prettyblocks_route_generator' => $this->getSFUrl('prettyblocks_route_generator'),
+                'ajax_editing_url' => $ajax_editing_url,
             ],
             'trans_app' => [
                 'current_shop' => $translator->trans('Shop in modification', [], 'Modules.Prettyblocks.Admin'),
@@ -314,6 +327,11 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             'css_build' => $css,
             'js_build' => $js,
             'js_entry' => $js_entry,
+
+            'session_token' => $session_token,
+            'number_of_editors' => $number_of_editors,
+            'alert_message' => $translator->trans('Careful, %number% users are on this page.', ['%number%' => '{{ number }}'], 'Modules.Prettyblocks.Admin'),
+
         ]);
     }
 

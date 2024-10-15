@@ -32,7 +32,14 @@
       var trans_app = {{ trans_app|json_encode|raw }}
       var security_app = {{ security_app|json_encode|raw }}
       var prettyblocks_env = {{ env|json_encode|raw }}
-      window.base_url = base_url  
+
+      var ajaxEditingUrl = '{{ ajax_urls.ajax_editing_url }}';
+      var sessionToken = '{{ session_token }}';
+      var numberOfEditors = '{{ number_of_editors }}';
+      var translate_alert_message = '{{ alert_message }}';
+
+
+      window.base_url = base_url
       window.ajax_urls = ajax_urls  
       window.trans_app = trans_app  
       window.security_app = security_app  
