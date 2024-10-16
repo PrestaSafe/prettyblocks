@@ -21,7 +21,7 @@ final class ConnectedEmployeeDataPersister
             ConnectedEmployeeDataPersister::cleanData();
 
             return Db::getInstance()->execute('
-                INSERT INTO `' . _DB_PREFIX_ . 'prettyblocks_editing_users` (id_user, session_id, last_update)
+                INSERT INTO `' . _DB_PREFIX_ . 'prettyblocks_connected_employee` (id_user, session_id, last_update)
                 VALUES (' .
                 (int) pSQL($id_user) . ', "' .
                 pSQL($session_id) . '", "' .
@@ -46,7 +46,7 @@ final class ConnectedEmployeeDataPersister
         try {
 
             return Db::getInstance()->update(
-                'prettyblocks_editing_users',
+                'prettyblocks_connected_employee',
                 ['last_update' => date('Y-m-d H:i:s')],
                 'session_id = \'' . pSQL($session_id) . '\''
             );
@@ -67,7 +67,7 @@ final class ConnectedEmployeeDataPersister
             $thresholdTime = date('Y-m-d H:i:s', strtotime('-1 minute'));
 
             $sql = '
-                DELETE FROM ' . _DB_PREFIX_ . 'prettyblocks_editing_users 
+                DELETE FROM ' . _DB_PREFIX_ . 'prettyblocks_connected_employee 
                 WHERE last_update < "' . pSQL($thresholdTime) . '"'
             ;
 

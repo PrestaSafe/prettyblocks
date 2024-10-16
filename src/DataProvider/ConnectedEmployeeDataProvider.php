@@ -14,7 +14,7 @@ final class ConnectedEmployeeDataProvider
         try {
             $sql = '
                 SELECT COUNT(*) 
-                FROM `' . _DB_PREFIX_ . 'prettyblocks_editing_users` 
+                FROM `' . _DB_PREFIX_ . 'prettyblocks_connected_employee` 
                 WHERE last_update > DATE_SUB(NOW(), INTERVAL 60 SECOND)
             ';
 
