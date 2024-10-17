@@ -1,7 +1,8 @@
 import { createToaster } from '@meforma/vue-toaster'
 const toaster = createToaster();
 let numberOfEditors = 1;
-
+import { HttpClient } from '../services/HttpClient.js';
+import { trans } from '../scripts/trans.js';
 /**
  *
  * Checks the number of employees connected to the prettyblocks backoffice.
@@ -20,17 +21,11 @@ export function verifyConnectedEmployees() {
         return;
     }
 
-
-    fetch(ajaxEditingUrl, {
-        method: "POST",
-        body: formData
-    })
-        .then(response => response.json())
+    HttpClient.post(ajaxEditingUrl, Object.fromEntries(formData))
         .then(data => {
             if (data.success && data.number_of_editors) {
-                // show alert if they are more than 1 editor and alert is enable
                 numberOfEditors = data.number_of_editors;
-                let alert_message = translate_alert_message.replace('{{ number }}',numberOfEditors);
+                let alert_message = trans('alert_message').replace('{{ number }}', numberOfEditors);
                 if (numberOfEditors > 1) {
                     toaster.error(
                         alert_message,
@@ -46,7 +41,7 @@ export function verifyConnectedEmployees() {
             }
         })
         .catch(e => {
-            console.error('Error during fetch request: ', e);
+            console.error('Error during HTTP request: ', e);
         });
 }
 

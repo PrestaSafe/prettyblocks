@@ -1,7 +1,8 @@
 <?php
+
 namespace PrestaSafe\PrettyBlocks\DataPersister;
 
-use \Db;
+use Db;
 use Exception;
 
 final class ConnectedEmployeeDataPersister
@@ -20,7 +21,8 @@ final class ConnectedEmployeeDataPersister
             // Delete old employee (more than 1 min)
             ConnectedEmployeeDataPersister::cleanData();
 
-            return Db::getInstance()->execute('
+            return Db::getInstance()->execute(
+                '
                 INSERT INTO `' . _DB_PREFIX_ . 'prettyblocks_connected_employee` (id_user, session_id, last_update)
                 VALUES (' .
                 (int) pSQL($id_user) . ', "' .
@@ -44,7 +46,7 @@ final class ConnectedEmployeeDataPersister
     public static function update(string $session_id): bool
     {
         try {
-
+            ConnectedEmployeeDataPersister::cleanData();
             return Db::getInstance()->update(
                 'prettyblocks_connected_employee',
                 ['last_update' => date('Y-m-d H:i:s')],

@@ -219,8 +219,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $uploadUrl = $this->getSFUrl('prettyblocks_upload');
         $collectionURL = $this->getSFUrl('prettyblocks_collection');
         $link = new \Link();
-        $blockUrl = $link->getModuleLink('PrettyBlocks', 'ajax');
-        $ajax_editing_url = $link->getModuleLink('prettyblocks', 'connectedEmployee');
+        $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
+        $ajax_editing_url =  $this->getSFUrl('prettyblocks_get_connected_employees');
         $blockAvailableUrls = $this->getSFUrl('prettyblocks_api_get_blocks_available');
         $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings');
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
@@ -317,6 +317,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'duplicate_state_error' => $translator->trans('An error occurred while duplicating the element', [], 'Modules.Prettyblocks.Admin'),
                 'get_pro' => $translator->trans('Get Pro Blocks', [], 'Modules.Prettyblocks.Admin'),
                 'search_zone' => $translator->trans('Search zone', [], 'Modules.Prettyblocks.Admin'),
+                'alert_message' => $translator->trans('Careful, %number% users are on this page.', ['%number%' => '{{ number }}'], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),
@@ -330,7 +331,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
             'session_token' => $session_token,
             'number_of_editors' => $number_of_editors,
-            'alert_message' => $translator->trans('Careful, %number% users are on this page.', ['%number%' => '{{ number }}'], 'Modules.Prettyblocks.Admin'),
+
 
         ]);
     }
@@ -710,6 +711,38 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
         return (new JsonResponse())->setData([
             'url' => $url,
+        ]);
+    }
+
+    /**
+     * Get the number of connected employees
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getConnectedEmployeesAction(Request $request)
+    {
+        $posts = json_decode($request->getContent(), true);
+        $sessionId = $posts['session_id'];
+
+        if (!$sessionId) {
+            return (new JsonResponse())->setData([
+                'success' => false,
+            ]);
+        }
+
+        ConnectedEmployeeDataPersister::update($sessionId);
+
+        $connectedEmployees = ConnectedEmployeeDataProvider::get();
+        if (null === $connectedEmployees) {
+            return (new JsonResponse())->setData([
+                'success' => false,
+            ]);
+        }
+
+        return (new JsonResponse())->setData([
+            'success'           => true,
+            'number_of_editors' => $connectedEmployees
         ]);
     }
 }
