@@ -32,7 +32,9 @@ if (!defined('_PS_VERSION_')) {
 function upgrade_module_3_1_2($module)
 {
     $module->registerHook($module->hooks);
-    $module->makeConnectedEmployee();
+    if (!PrettyBlocksMigrate::tableExists('prettyblocks_connected_employee')) {
+        $module->makeConnectedEmployee();
+    }
 
     return true;
 }
