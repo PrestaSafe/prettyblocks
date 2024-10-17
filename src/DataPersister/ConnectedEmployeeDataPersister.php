@@ -2,26 +2,23 @@
 
 namespace PrestaSafe\PrettyBlocks\DataPersister;
 
-use Db;
-use Exception;
-
 final class ConnectedEmployeeDataPersister
 {
     /**
      * Delete old employee and insert new
      *
-     * @param int    $id_user
+     * @param int $id_user
      * @param string $session_id
+     *
      * @return bool
      */
     public static function insert(int $id_user, string $session_id): bool
     {
         try {
-
             // Delete old employee (more than 1 min)
             ConnectedEmployeeDataPersister::cleanData();
 
-            return Db::getInstance()->execute(
+            return \Db::getInstance()->execute(
                 '
                 INSERT INTO `' . _DB_PREFIX_ . 'prettyblocks_connected_employee` (id_user, session_id, last_update)
                 VALUES (' .
@@ -31,28 +28,29 @@ final class ConnectedEmployeeDataPersister
                 '")
                 ON DUPLICATE KEY UPDATE last_update = "' . date('Y-m-d H:i:s') . '"'
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
-
     }
 
     /**
      * Update the date of the connected employee
      *
      * @param string $session_id
+     *
      * @return bool
      */
     public static function update(string $session_id): bool
     {
         try {
             ConnectedEmployeeDataPersister::cleanData();
-            return Db::getInstance()->update(
+
+            return \Db::getInstance()->update(
                 'prettyblocks_connected_employee',
                 ['last_update' => date('Y-m-d H:i:s')],
                 'session_id = \'' . pSQL($session_id) . '\''
             );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -65,7 +63,7 @@ final class ConnectedEmployeeDataPersister
     public static function cleanData(): bool
     {
         try {
-            $database      = Db::getInstance();
+            $database = \Db::getInstance();
             $thresholdTime = date('Y-m-d H:i:s', strtotime('-1 minute'));
 
             $sql = '
@@ -74,7 +72,7 @@ final class ConnectedEmployeeDataPersister
             ;
 
             return $database->execute($sql);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

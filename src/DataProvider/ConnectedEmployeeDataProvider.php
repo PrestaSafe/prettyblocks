@@ -1,13 +1,13 @@
 <?php
+
 namespace PrestaSafe\PrettyBlocks\DataProvider;
 
-use \Db;
 final class ConnectedEmployeeDataProvider
 {
     /**
      * Return the number of connected employees on the page
      *
-     * @return int | null
+     * @return int|null
      */
     public static function get(): ?int
     {
@@ -18,7 +18,7 @@ final class ConnectedEmployeeDataProvider
                 WHERE last_update > DATE_SUB(NOW(), INTERVAL 60 SECOND)
             ';
 
-            return (int)Db::getInstance()->getValue($sql);
+            return (int) \Db::getInstance()->getValue($sql);
         } catch (\Exception $e) {
             return null;
         }

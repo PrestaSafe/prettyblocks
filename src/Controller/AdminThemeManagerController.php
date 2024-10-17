@@ -168,7 +168,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     {
         $context = $this->get('prestashop.adapter.legacy.context')->getContext();
 
-        $id_user       = $context->employee->id;
+        $id_user = $context->employee->id;
         $session_token = $context->cookie->session_token;
 
         // Insert to new employee
@@ -220,7 +220,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $collectionURL = $this->getSFUrl('prettyblocks_collection');
         $link = new \Link();
         $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
-        $ajax_editing_url =  $this->getSFUrl('prettyblocks_get_connected_employees');
+        $ajax_editing_url = $this->getSFUrl('prettyblocks_get_connected_employees');
         $blockAvailableUrls = $this->getSFUrl('prettyblocks_api_get_blocks_available');
         $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings');
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
@@ -331,8 +331,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
             'session_token' => $session_token,
             'number_of_editors' => $number_of_editors,
-
-
         ]);
     }
 
@@ -718,6 +716,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
      * Get the number of connected employees
      *
      * @param Request $request
+     *
      * @return JsonResponse
      */
     public function getConnectedEmployeesAction(Request $request)
@@ -741,8 +740,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         }
 
         return (new JsonResponse())->setData([
-            'success'           => true,
-            'number_of_editors' => $connectedEmployees
+            'success' => true,
+            'number_of_editors' => $connectedEmployees,
         ]);
     }
 }
