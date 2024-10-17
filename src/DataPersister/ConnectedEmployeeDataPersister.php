@@ -2,6 +2,9 @@
 
 namespace PrestaSafe\PrettyBlocks\DataPersister;
 
+use Module;
+use PrettyBlocksMigrate;
+
 final class ConnectedEmployeeDataPersister
 {
     /**
@@ -29,6 +32,7 @@ final class ConnectedEmployeeDataPersister
                 ON DUPLICATE KEY UPDATE last_update = "' . date('Y-m-d H:i:s') . '"'
             );
         } catch (\Exception $e) {
+            new \PrestaShopException('Error while inserting connected employee', 0, $e);
             return false;
         }
     }
@@ -51,6 +55,8 @@ final class ConnectedEmployeeDataPersister
                 'session_id = \'' . pSQL($session_id) . '\''
             );
         } catch (\Exception $e) {
+
+            new \PrestaShopException('Error while updating connected employee', 0, $e);
             return false;
         }
     }
@@ -73,7 +79,17 @@ final class ConnectedEmployeeDataPersister
 
             return $database->execute($sql);
         } catch (\Exception $e) {
+
+            new \PrestaShopException('Error while cleaning connected employee', 0, $e);
             return false;
+        }
+    }
+
+    public static function tableExists(): void
+    {
+        if (!PrettyBlocksMigrate::tableExists('prettyblocks_connected_employee')) {
+            dump('table not exists');
+            Module::getInstanceByName('prettyblocks')->makeConnectedEmployee();
         }
     }
 }

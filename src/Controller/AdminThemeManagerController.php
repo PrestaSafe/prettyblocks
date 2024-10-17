@@ -734,6 +734,8 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
         $connectedEmployees = ConnectedEmployeeDataProvider::get();
         if (null === $connectedEmployees) {
+            // autocreate table if not exists
+            ConnectedEmployeeDataPersister::tableExists();
             return (new JsonResponse())->setData([
                 'success' => false,
             ]);

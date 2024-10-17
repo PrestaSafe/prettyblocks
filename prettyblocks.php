@@ -73,7 +73,7 @@ class PrettyBlocks extends Module implements WidgetInterface
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.1.1';
+        $this->version = '3.1.2';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -215,6 +215,11 @@ class PrettyBlocks extends Module implements WidgetInterface
         return $isOk;
     }
 
+    /**
+     * Create table to store editors of the page
+     *
+     * @return bool
+     */
     public function makeConnectedEmployee()
     {
         // Creating a table to store editors of the page
