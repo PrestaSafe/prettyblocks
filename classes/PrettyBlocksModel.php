@@ -153,10 +153,8 @@ class PrettyBlocksModel extends ObjectModel
         $blocks = [];
         foreach ($psc->getResults() as $res) {
             if ($res) {
-                $block = $res->mergeStateWithFields();
-                if ($context == 'front') {
-                    $block = (new BlockPresenter())->present($res->mergeStateWithFields($id_lang));
-                }
+                $block = $res->mergeStateWithFields($context === 'front' ? $id_lang : null);
+                $block = $context === 'front' ? (new BlockPresenter())->present($block) : $block;
                 $blocks[] = $block;
             }
         }
