@@ -268,14 +268,16 @@ class FieldCore
         // if value exists in DB and new_value is empty
         if (!is_null($this->value) && is_null($this->new_value)) {
             $date = \DateTime::createFromFormat($format, $this->value);
+            $timestamp = strtotime($this->value);
 
-            return $date ? $date->format($format) : date($format);
+            return $date ? $date->format($format) : date($format, $timestamp);
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && is_null($this->new_value)) {
             $date = \DateTime::createFromFormat($format, $this->default);
+            $timestamp = strtotime($this->value);
 
-            return $date ? $date->format($format) : date($format);
+            return $date ? $date->format($format) : date($format, $timestamp);
         }
 
         // Y-m-d\TH:i:s.u\Z is vuedatepicker default format
@@ -283,8 +285,9 @@ class FieldCore
         if (!$date) {
             $date = \DateTime::createFromFormat($format, $this->new_value);
         }
+        $timestamp = strtotime($this->value);
 
-        return $date ? $date->format($format) : date($format);
+        return $date ? $date->format($format) : date($format, $timestamp);
     }
 
     /**
