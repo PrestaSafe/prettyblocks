@@ -662,24 +662,31 @@ class FieldCore
      */
     public function formatFieldSelectorForFront()
     {
+        //Fix issue #287 : Issue loading a collection field due to a wrong primary key 
+        //We check in the field options if key "primary_key" exists use this value as third parameter of getCollection()
+        $primary_field = null;
+        if(array_key_exists('primary_key', $this->options)){
+            $primary_field = $this->options['primary_key'];
+        }
+        
         // if value exists in DB && new_value is empty
         if (!is_null($this->value) && empty($this->new_value) && is_array($this->value) && isset($this->value['show']['id'])) {
             $idCollection = (int) $this->value['show']['id'];
 
-            return $this->_getCollection($idCollection, $this->collection);
+            return $this->_getCollection($idCollection, $this->collection, $primary_field);
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && $this->new_value == '') {
             $idCollection = (int) $this->default['show']['id'];
 
-            return $this->_getCollection($idCollection, $this->collection);
+            return $this->_getCollection($idCollection, $this->collection, $primary_field);
         }
 
         // if value doesn't exists in DB and new value is set and force default value is false
         if (is_array($this->new_value) && isset($this->new_value['show']['id'])) {
             $idCollection = (int) $this->new_value['show']['id'];
 
-            return $this->_getCollection($idCollection, $this->collection);
+            return $this->_getCollection($idCollection, $this->collection, $primary_field);
         }
 
         // if no matches.
