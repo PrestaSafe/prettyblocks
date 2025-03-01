@@ -215,7 +215,7 @@ prettyBlocksContext.on('iframeLoaded', () => {
     <div class="flex flex-col h-full">
       <div class="p-2 border-b border-gray-200">
         <div class="flex items-center space-around">
-          <div>
+          <div class="flex-grow">
             <ZoneSelect v-model="state" />
           </div>
           <div class="pl-2 mt-[6px]">
