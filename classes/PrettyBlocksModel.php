@@ -762,23 +762,29 @@ class PrettyBlocksModel extends ObjectModel
      */
     public static function getBlocksAvailable()
     {
-        $modules = Hook::exec('ActionRegisterBlock', $hook_args = [], $id_module = null, $array_return = true);
+        $cacheId = 'PrettyBlocks::getBlocksAvailable';
 
-        $blocks = [];
-        foreach ($modules as $data) {
-            if (!isset($data[0])) {
-                $data[0] = $data;
-            }
-            foreach ($data as $block) {
-                if (!empty($block['code'])) {
-                    $blocks[$block['code']] = $block;
-                    // formatted for LeftPanel.vue
-                    $blocks[$block['code']]['formatted'] = self::formatBlock($block);
+        if (!Cache::isStored($cacheId)) {
+            $modules = Hook::exec('ActionRegisterBlock', $hook_args = [], $id_module = null, $array_return = true);
+
+            $blocks = [];
+            foreach ($modules as $data) {
+                if (!isset($data[0])) {
+                    $data[0] = $data;
+                }
+                foreach ($data as $block) {
+                    if (!empty($block['code'])) {
+                        $blocks[$block['code']] = $block;
+                        // formatted for LeftPanel.vue
+                        $blocks[$block['code']]['formatted'] = self::formatBlock($block);
+                    }
                 }
             }
+
+            Cache::store($cacheId, $blocks);
         }
 
-        return $blocks;
+        return Cache::retrieve($cacheId);
     }
 
     /**
