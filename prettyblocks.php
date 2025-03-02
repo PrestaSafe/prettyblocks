@@ -478,7 +478,7 @@ class PrettyBlocks extends Module implements WidgetInterface
                 'modules/' . $this->name . '/views/css/dist/main.css',
                 [
                     'media' => 'all',
-                    'priority' => 250,
+                    'priority' => -1,
                 ]
             );
         }
