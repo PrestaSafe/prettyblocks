@@ -64,7 +64,7 @@ const leaveApp = () => {
   window.open(domain.value, '_blank');
 }
 const goBackEnd = () => {
-  window.open(adminURL, '_blank');
+  window.open(adminURL, '_self');
 }
 
 

@@ -268,14 +268,16 @@ class FieldCore
         // if value exists in DB and new_value is empty
         if (!is_null($this->value) && is_null($this->new_value)) {
             $date = \DateTime::createFromFormat($format, $this->value);
+            $timestamp = strtotime($this->value);
 
-            return $date ? $date->format($format) : date($format);
+            return $date ? $date->format($format) : date($format, $timestamp);
         }
         // if value doesn't exists in DB and new value is set
         if ($this->force_default_value && is_null($this->new_value)) {
             $date = \DateTime::createFromFormat($format, $this->default);
+            $timestamp = strtotime($this->value);
 
-            return $date ? $date->format($format) : date($format);
+            return $date ? $date->format($format) : date($format, $timestamp);
         }
 
         // Y-m-d\TH:i:s.u\Z is vuedatepicker default format
@@ -283,8 +285,9 @@ class FieldCore
         if (!$date) {
             $date = \DateTime::createFromFormat($format, $this->new_value);
         }
+        $timestamp = strtotime($this->value);
 
-        return $date ? $date->format($format) : date($format);
+        return $date ? $date->format($format) : date($format, $timestamp);
     }
 
     /**
@@ -662,24 +665,31 @@ class FieldCore
      */
     public function formatFieldSelectorForFront()
     {
+        //Fix issue #287 : Issue loading a collection field due to a wrong primary key 
+        //We check in the field options if key "primary_key" exists use this value as third parameter of getCollection()
+        $primary_field = null;
+        if(array_key_exists('primary_key', $this->options)){
+            $primary_field = $this->options['primary_key'];
+        }
+        
         // if value exists in DB && new_value is empty
         if (!is_null($this->value) && empty($this->new_value) && is_array($this->value) && isset($this->value['show']['id'])) {
             $idCollection = (int) $this->value['show']['id'];
 
-            return $this->_getCollection($idCollection, $this->collection);
+            return $this->_getCollection($idCollection, $this->collection, $primary_field);
         }
         // if value doesn't exists in DB and new value is set
-        if ($this->force_default_value && $this->new_value == '') {
+        if ($this->force_default_value && isset($this->default['show']['id']) && $this->new_value == '') {
             $idCollection = (int) $this->default['show']['id'];
 
-            return $this->_getCollection($idCollection, $this->collection);
+            return $this->_getCollection($idCollection, $this->collection, $primary_field);
         }
 
         // if value doesn't exists in DB and new value is set and force default value is false
         if (is_array($this->new_value) && isset($this->new_value['show']['id'])) {
             $idCollection = (int) $this->new_value['show']['id'];
 
-            return $this->_getCollection($idCollection, $this->collection);
+            return $this->_getCollection($idCollection, $this->collection, $primary_field);
         }
 
         // if no matches.

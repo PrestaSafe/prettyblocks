@@ -8,7 +8,9 @@
     {/foreach}
 </div> *}
 
-<div class="{if $block.settings.default.container}container{else}_force-full{/if} pd-m prettyblocks-faq">
+<div 
+  class="prettyblocks-element {$block.classes} {if $block.settings.default.container}container{/if}{if $block.settings.default.force_full_width}_force-full{/if} pd-m prettyblocks-faq"
+  {$block.styles}>
   <p class="h2 title-center">{$block.settings.title}</p>
   <div class="accordion">
     {foreach from=$block.states item='faq'}
