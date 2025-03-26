@@ -106,3 +106,21 @@ prettyblocks_get_connected_employees:
     _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getConnectedEmployeesAction'
     _legacy_controller: AdminThemeManagerController
     _legacy_link: AdminThemeManagerController
+
+prettyblocks_get_elements:
+    path: /prettyblocks/elements
+    methods: [GET]
+    defaults:
+        _controller: PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getAvailableElementsAction
+
+prettyblocks_save_elements:
+    path: /prettyblocks/blocks/elements
+    methods: [POST]
+    defaults:
+        _controller: PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::saveElementsAction
+
+prettyblocks_load_elements:
+    path: /prettyblocks/blocks/elements
+    methods: [GET]
+    defaults:
+        _controller: PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::loadElementsAction

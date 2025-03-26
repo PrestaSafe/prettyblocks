@@ -162,6 +162,8 @@ const toolbarOptions = [
         <Slider v-model="f.value" v-bind="f.options" />
     </div> 
 
+
+
     <p class="text-gray-500 italic" v-if="f.legend">{{ f.legend }}</p>
   </div>
 </template>

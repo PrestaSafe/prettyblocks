@@ -26,6 +26,8 @@ import ColorInput from "vue-color-input";
 import FieldRepeater from "./FieldRepeater.vue";
 import { trans } from "../scripts/trans";
 import { storeToRefs } from 'pinia'
+import ElementEditor from './elements/ElementEditor.vue';
+
 
 import SpacingSection from "./_partials/SpacingSection.vue";
 const toaster = createToaster({
@@ -53,6 +55,7 @@ defineComponent({
   ColorInput,
   FieldRepeater,
   Title,
+  ElementEditor
 });
 
 let prettyBlocksContext = usePrettyBlocksContext() 
@@ -175,7 +178,6 @@ const save = async (success = true) => {
   <div id="rightPanel" class="relative border-l border-gray-200">
     <Loader :visible="showLoader">{{ trans("loading") }}...</Loader>
     <Modal />
-
     <!-- Config panel -->
     <div
       v-if="saveContext == 'config'"
@@ -183,9 +185,10 @@ const save = async (success = true) => {
       class="absolute top-0 left-0 overflow-y-auto w-full h-full flex flex-col p-2 bg-slate-100"
       @keyup.enter="saveConfig()"
     >
-    
+
      
      <!-- config {{ config }} -->
+
      
       <template v-for="f in config" :key="f">
         <FieldRepeater @updateUpload="saveConfig()" :field="f" />

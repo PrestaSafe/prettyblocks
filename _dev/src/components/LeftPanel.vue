@@ -1,24 +1,27 @@
 <script setup>
-import { ref, onMounted, defineComponent,onBeforeUnmount, computed, watchEffect, watch } from "vue";
+import { ref, onMounted, defineComponent, watch, computed } from "vue";
 import SortableList from "./SortableList.vue";
 import MenuGroup from "./MenuGroup.vue";
 import MenuItem from "./MenuItem.vue";
 import ButtonLight from "./ButtonLight.vue";
 import Button from "./Button.vue";
 import { HttpClient } from "../services/HttpClient";
-import Block from "../scripts/block";
+
 import ZoneSelect from "./form/ZoneSelect.vue";
 import { storeToRefs } from 'pinia'
-/* Demo data */
-// import { v4 as uuidv4 } from 'uuid'
-import emitter from "tiny-emitter/instance";
-import { useStore, useCurrentZone, contextShop, storedBlocks, usePrettyBlocksContext } from "../store/pinia";
+
+import ElementEditor from "./elements/ElementEditor.vue";
+
+import { usePrettyBlocksContext } from "../store/pinia";
 import { trans } from "../scripts/trans";
 
 import { createToaster } from "@meforma/vue-toaster";
 const toaster = createToaster({
   position: "top",
 });
+
+
+
 
 const prettyblocks_env = ref(window.prettyblocks_env.PRETTYBLOCKS_REMOVE_ADS);
 
@@ -31,17 +34,22 @@ defineComponent({
   ZoneSelect,
 });
  let prettyBlocksContext = usePrettyBlocksContext();
+ let {currentBlock} = storeToRefs(prettyBlocksContext);
 watch(() => prettyBlocksContext.currentZone, (currentZone) => {
   displayZoneName.value = currentZone.name
   initStates()
 }, { deep: true })
 
+const showEditor = computed(() => {
+  return currentBlock.value.code == 'section_test';
+});
 
 const prettyblocks_version = ref(security_app.prettyblocks_version);
 /**
  * Load block config
  */
 const loadStateConfig = async (e) => {
+
   prettyBlocksContext.$patch({
     currentBlock: {
       id_prettyblocks: e.id_prettyblocks,
@@ -106,7 +114,7 @@ const loadEmptyState = async (e) => {
     .catch((error) => console.error(error));
 };
 
-let currentBlock = useStore();
+// let currentBlock = useStore();
 const state = ref({
   name: "displayHome",
 });
@@ -207,12 +215,32 @@ prettyBlocksContext.on('iframeLoaded', () => {
     checkClipboardContent();
   }, 1000);
 
+  // Dans la partie script de LeftPanel.vue
+const openElementsEditor = () => {
+  console.log('openElementsEditor');
+  prettyBlocksContext.$patch({
+    saveContext: 'elements'
+  });
+};
 });
 </script>
 
 <template>
   <div id="leftPanel" class="border-r border-gray-200">
-    <div class="flex flex-col h-full">
+
+    <div v-if="showEditor">
+      <ElementEditor />
+    </div>
+
+    <div v-else class="flex flex-col h-full">
+      <!-- Quelque part dans le template où c'est approprié -->
+    <ButtonLight
+      icon="ViewColumnsIcon"
+      @click="openElementsEditor"
+      class="bg-slate-200 p-2 text-center hover:bg-indigo hover:bg-opacity-10 w-full text-indigo"
+    >
+      {{ trans("edit_elements") }}
+    </ButtonLight>
       <div class="p-2 border-b border-gray-200">
         <div class="flex items-center space-around">
           <div class="flex-grow">

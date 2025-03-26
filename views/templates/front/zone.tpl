@@ -21,8 +21,8 @@
  <div data-prettyblocks-zone="{$zone_name}" >
  {if $blocks|count > 0}
   {foreach from=$blocks item=data name=zoneBlocks}
-  <div {if $data.settings.default.load_ajax} load-ajax {/if} data-block data-instance-id="{$data.instance_id}" data-id-prettyblocks="{$data.id_prettyblocks}">
-    {if !$data.settings.default.load_ajax}
+  <div {if isset($data.settings.default.load_ajax) && $data.settings.default.load_ajax} load-ajax {/if} data-block data-instance-id="{$data.instance_id}" data-id-prettyblocks="{$data.id_prettyblocks}">
+    {if !isset($data.settings.default.load_ajax) || !$data.settings.default.load_ajax}
         {$template = 'module:prettyblocks/views/templates/blocks/welcome.tpl'}
         {if isset($data.templates[$data.templateSelected])}
           {$template = $data.templates[$data.templateSelected]}

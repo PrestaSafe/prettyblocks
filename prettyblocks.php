@@ -32,9 +32,10 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollectionInterface;
 use PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinitionInterface;
-
+    
 class PrettyBlocks extends Module implements WidgetInterface
 {
+    public const BLOCK_SECTION_CODE = 'section_test';
     public $js_path;
     public $css_path;
     public $dev_ps = true;
@@ -67,13 +68,14 @@ class PrettyBlocks extends Module implements WidgetInterface
         'BeforeRenderingPrettyblocksFeaturedProduct',
         'BeforeRenderingPrettyBlocksRenderModule',
         'moduleRoutes',
+        'ActionRegisterElement'
     ];
 
     public function __construct()
     {
         $this->name = 'prettyblocks';
         $this->tab = 'administration';
-        $this->version = '3.1.2';
+        $this->version = '4.0.0';
         $this->author = 'PrestaSafe';
         $this->need_instance = 1;
         $this->js_path = $this->_path . 'views/js/';
@@ -312,6 +314,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         return parent::install()
             && $this->loadDefault()
             && $this->createBlockDb()
+            && PrettyBlocksMigrate::createDbElement()
             && $this->registerHook($this->hooks);
     }
 
@@ -714,6 +717,7 @@ class PrettyBlocks extends Module implements WidgetInterface
             new PrettyBlocksProductDescriptionShortBlock($this),
             new PrettyBlocksCmsContentBlock($this),
             new PrettyBlocksCategoryDescriptionBlock($this),
+            new PrettyBlocksSectionTest($this),
         ];
         if (!TplSettings::getSettings('remove_default_blocks', false)) {
             $defaultsBlocks[] = new PrettyBlocksTinySlider($this);
@@ -742,5 +746,20 @@ class PrettyBlocks extends Module implements WidgetInterface
     public function clearCache($var)
     {
         $this->_clearCache($var);
+    }
+
+
+    /**
+     * Hook pour enregistrer les éléments par défaut
+     *
+     * @return array
+     */
+    public function hookActionRegisterElement()
+    {
+        return [
+            new \PrestaSafe\PrettyBlocks\Core\Components\SectionElement(),
+            new \PrestaSafe\PrettyBlocks\Core\Components\ColumnElement(),
+            new \PrestaSafe\PrettyBlocks\Core\Components\ParagraphElement()
+        ];
     }
 }

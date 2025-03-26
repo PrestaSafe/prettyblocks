@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) Since 2020 PrestaSafe and contributors
  *
@@ -30,6 +31,75 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AdminThemeManagerController extends FrameworkBundleAdminController
 {
+    /**
+     * Récupère la liste des éléments disponibles
+     *
+     * @return JsonResponse
+     */
+    public function getAvailableElementsAction()
+    {
+        $elementManager = \PrestaSafe\PrettyBlocks\Core\ElementManager::getInstance();
+        $elements = $elementManager->getElementsForApi();
+
+        return (new JsonResponse())->setData([
+            'elements' => $elements
+        ]);
+    }
+
+    /**
+     * Sauvegarde les éléments d'un bloc
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function saveElementsAction(Request $request)
+    {
+        $posts = json_decode($request->getContent(), true);
+        $id_prettyblocks = (int) $posts['id_prettyblocks'];
+        $elementsData = json_decode($posts['elements'], true);
+
+        $id_lang = (int) $posts['ctx_id_lang'];
+        $id_shop = (int) $posts['ctx_id_shop'];
+
+        // Construire les instances d'éléments
+        $elementManager = \PrestaSafe\PrettyBlocks\Core\ElementManager::getInstance();
+        $elements = $elementManager->buildElementTree($elementsData);
+
+        // Sauvegarder les éléments
+        $model = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
+        $result = $model->saveElements($elements);
+
+        return (new JsonResponse())->setData([
+            'success' => $result,
+            'message' => $result ? $this->getTranslator()->trans('Elements saved successfully', [], 'Modules.Prettyblocks.Admin') : $this->getTranslator()->trans('Error saving elements', [], 'Modules.Prettyblocks.Admin')
+        ]);
+    }
+
+    /**
+     * Charge les éléments d'un bloc
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function loadElementsAction(Request $request)
+    {
+        $id_prettyblocks = (int) $request->query->get('id_prettyblocks');
+        $id_lang = (int) $request->query->get('ctx_id_lang', \Context::getContext()->language->id);
+        $id_shop = (int) $request->query->get('ctx_id_shop', \Context::getContext()->shop->id);
+
+        $model = new \PrettyBlocksModel($id_prettyblocks, $id_lang, $id_shop);
+        $elements = $model->loadElements();
+
+        // Convertir les éléments en tableau pour l'API
+        $elementsArray = [];
+        foreach ($elements as $element) {
+            $elementsArray[] = $element->toArray();
+        }
+
+        return (new JsonResponse())->setData([
+            'elements' => $elementsArray
+        ]);
+    }
     public function uploadAction(Request $request)
     {
         $message = '';
@@ -70,13 +140,13 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             if ($content !== false) {
                 $md5ContentSuffix = '_' . md5($content);
             }
-            
+
             // can upload
             $new_name = \Tools::str2url(pathinfo($file['name'], PATHINFO_FILENAME) . $md5ContentSuffix);
 
             // Most OS have a limit of 255 characters for file names
             $new_name = \Tools::substr($new_name, 0, 255 - \Tools::strlen('.' . $extension));
-            
+
             $path = '$/modules/prettyblocks/views/images/';
             if (\Tools::getIsset('path')) {
                 $path = pSQL(\Tools::getValue('path'));
@@ -274,6 +344,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             ],
 
             'ajax_urls' => [
+                'elements' => $this->getSFUrl('prettyblocks_get_elements'),
+                'save_elements' => $this->getSFUrl('prettyblocks_save_elements'),
+                'load_elements' => $this->getSFUrl('prettyblocks_load_elements'),
                 'shops' => $shops,
                 'simulate_home' => $symfonyUrl,
                 'search_by_ref' => $symfonyUrl,
@@ -329,6 +402,18 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'get_pro' => $translator->trans('Get Pro Blocks', [], 'Modules.Prettyblocks.Admin'),
                 'search_zone' => $translator->trans('Search zone', [], 'Modules.Prettyblocks.Admin'),
                 'alert_message' => $translator->trans('Careful, %number% users are on this page.', ['%number%' => '{{ number }}'], 'Modules.Prettyblocks.Admin'),
+                // Dans trans_app
+                'edit_elements' => $translator->trans('Edit elements', [], 'Modules.Prettyblocks.Admin'),
+                'add_elements' => $translator->trans('Add elements', [], 'Modules.Prettyblocks.Admin'),
+                'save_elements' => $translator->trans('Save elements', [], 'Modules.Prettyblocks.Admin'),
+                'no_elements' => $translator->trans('No elements', [], 'Modules.Prettyblocks.Admin'),
+                'add_element_using_toolbar' => $translator->trans('Add element using toolbar', [], 'Modules.Prettyblocks.Admin'),
+                'confirm_remove_element' => $translator->trans('Are you sure you want to delete this element?', [], 'Modules.Prettyblocks.Admin'),
+                'error_loading_elements' => $translator->trans('Error loading elements', [], 'Modules.Prettyblocks.Admin'),
+                'error_saving_elements' => $translator->trans('Error saving elements', [], 'Modules.Prettyblocks.Admin'),
+                'block_and_elements_created' => $translator->trans('Block and elements created successfully', [], 'Modules.Prettyblocks.Admin'),
+                'settings' => $translator->trans('Settings', [], 'Modules.Prettyblocks.Admin'),
+                'loading' => $translator->trans('Loading...', [], 'Modules.Prettyblocks.Admin'),
             ],
             'security_app' => [
                 'ajax_token' => \Configuration::getGlobalValue('_PRETTYBLOCKS_TOKEN_'),

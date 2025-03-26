@@ -9257,6 +9257,9 @@ Expected function or array of functions, received type ${typeof value}.`
         div.classList.remove("border-dotted");
       });
       let el = document.querySelector('[data-prettyblocks-zone="' + zone_name + '"]');
+      document.dispatchEvent(new CustomEvent("focusOnZone", {
+        detail: { zone_name }
+      }));
       el.classList.add("border-dotted");
       return el.scrollIntoView({
         alignToTop: true,

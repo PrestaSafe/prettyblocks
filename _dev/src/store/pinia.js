@@ -91,6 +91,31 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
         state.iframe.device = ref(device)
       })
     },
+    // Dans la partie actions de usePrettyBlocksContext
+    createBlockWithElements(blockData, elements) {
+      // D'abord créer le bloc
+      this.createNewBlock(blockData).then(response => {
+        if (response.success) {
+          // Ensuite ajouter les éléments
+          const blockId = response.id_prettyblocks;
+          const url = ajax_urls.save_elements.replace('ID_PLACEHOLDER', blockId);
+          
+          HttpClient.post(url, {
+            elements: JSON.stringify(elements),
+            ctx_id_lang: this.psContext.id_lang,
+            ctx_id_shop: this.psContext.id_shop,
+            ajax_token: security_app.ajax_token
+          }).then(() => {
+            this.initStates();
+            this.reloadIframe();
+            this.displayMessage(trans('block_and_elements_created'));
+          }).catch(error => {
+            console.error('Error creating elements:', error);
+            this.displayError(trans('error_creating_elements'));
+          });
+        }
+      });
+    },
     initStates() {
 
       let context =  this.psContext;

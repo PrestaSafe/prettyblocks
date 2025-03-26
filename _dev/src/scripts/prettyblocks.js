@@ -50,6 +50,11 @@ let eventHandler = (event) => {
         })
         let el = document.querySelector('[data-prettyblocks-zone="' + zone_name + '"]')
         
+        // event zone focus for prettyblocks
+        document.dispatchEvent(new CustomEvent('focusOnZone', { 
+            detail: { zone_name: zone_name }
+        }));
+        
         el.classList.add('border-dotted')
         return el.scrollIntoView({
             alignToTop: true,

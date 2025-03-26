@@ -5,6 +5,29 @@ use PrestaSafe\PrettyBlocks\Core\PrettyBlocksField;
 
 class PrettyBlocksMigrate
 {
+
+    public static function createDbElement()
+    {
+        $sql = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'prettyblocks_elements` (
+            `id_element` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `element_type` varchar(50) NOT NULL,
+            `element_id` varchar(50) NOT NULL,
+            `parent_id` varchar(50) DEFAULT NULL,
+            `id_prettyblocks` int(11) DEFAULT NULL,
+            `position` int(11) DEFAULT 0,
+            `values` longtext DEFAULT NULL,
+            `id_shop` int(11) DEFAULT NULL,
+            `id_lang` int(11) DEFAULT NULL,
+            `date_add` datetime DEFAULT NULL,
+            `date_upd` datetime DEFAULT NULL,
+            PRIMARY KEY (`id_element`),
+            KEY `element_id` (`element_id`),
+            KEY `parent_id` (`parent_id`),
+            KEY `id_prettyblocks` (`id_prettyblocks`)
+          ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;';
+    
+        return Db::getInstance()->execute($sql);
+    }
     /**
      * add field template to database
      *

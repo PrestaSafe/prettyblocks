@@ -13,3 +13,51 @@ h1, h2, h3, h4, h5 {
 h2 {
   @apply text-base
 }
+
+/* Styles pour les éléments dans l'interface prévisualisation */
+.prettyblocks-section {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.prettyblocks-section.full-width {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+.prettyblocks-column {
+  position: relative;
+}
+
+.prettyblocks-paragraph {
+  margin-bottom: 1rem;
+}
+
+.prettyblocks-paragraph.drop-cap > p:first-child::first-letter {
+  float: left;
+  font-size: 3em;
+  line-height: 0.8;
+  margin-right: 0.2em;
+  color: var(--drop-cap-color, inherit);
+  font-weight: bold;
+}
+
+/* Styles pour l'éditeur d'éléments */
+.element-editor {
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sortable-ghost {
+  opacity: 0.5;
+  background-color: #e5deff !important;
+}
+
+.sortable-chosen {
+  background-color: #f9f9f9;
+}
+
+.sortable-drag {
+  opacity: 0.8;
+}

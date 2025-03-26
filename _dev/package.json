@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite --port 3002",
-    "build": "vite build",
+    "watch-ptb": "vite build --watch",
+    "build": "vite build && vite build --config vite.config.prettyblocks.js && npx tailwindcss -c ./front/tailwind.config.js -i ./front/main.css -o ../views/css/dist/main.css",
     "watch": "concurrently \"vite build --watch\" \"vite build --watch --config vite.config.prettyblocks.js\" \"npx tailwindcss -c ./front/tailwind.config.js -i ./front/main.css -o ../views/css/dist/main.css --watch\"",
     "preview": "vite preview",
     "watch-iframe": "vite build --watch --config vite.config.prettyblocks.js",

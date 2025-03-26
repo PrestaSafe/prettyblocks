@@ -215,6 +215,29 @@ class PrettyBlocksModel extends ObjectModel
     }
 
     /**
+     * Charge les éléments associés à ce bloc
+     *
+     * @return array
+     */
+    public function loadElements()
+    {
+        $mapper = new \PrestaSafe\PrettyBlocks\Core\Mapper\ElementMapper();
+        return $mapper->loadElementsForBlock($this->id, $this->id_lang, $this->id_shop);
+    }
+
+    /**
+     * Sauvegarde des éléments pour ce bloc
+     *
+     * @param array $elements
+     * @return bool
+     */
+    public function saveElements($elements)
+    {
+        $mapper = new \PrestaSafe\PrettyBlocks\Core\Mapper\ElementMapper();
+        return $mapper->saveElementsForBlock($elements, $this->id_prettyblocks, $this->id_lang, $this->id_shop);
+    }
+
+    /**
      * Mapped block repeater with states.
      */
     public function mergeStateWithFields()
@@ -234,7 +257,16 @@ class PrettyBlocksModel extends ObjectModel
         $block['id_lang'] = $this->id_lang;
         $block['code'] = $this->code;
         $block['settings'] = $this->_formatGetConfig($block);
-
+        
+        $elements = $this->loadElements();
+        // Convertir les éléments en tableau pour l'API
+        $elementsArray = [];
+        foreach ($elements as $element) {
+            $elementsArray[] = $element->toArray();
+        }
+        
+        // Ajouter les éléments au bloc
+        $block['elements'] = $elementsArray;
         $paddings = (isset($block['settings']['default']['paddings'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['paddings'], 'paddings')['classes'] : '';
         $margins = (isset($block['settings']['default']['margins'])) ? HelperBuilder::generateBlocksSpacings($block['settings']['default']['margins'], 'margins')['classes'] : '';
 
@@ -802,6 +834,7 @@ class PrettyBlocksModel extends ObjectModel
         $formatted['icon_path'] = $block['icon_path'] ?? '';
         $formatted['module'] = $block['code']; // todo register module name
         $formatted['title'] = $block['name'] ?? '';
+        $formatted['code'] = $block['code'] ?? '';
         // dump($block);
 
         // if nameFrom params is present
@@ -829,6 +862,7 @@ class PrettyBlocksModel extends ObjectModel
                     'icon' => $data['icon'] ?? 'SquaresPlusIcon',
                     'can_repeat' => $formatted['can_repeat'],
                     'need_reload' => $formatted['need_reload'],
+                    'code' => $formatted['code'],
                 ];
             }
         }
