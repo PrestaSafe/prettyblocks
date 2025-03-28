@@ -104,7 +104,7 @@ function onInput(zone) {
       <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100"
         leave-to-class="opacity-0">
         <ListboxOptions
-          class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+          class="absolute z-10 mt-1 w-[200%] bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
           <ListboxOption as="template" v-for="(item, index) in items" :key="index" :value="item"
             v-slot="{ active, selected }">
             <li @click="changetItem(item)"
