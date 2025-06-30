@@ -618,7 +618,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         $block = $params['block'];
         $classes = $params['classes'] ?? [];
 
-        $title = new Title($tag, $classes, $block, $field);
+        $title = new Title($block, $field, $tag, $classes);
         if (isset($params['index'])) {
             $title->setIndex((int) $params['index']);
         }
