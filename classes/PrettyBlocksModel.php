@@ -143,23 +143,39 @@ class PrettyBlocksModel extends ObjectModel
 
         $id_lang = (!is_null($id_lang)) ? (int) $id_lang : $contextPS->language->id;
         $id_shop = (!is_null($id_shop)) ? (int) $id_shop : $contextPS->shop->id;
-        $psc = new PrestaShopCollection('PrettyBlocksModel', $id_lang);
 
-        $psc->where('zone_name', '=', $zone_name);
-        $psc->where('id_shop', '=', (int) $id_shop);
-        $psc->where('id_lang', '=', (int) $id_lang);
+        $cacheId = "PrettyBlocks_Zone_{$zone_name}_{$context}_{$id_lang}_{$id_shop}";
 
-        $psc->orderBy('position');
-        $blocks = [];
-        foreach ($psc->getResults() as $res) {
-            if ($res) {
-                $block = $res->mergeStateWithFields($context === 'front' ? $id_lang : null);
-                $block = $context === 'front' ? (new BlockPresenter())->present($block) : $block;
-                $blocks[] = $block;
+        if (!Cache::isStored($cacheId)) {
+            $psc = new PrestaShopCollection('PrettyBlocksModel', $id_lang);
+
+            $psc->where('zone_name', '=', $zone_name);
+            $psc->where('id_shop', '=', (int) $id_shop);
+            $psc->where('id_lang', '=', (int) $id_lang);
+
+            $psc->orderBy('position');
+            $blocks = [];
+
+            foreach ($psc->getResults() as $res) {
+                if ($res) {
+                    $blockCacheId = "PrettyBlocks_Block_{$res->id}_{$context}";
+
+                    if (!Cache::isStored($blockCacheId)) {
+                        $block = $res->mergeStateWithFields();
+                        if ($context == 'front') {
+                            $block = (new BlockPresenter())->present($block);
+                        }
+                        Cache::store($blockCacheId, $block);
+                    }
+
+                    $blocks[] = Cache::retrieve($blockCacheId);
+                }
             }
+
+            Cache::store($cacheId, $blocks);
         }
 
-        return $blocks;
+        return Cache::retrieve($cacheId);
     }
 
     /**
