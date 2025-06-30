@@ -36,7 +36,7 @@ class Title implements ComponentInterface
     // if in state
     private $index;
 
-    public function __construct($tag = null, $classes = [], $block, $field)
+    public function __construct($block, $field, $tag = null, $classes = [])
     {
         $this->tag = $tag ?? 'h1';
         $this->classes = $classes;
