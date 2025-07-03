@@ -165,7 +165,9 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
      */
     private function getSFUrl($route, $entity = 'sf')
     {
-        $domain = \Tools::getShopDomainSsl(true);
+        $useDomain = version_compare(_PS_VERSION_, '9.0.0.0', '<');
+
+        $domain = $useDomain ? '' : \Tools::getShopDomainSsl(true);
 
         return $domain . \Link::getUrlSmarty([
             'entity' => $entity,
