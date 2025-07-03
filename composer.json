@@ -45,6 +45,18 @@
     ],
     "autoindex": [
       "vendor/bin/autoindex prestashop:add:index ./"
+    ],
+    "make-release": [
+      "php ../../bin/console prettyblocks:release"
+    ],
+    "reset-module": [
+      "php ../../bin/console prestashop:module reset prettyblocks"
+    ],
+    "install-module": [
+      "php ../../bin/console prestashop:module install prettyblocks"
+    ],
+    "uninstall-module": [
+      "php ../../bin/console prestashop:module uninstall prettyblocks"
     ]
   },
   "type": "prestashop-module"

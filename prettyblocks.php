@@ -277,12 +277,15 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     private function getPrettyBlocksUrl()
     {
-        $domain = Tools::getShopDomainSsl(true);
+        $useDomain = version_compare(_PS_VERSION_, '8.0.0', '>=') && version_compare(_PS_VERSION_, '9.0.0', '<');
 
-        return $domain . Link::getUrlSmarty([
+        $domain = $useDomain ? \Tools::getShopDomainSsl(true) : '';
+        $url = $domain . \Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'admin_prettyblocks',
         ]);
+
+        return $url;
     }
 
     private function loadDefault()
