@@ -1,0 +1,6 @@
+services:
+    prettyblocks.command.release:
+        class: PrestaSafe\PrettyBlocks\Command\ReleaseCommand
+        tags:
+            - { name: 'console.command' }
+    
