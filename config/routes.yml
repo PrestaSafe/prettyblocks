@@ -99,3 +99,10 @@ prettyblocks_theme_settings:
     _legacy_controller: AdminThemeManagerController
     _legacy_link: AdminThemeManagerController
 
+prettyblocks_get_connected_employees:
+  path: prettyblocks/get_connected_employees/
+  methods: [GET,POST]
+  defaults:
+    _controller: 'PrestaSafe\PrettyBlocks\Controller\AdminThemeManagerController::getConnectedEmployeesAction'
+    _legacy_controller: AdminThemeManagerController
+    _legacy_link: AdminThemeManagerController

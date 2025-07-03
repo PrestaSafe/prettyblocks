@@ -2,6 +2,11 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="admin-dev" source-language="fr-FR" target-language="fr-FR" datatype="plaintext">
     <body>
+      <trans-unit id="eddf5d79de2de71a80d17ea9aa077136">
+        <source>Careful, %number% users are on this page.</source>
+        <target>Careful, %number% users are on this page.</target>
+        <note>Line: </note>
+      </trans-unit>
       <trans-unit id="8290adcd899d3ef604fb3a6c291a0046">
         <source>PrettyBlocks</source>
         <target>PrettyBlocks</target>
