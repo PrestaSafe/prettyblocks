@@ -26,10 +26,10 @@ class PrettyBlocksModel extends ObjectModel
     public $id_prettyblocks;
     public $instance_id;
     public $code;
-    public $default_params;
+    public $default_params = '';
     public $template;
-    public $config;
-    public $state;
+    public $config = '';
+    public $state = '';
     public $name;
     public $zone_name;
     public $position;
