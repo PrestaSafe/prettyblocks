@@ -165,6 +165,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
      */
     private function getSFUrl($route, $entity = 'sf')
     {
+
         $useDomain = version_compare(_PS_VERSION_, '9.0.0.0', '<');
 
         $domain = $useDomain ? '' : \Tools::getShopDomainSsl(true);
@@ -172,7 +173,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return $domain . \Link::getUrlSmarty([
             'entity' => $entity,
             'route' => $route,
-        ]);
+        ], true);
     }
 
     public function indexAction()
@@ -499,7 +500,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             exit(json_encode([
                 'success' => true,
                 'saved' => true,
-                'message' => $this->getTranslator()->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
+                'message' => $this->getTranslatorService()->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
             ], true));
         }
 
@@ -559,7 +560,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                     'success' => true,
                     'saved' => true,
                     'state' => $stateRequest,
-                    'message' => $this->getTranslator()->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
+                    'message' => $this->getTranslatorService()->trans('Updated with success', [], 'Modules.Prettyblocks.Admin'),
                 ]);
             }
         }
@@ -581,7 +582,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         ]);
     }
 
-    private function getTranslator()
+    private function getTranslatorService()
     {
         return \Context::getContext()->getTranslator();
     }
