@@ -265,6 +265,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
             ],
 
             'ajax_urls' => [
+                'base_url' => $link->getBaseLink(),
                 'shops' => $shops,
                 'simulate_home' => $symfonyUrl,
                 'search_by_ref' => $symfonyUrl,

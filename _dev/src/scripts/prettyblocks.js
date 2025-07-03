@@ -208,7 +208,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             let href = link.getAttribute('href')
-            if (href && href !== '#' && (href.includes('http') || href.includes('https'))) {
+            if (href && href !== '#') {
+
               let context = getContext()
               let params = {
                 context: context,
