@@ -7,7 +7,7 @@
 
 ![Téléchargements](https://img.shields.io/github/downloads/PrestaSafe/prettyblocks/total)
 
-Le premier page builder open source conçu pour PrestaShop ! 
+Le premier page builder open source conçu pour PrestaShop 1.7 / 8 et 9 ! 
 
 La documentation technique est disponible ici : [https://prettyblocks.io/](https://prettyblocks.io/): 
 
