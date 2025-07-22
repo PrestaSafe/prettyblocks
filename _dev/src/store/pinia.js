@@ -113,6 +113,15 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
           this.$patch((state) => {
             state.blocks =  data.blocks,
             state.blocksFormatted = blocksFormatted
+
+            if (!data.blocks.length) {
+              state.saveContext = ref('settings')
+            } else {
+              state.currentBlock = {
+                id_prettyblocks: data.blocks.length ? data.blocks[data.blocks.length - 1].id_prettyblocks : null
+              }
+            }
+
           });
         })
         .catch((error) => console.error(error));
@@ -136,7 +145,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
         console.error('Invalid side parameter. Must be "left" or "right".');
         return;
       }
-      
+
       if (!['default', 'extends', 'hide'].includes(value)) {
         console.error('Invalid value parameter. Must be "default", "extends", or "hide".');
         return;
@@ -193,14 +202,14 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       this.$patch((state) => {
         state.iframe.loader = false
       })
-    },  
+    },
     pushUrl(url) {
       const currentUrl = new URL(window.location.href);
-      
+
       // Remove 'id' and 'endpoint' parameters if they exist
       currentUrl.searchParams.delete('id');
       currentUrl.searchParams.delete('endpoint');
-      
+
       currentUrl.searchParams.set('startup_url', this.updateFilteredURL(url));
       window.history.replaceState({}, '', currentUrl.toString());
     },
@@ -222,7 +231,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
         } else if (!url.includes('prettyblocks')) {
             url += '&prettyblocks=1';
         }
-        
+
         return url;
     },
     reloadIframe(currentSrc = false) {
@@ -247,7 +256,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
             let maxKey = 0
             if(this.states.length == 0){
                 let keys = Object.keys(this.states).map(Number);
-                maxKey = Math.max(...keys); 
+                maxKey = Math.max(...keys);
             }
             maxKey = maxKey + 1
             key_formatted = this.id_prettyblocks + '-' + maxKey;
@@ -268,7 +277,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       }
       let data = await HttpClient.post(ajax_urls.state, params);
       return data
-      
+
     },
     async updateSubSelectItem(state)
     {
@@ -277,7 +286,7 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
             action: 'updateState',
             state: JSON.stringify(state.value),
             subSelected: this.getSubSelectedKey(),
-            ajax: true, 
+            ajax: true,
             ctx_id_lang: this.psContext.id_lang,
             ctx_id_shop: this.psContext.id_shop,
             ajax_token: security_app.ajax_token
