@@ -19,6 +19,29 @@
       </div>
     </div>
     {/foreach}
+
+{* FAQ Rich Snippet - JSON-LD Structured Data *}
+{if $block.states|count > 0}
+<script type="application/ld+json">
+{literal}{{/literal}
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {foreach from=$block.states item='faq' name='faqloop'}
+    {literal}{{/literal}
+      "@type": "Question",
+      "name": "{$faq.question|strip_tags|escape:'htmlall':'UTF-8'}",
+      "acceptedAnswer": {literal}{{/literal}
+        "@type": "Answer",
+        "text": "{$faq.answer|strip_tags|escape:'htmlall':'UTF-8'}"
+      {literal}}{/literal}
+    {literal}}{/literal}{if !$smarty.foreach.faqloop.last},{/if}
+
+    {/foreach}
+  ]
+{literal}}{/literal}
+</script>
+{/if}
    
   </div>
 </div>
