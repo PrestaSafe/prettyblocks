@@ -19,6 +19,9 @@
       </div>
     </div>
     {/foreach}
+   
+  </div>
+</div>
 
 {* FAQ Rich Snippet - JSON-LD Structured Data *}
 {if $block.states|count > 0}
@@ -30,10 +33,10 @@
     {foreach from=$block.states item='faq' name='faqloop'}
     {literal}{{/literal}
       "@type": "Question",
-      "name": "{$faq.question|strip_tags|escape:'htmlall':'UTF-8'}",
+      "name": "{$faq.question|strip_tags|trim|escape:'javascript'}",
       "acceptedAnswer": {literal}{{/literal}
         "@type": "Answer",
-        "text": "{$faq.answer|strip_tags|escape:'htmlall':'UTF-8'}"
+        "text": "{$faq.answer|strip_tags|trim|escape:'javascript'}"
       {literal}}{/literal}
     {literal}}{/literal}{if !$smarty.foreach.faqloop.last},{/if}
 
@@ -42,9 +45,3 @@
 {literal}}{/literal}
 </script>
 {/if}
-   
-  </div>
-</div>
-
-
-
