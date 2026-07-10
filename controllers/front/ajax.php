@@ -271,12 +271,14 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
                 'id_shop',
                 'id_lang',
                 'position',
+                'instance_id',
             ];
             foreach ($excludedProperties as $property) {
                 unset($originalValues[$property]);
             }
             $newBlock = new PrettyBlocksModel();
             $newBlock->hydrate($originalValues);
+            $newBlock->instance_id = uniqid();
             $newBlock->id_shop = $idShop;
             $newBlock->id_lang = (int) $language;
             $newBlock->add();

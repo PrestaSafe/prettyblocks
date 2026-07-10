@@ -1,0 +1,133 @@
+name: prettyblocks
+
+x-prestashop-environment: &prestashop-environment
+  PS_INSTALL_AUTO: "1"
+  PS_LANGUAGE: fr
+  PS_COUNTRY: FR
+  PS_ALL_LANGUAGES: "0"
+  PS_DEV_MODE: "1"
+  PS_FOLDER_ADMIN: admin-dev
+  PS_FOLDER_INSTALL: install-dev
+  PS_HANDLE_DYNAMIC_DOMAIN: "0"
+  ADMIN_MAIL: demo@prestashop.com
+  ADMIN_PASSWD: prestashop_demo
+  DB_NAME: prestashop
+  DB_USER: prestashop
+  DB_PASSWD: prestashop
+
+x-database-environment: &database-environment
+  MARIADB_DATABASE: prestashop
+  MARIADB_USER: prestashop
+  MARIADB_PASSWORD: prestashop
+  MARIADB_ROOT_PASSWORD: root
+  MARIADB_AUTO_UPGRADE: "1"
+
+x-database-healthcheck: &database-healthcheck
+  test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+  interval: 5s
+  timeout: 5s
+  retries: 30
+  start_period: 20s
+
+x-prestashop-healthcheck: &prestashop-healthcheck
+  interval: 10s
+  timeout: 5s
+  retries: 30
+  start_period: 5m
+
+services:
+  assets:
+    image: node:20-alpine
+    working_dir: /app/_dev
+    command:
+      - sh
+      - -lc
+      - corepack yarn install --frozen-lockfile --non-interactive && corepack yarn build
+    volumes:
+      - ..:/app
+      - prettyblocks-node-modules:/app/_dev/node_modules
+
+  db82:
+    image: mariadb:10.11
+    environment: *database-environment
+    command: --max-allowed-packet=64M
+    volumes:
+      - db82-data:/var/lib/mysql
+    healthcheck: *database-healthcheck
+    networks:
+      - net82
+
+  ps82:
+    build:
+      context: .
+      args:
+        PRESTASHOP_IMAGE: ${PS82_IMAGE:-prestashop/prestashop:8.2.7-8.1-apache}
+    depends_on:
+      assets:
+        condition: service_completed_successfully
+      db82:
+        condition: service_healthy
+    environment:
+      <<: *prestashop-environment
+      DB_SERVER: db82
+      PS_DOMAIN: "localhost:${PS82_PORT:-8082}"
+    ports:
+      - "${PS82_PORT:-8082}:80"
+    volumes:
+      - ps82-data:/var/www/html
+      - ..:/var/www/html/modules/prettyblocks
+      - prettyblocks-vendor82:/var/www/html/modules/prettyblocks/vendor
+    healthcheck:
+      <<: *prestashop-healthcheck
+      test: ["CMD", "curl", "-fsS", "-H", "Host: localhost:${PS82_PORT:-8082}", "http://127.0.0.1/"]
+    networks:
+      - net82
+
+  db91:
+    image: mariadb:10.11
+    environment: *database-environment
+    command: --max-allowed-packet=64M
+    volumes:
+      - db91-data:/var/lib/mysql
+    healthcheck: *database-healthcheck
+    networks:
+      - net91
+
+  ps91:
+    build:
+      context: .
+      args:
+        PRESTASHOP_IMAGE: ${PS91_IMAGE:-prestashop/prestashop:9.1.4-apache}
+    depends_on:
+      assets:
+        condition: service_completed_successfully
+      db91:
+        condition: service_healthy
+    environment:
+      <<: *prestashop-environment
+      DB_SERVER: db91
+      PS_DOMAIN: "localhost:${PS91_PORT:-8091}"
+    ports:
+      - "${PS91_PORT:-8091}:80"
+    volumes:
+      - ps91-data:/var/www/html
+      - ..:/var/www/html/modules/prettyblocks
+      - prettyblocks-vendor91:/var/www/html/modules/prettyblocks/vendor
+    healthcheck:
+      <<: *prestashop-healthcheck
+      test: ["CMD", "curl", "-fsS", "-H", "Host: localhost:${PS91_PORT:-8091}", "http://127.0.0.1/"]
+    networks:
+      - net91
+
+networks:
+  net82:
+  net91:
+
+volumes:
+  db82-data:
+  db91-data:
+  ps82-data:
+  ps91-data:
+  prettyblocks-vendor82:
+  prettyblocks-vendor91:
+  prettyblocks-node-modules:
