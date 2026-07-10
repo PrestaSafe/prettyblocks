@@ -34,12 +34,7 @@ let currentPrettyBlocksId = computed(() => currentBlock.id_prettyblocks)
  * onMounted events
  */
 onMounted(() => {
-
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-      prettyBlocksContext.setIframe()
-    }, 200)
-  })
+  prettyBlocksContext.setIframe()
 })
 
 watch(currentBlock, (newVal, oldValue) => {
@@ -71,6 +66,7 @@ watch(prettyBlocksContext.psContext, () => {
     allow="geolocation; microphone; camera; midi; encrypted-media"
     :sandbox="iframe_sandbox"
       :class="[height, width, showLoader ? 'opacity-50' : '']" class="border-none h-full mx-auto rounded" :src="filteredURL"
+      @load="prettyBlocksContext.iframeLoaded"
       frameborder="0"></iframe>
     <Loader :visible="showLoader" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       Chargement en cours</Loader>

@@ -123,8 +123,8 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
     setIframe() {
       this.$patch((state) => {
         state.iframe.domElement = ref(document.getElementById('website-iframe'))
-        this.listenIframe()
       })
+      this.listenIframe()
     },
     displaySettingsPanel() {
       this.$patch((state) => {
@@ -157,16 +157,24 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       })
     },
     listenIframe() {
+      window.removeEventListener("message", eventHandler);
       window.addEventListener("message", eventHandler);
-      this.iframe.domElement.addEventListener('load', (e) => {
-        setTimeout(() => {
-          this.sendPrettyBlocksEvents('initIframe')
-          this.sendPrettyBlocksEvents('getContext')
-          this.sendPrettyBlocksEvents('getZones')
-          this.hideLoader()
-          this.emit('iframeLoaded')
-        },100)
-      })
+    },
+    iframeLoaded(event) {
+      if (!this.iframe.domElement && event && event.currentTarget) {
+        this.$patch((state) => {
+          state.iframe.domElement = ref(event.currentTarget)
+        })
+        this.listenIframe()
+      }
+
+      setTimeout(() => {
+        this.sendPrettyBlocksEvents('initIframe')
+        this.sendPrettyBlocksEvents('getContext')
+        this.sendPrettyBlocksEvents('getZones')
+        this.hideLoader()
+        this.emit('iframeLoaded')
+      },100)
     },
 
     sendPrettyBlocksEvents(eventType, data = []) {
