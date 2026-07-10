@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 project_dir=$(dirname "$(dirname "$script_dir")")
 compose_file="$project_dir/docker/compose.yml"
 

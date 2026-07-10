@@ -55,3 +55,27 @@ This removes both shops and databases, including all test content:
 ```bash
 docker compose -f docker/compose.yml down -v
 ```
+
+## Build and test the release ZIP
+
+The release builder runs Composer and Vite in Docker, creates an installable ZIP
+with a top-level `prettyblocks/` directory, and validates its contents:
+
+```bash
+scripts/build-release.sh
+```
+
+The versioned archive and its stable `prettyblocks.zip` alias are written to
+`dist/`. To prove that the ZIP is self-contained, run it against two fresh,
+temporary shops. This test disables both the source asset build and the runtime
+Composer install, so only files present in the archive can be used:
+
+```bash
+scripts/test-release.sh
+```
+
+The release test validates and extracts the ZIP with PrestaShop's native ZIP
+handler, then installs that extracted artifact with the PrestaShop CLI. It uses
+ports `8182` and `8191` by default and deletes its shops, databases, and
+extracted module when it finishes. Override the ports with `PS82_RELEASE_PORT`
+and `PS91_RELEASE_PORT` if needed.

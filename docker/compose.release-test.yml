@@ -1,0 +1,19 @@
+services:
+  assets:
+    working_dir: /tmp
+    command: ["true"]
+    volumes: !override []
+
+  ps82:
+    environment:
+      PRETTYBLOCKS_RELEASE_ARCHIVE: /tmp/prettyblocks.zip
+    volumes: !override
+      - ps82-data:/var/www/html
+      - ${PRETTYBLOCKS_RELEASE_ARCHIVE_PATH}:/tmp/prettyblocks.zip:ro
+
+  ps91:
+    environment:
+      PRETTYBLOCKS_RELEASE_ARCHIVE: /tmp/prettyblocks.zip
+    volumes: !override
+      - ps91-data:/var/www/html
+      - ${PRETTYBLOCKS_RELEASE_ARCHIVE_PATH}:/tmp/prettyblocks.zip:ro
