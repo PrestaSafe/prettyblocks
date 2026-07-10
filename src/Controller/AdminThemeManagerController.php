@@ -236,7 +236,14 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $ajax_editing_url = $this->getSFUrl('prettyblocks_get_connected_employees');
         $blockAvailableUrls = $this->getSFUrl('prettyblocks_api_get_blocks_available');
         $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings');
-        $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
+        $shop_url = $link->getPageLink(
+            'index',
+            true,
+            (int) $context->language->id,
+            [],
+            false,
+            (int) $context->shop->id
+        );
         $translator = \Context::getContext()->getTranslator();
         $shops = $this->getShops();
         $available_language_ids = \Language::getLanguages(true, $context->shop->id);
