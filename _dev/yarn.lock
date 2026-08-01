@@ -1549,10 +1549,10 @@ sortablejs@1.14.0:
   resolved "https://registry.npmjs.org/sortablejs/-/sortablejs-1.14.0.tgz"
   integrity sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==
 
-sortablejs@^1.15.2:
-  version "1.15.2"
-  resolved "https://registry.npmjs.org/sortablejs/-/sortablejs-1.15.2.tgz"
-  integrity sha512-FJF5jgdfvoKn1MAKSdGs33bIqLi3LmsgVTliuX6iITj834F+JRQZN90Z93yql8h0K2t0RwDPBmxwlbZfDcxNZA==
+sortablejs@^1.15.7:
+  version "1.15.7"
+  resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.15.7.tgz#83a0bddc472117ee328dea20b2e6f490fed20f86"
+  integrity sha512-Kk8wLQPlS+yi1ZEf48a4+fzHa4yxjC30M/Sr2AnQu+f/MPwvvX9XjZ6OWejiz8crBsLwSq8GHqaxaET7u6ux0A==
 
 source-map-js@^1.2.0:
   version "1.2.0"
