@@ -202,10 +202,16 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $js_entry = '';
         if ($filesystem->exists($build_dir)) {
             // load manifest.json
-            $manifest = $build_dir . '.vite/manifest.json';
+            $manifest = $build_dir . 'manifest.json';
 
             if (!$filesystem->exists($manifest)) {
-                throw new \Exception('manifest.json not exist');
+                // Keep existing development builds working after moving the
+                // release manifest out of Vite's hidden .vite directory.
+                $manifest = $build_dir . '.vite/manifest.json';
+            }
+
+            if (!$filesystem->exists($manifest)) {
+                throw new \Exception('manifest.json does not exist');
             }
             $json = \Tools::file_get_contents($manifest);
             $json = json_decode($json, true);

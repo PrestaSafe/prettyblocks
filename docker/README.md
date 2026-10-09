@@ -65,13 +65,20 @@ with a top-level `prettyblocks/` directory, and validates its contents:
 scripts/build-release.sh
 ```
 
-The versioned archive and its stable `prettyblocks.zip` alias are written to
-`dist/`. To prove that the ZIP is self-contained, run it against two fresh,
-temporary shops. This test disables both the source asset build and the runtime
-Composer install, so only files present in the archive can be used:
+The installable `prettyblocks-{version}.zip` archive is written to `dist/`. Its
+top-level directory is always `prettyblocks/`, without the version suffix. To
+prove that the ZIP is self-contained, run it against two fresh, temporary
+shops. This test disables both the source asset build and the runtime Composer
+install, so only files present in the archive can be used:
 
 ```bash
 scripts/test-release.sh
+```
+
+Pass an existing archive to test the exact package without rebuilding it:
+
+```bash
+scripts/test-release.sh dist/prettyblocks-3.2.2.zip
 ```
 
 The release test validates and extracts the ZIP with PrestaShop's native ZIP

@@ -8,10 +8,34 @@ compose_files=(
   -f "$project_dir/docker/compose.release-test.yml"
 )
 
-"$script_dir/build-release.sh"
-
 version=$(awk -F"'" '/\$this->version[[:space:]]*=/{print $2; exit}' "$project_dir/prettyblocks.php")
-export PRETTYBLOCKS_RELEASE_ARCHIVE_PATH="$project_dir/dist/prettyblocks-${version}.zip"
+expected_archive_name="prettyblocks-${version}.zip"
+
+if [ "$#" -gt 1 ]; then
+  echo "Usage: $0 [archive]" >&2
+  exit 1
+fi
+
+if [ "$#" -eq 1 ]; then
+  archive_path=$1
+  if [ ! -f "$archive_path" ]; then
+    echo "Release archive not found: $archive_path" >&2
+    exit 1
+  fi
+
+  archive_dir=$(CDPATH='' cd -- "$(dirname -- "$archive_path")" && pwd)
+  archive_path="$archive_dir/$(basename -- "$archive_path")"
+else
+  "$script_dir/build-release.sh"
+  archive_path="$project_dir/dist/$expected_archive_name"
+fi
+
+if [ "$(basename -- "$archive_path")" != "$expected_archive_name" ]; then
+  echo "Expected release archive name: $expected_archive_name" >&2
+  exit 1
+fi
+
+export PRETTYBLOCKS_RELEASE_ARCHIVE_PATH="$archive_path"
 export COMPOSE_PROJECT_NAME="prettyblocks-release-test-${$}"
 export PS82_PORT=${PS82_RELEASE_PORT:-8182}
 export PS91_PORT=${PS91_RELEASE_PORT:-8191}
@@ -60,18 +84,39 @@ for service_and_port in "ps82:$PS82_PORT" "ps91:$PS91_PORT"; do
   port=${service_and_port##*:}
 
   asset_paths=$(docker compose "${compose_files[@]}" exec -T "$service" php -r '
+    $manifestPath = "modules/prettyblocks/build/manifest.json";
     $manifest = json_decode(
-        file_get_contents("modules/prettyblocks/build/.vite/manifest.json"),
+        file_get_contents($manifestPath),
         true,
         512,
         JSON_THROW_ON_ERROR
     );
 
-    foreach ($manifest as $entry) {
-        echo $entry["file"], "\n";
-        foreach ($entry["css"] ?? [] as $css) {
-            echo $css, "\n";
+    $entry = $manifest["index.html"] ?? null;
+    if (!is_array($entry) || true !== ($entry["isEntry"] ?? false)) {
+        throw new RuntimeException("The Vite manifest has no index.html entry.");
+    }
+
+    $javascript = $entry["file"] ?? null;
+    $stylesheets = $entry["css"] ?? null;
+    if (!is_string($javascript) || !str_ends_with($javascript, ".js")) {
+        throw new RuntimeException("The Vite manifest has no entry JavaScript.");
+    }
+    if (!is_array($stylesheets) || [] === $stylesheets) {
+        throw new RuntimeException("The Vite manifest has no entry stylesheet.");
+    }
+
+    foreach (array_merge([$javascript], $stylesheets) as $asset) {
+        if (
+            !is_string($asset)
+            || str_starts_with($asset, "/")
+            || str_contains($asset, "..")
+            || str_contains($asset, "\\")
+        ) {
+            throw new RuntimeException("The Vite manifest contains an unsafe asset path.");
         }
+
+        echo $asset, "\n";
     }
   ' | tr -d '\r')
 
