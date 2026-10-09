@@ -32,7 +32,11 @@ cd ../../../ && php bin/console prestashop:module install prettyblocks
 
 ### Release
 
-Téléchargez la [dernière release](https://github.com/PrestaSafe/prettyblocks/releases/latest), puis installez le module directement dans votre PrestaShop :) 
+Téléchargez `prettyblocks-{version}.zip` dans les assets de la
+[dernière release](https://github.com/PrestaSafe/prettyblocks/releases/latest),
+puis installez ce fichier directement dans votre PrestaShop. N'utilisez pas
+l'archive automatique **Source code (zip)** de GitHub : elle ne contient pas le
+module compilé et n'est pas installable.
 
 Vous pouvez également utiliser notre module ClassicBlocks, afin d'avoir 4 blocks à utiliser. Disponible ici: [Télécharger ClassicBlocks](https://github.com/PrestaSafe/classicblocks)
 
@@ -64,7 +68,11 @@ cd ../../../ && php bin/console prestashop:module install prettyblocks
 ```
 
 ### From Release
-For installing PrettyBlocks, you can download our [latest release](https://github.com/PrestaSafe/prettyblocks/releases/latest) and install the module directly in your PrestaShop.
+Download `prettyblocks-{version}.zip` from the assets of our
+[latest release](https://github.com/PrestaSafe/prettyblocks/releases/latest)
+and install that file directly in PrestaShop. Do not use GitHub's automatically
+generated **Source code (zip)** archive: it does not contain the compiled module
+and cannot be installed.
 
 You can also add our module ClassicBlocks for having 4 blocks to use [Download ClassicBlocks](https://github.com/PrestaSafe/classicblocks)
 

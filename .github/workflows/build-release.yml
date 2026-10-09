@@ -15,26 +15,61 @@ jobs:
     name: Build installable ZIP
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      archive_name: ${{ steps.release.outputs.archive_name }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
       - name: Build and validate release
-        run: scripts/build-release.sh
+        id: release
+        run: |
+          set -Eeuo pipefail
 
-      - name: Upload release packages
+          scripts/build-release.sh
+
+          version=$(awk -F"'" '/\$this->version[[:space:]]*=/{print $2; exit}' prettyblocks.php)
+          archive_name="prettyblocks-${version}.zip"
+          test -s "dist/${archive_name}"
+
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "archive_name=${archive_name}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release package
         uses: actions/upload-artifact@v7
         with:
-          name: prettyblocks-${{ github.sha }}
-          path: dist/*.zip
+          name: prettyblocks-${{ steps.release.outputs.version }}
+          path: dist/${{ steps.release.outputs.archive_name }}
           if-no-files-found: error
           retention-days: 14
+
+  test-release:
+    name: Install ZIP on PrestaShop
+    needs: build-release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download release package
+        uses: actions/download-artifact@v8
+        with:
+          name: prettyblocks-${{ needs.build-release.outputs.version }}
+          path: dist
+
+      - name: Test downloaded release package
+        run: scripts/test-release.sh "dist/${{ needs.build-release.outputs.archive_name }}"
 
   publish-release:
     name: Publish GitHub release
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: build-release
+    needs:
+      - build-release
+      - test-release
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -49,24 +84,31 @@ jobs:
       - name: Download release package
         uses: actions/download-artifact@v8
         with:
-          name: prettyblocks-${{ github.sha }}
+          name: prettyblocks-${{ needs.build-release.outputs.version }}
           path: dist
 
       - name: Prepare release metadata
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.build-release.outputs.version }}
+          ARCHIVE_NAME: ${{ needs.build-release.outputs.archive_name }}
         run: |
           set -Eeuo pipefail
 
-          version=$(awk -F"'" '/\$this->version[[:space:]]*=/{print $2; exit}' prettyblocks.php)
-          if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+([.+-][0-9A-Za-z.-]+)?$ ]]; then
+          if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+([.+-][0-9A-Za-z.-]+)?$ ]]; then
             echo "Unable to read a valid semantic version from prettyblocks.php." >&2
             exit 1
           fi
 
-          test -s dist/prettyblocks.zip
-          sha256sum dist/prettyblocks.zip > dist/prettyblocks.zip.sha256
+          archive_path="dist/${ARCHIVE_NAME}"
+          checksum_path="${archive_path}.sha256"
+          test -s "$archive_path"
+          (
+            cd dist
+            sha256sum "$ARCHIVE_NAME" > "${ARCHIVE_NAME}.sha256"
+            sha256sum --check "${ARCHIVE_NAME}.sha256"
+          )
 
           previous_tag=$(gh release list \
             --exclude-drafts \
@@ -82,6 +124,10 @@ jobs:
           fi
 
           {
+            echo '## Installation'
+            echo
+            printf 'Download `%s` from this release assets. Do not use the automatically generated **Source code (zip)** archive, which is not an installable PrestaShop module.\n' "$ARCHIVE_NAME"
+            echo
             echo '## Contributors'
             echo
             git log --format='%aN%x09%aE' "$commit_range" \
@@ -92,23 +138,37 @@ jobs:
                 done
           } > release-notes-prefix.md
 
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "archive_path=${archive_path}" >> "$GITHUB_OUTPUT"
+          echo "checksum_path=${checksum_path}" >> "$GITHUB_OUTPUT"
 
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.release.outputs.version }}
+          VERSION: ${{ needs.build-release.outputs.version }}
+          ARCHIVE_PATH: ${{ steps.release.outputs.archive_path }}
+          CHECKSUM_PATH: ${{ steps.release.outputs.checksum_path }}
         run: |
           set -Eeuo pipefail
 
           if gh release view "$VERSION" >/dev/null 2>&1; then
-            echo "Release $VERSION already exists; nothing to publish."
+            tag_commit=$(git rev-list -n 1 "$VERSION")
+            if [ "$tag_commit" != "$GITHUB_SHA" ]; then
+              echo "Release $VERSION points to $tag_commit instead of $GITHUB_SHA." >&2
+              echo "Bump the module version before publishing a different commit." >&2
+              exit 1
+            fi
+
+            gh release upload "$VERSION" \
+              "$ARCHIVE_PATH#PrettyBlocks installable module ZIP" \
+              "$CHECKSUM_PATH#SHA-256 checksum" \
+              --clobber
+            echo "Release $VERSION already exists; its assets were validated and refreshed."
             exit 0
           fi
 
           gh release create "$VERSION" \
-            'dist/prettyblocks.zip#PrettyBlocks module ZIP' \
-            'dist/prettyblocks.zip.sha256#SHA-256 checksum' \
+            "$ARCHIVE_PATH#PrettyBlocks installable module ZIP" \
+            "$CHECKSUM_PATH#SHA-256 checksum" \
             --target "$GITHUB_SHA" \
             --title "$VERSION" \
             --generate-notes \

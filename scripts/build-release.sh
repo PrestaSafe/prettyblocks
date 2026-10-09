@@ -55,7 +55,7 @@ required_paths=(
   prettyblocks/prettyblocks.php
   prettyblocks/vendor/autoload.php
   prettyblocks/vendor/composer/installed.php
-  prettyblocks/build/.vite/manifest.json
+  prettyblocks/build/manifest.json
   prettyblocks/views/js/build/build.js
   prettyblocks/views/css/iframe.css
   prettyblocks/views/css/dist/main.css
@@ -116,15 +116,9 @@ fi
 
 mkdir -p "$output_dir"
 cp "$built_archive" "$output_dir/$archive_name"
-cp "$built_archive" "$output_dir/prettyblocks.zip"
+rm -f "$output_dir/prettyblocks.zip" "$output_dir/prettyblocks.zip.sha256"
 
 versioned_checksum=$(sha256_file "$output_dir/$archive_name")
-stable_checksum=$(sha256_file "$output_dir/prettyblocks.zip")
-if [[ $versioned_checksum != "$stable_checksum" ]]; then
-  echo "Versioned and stable release archives differ." >&2
-  exit 1
-fi
 
 echo "Release ready: $output_dir/$archive_name"
-echo "Stable alias:  $output_dir/prettyblocks.zip"
 echo "SHA-256:       $versioned_checksum"
